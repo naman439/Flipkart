@@ -6,7 +6,7 @@ import CategorySidebar from '@/components/CategorySidebar';
 import Pagination from '@/components/Pagination';
 import ProductCard from '@/components/ProductCard';
 import { ProductGridSkeleton, Spinner } from '@/components/LoadingSkeleton';
-import { getProducts, getCategories, getBrands } from '@/services/api/products.api';
+import { getProducts, getCategories, getDynamicFilters } from '@/services/api/products.api';
 import { useDebounce } from '@/hooks/useDebounce';
 
 const SORT_OPTIONS = [
@@ -36,23 +36,53 @@ function ProductsContent() {
   const [maxPrice, setMaxPrice] = useState('');
   const [brands, setBrands] = useState([]);
   const [selectedBrands, setSelectedBrands] = useState([]);
+  const [dynamicSpecs, setDynamicSpecs] = useState({});
+  const [selectedSpecs, setSelectedSpecs] = useState({});
 
   const debouncedSearch = useDebounce(search, 500);
 
-  // Load categories and brands once
+  // Load categories once
   useEffect(() => {
     getCategories().then((d) => setCategories(d.data || [])).catch(console.error);
-    getBrands().then((d) => setBrands(d.data || [])).catch(console.error);
   }, []);
+
+  // Fetch dynamic filters whenever category or search changes
+  useEffect(() => {
+    getDynamicFilters({ category, search: debouncedSearch }).then((d) => {
+      setBrands(d.data?.brands || []);
+      setDynamicSpecs(d.data?.specifications || {});
+    }).catch(console.error);
+  }, [category, debouncedSearch]);
 
   // Sync URL params → state
   useEffect(() => {
     const s = searchParams.get('search') || '';
     const c = searchParams.get('category') || '';
+    
+    let matchedCategory = c;
+    
+    // Auto-detect category if user explicitly searched for one (e.g. 'mobile' -> 'mobiles')
+    if (s && !c && categories.length > 0) {
+      const lowerSearch = s.toLowerCase().trim();
+      const searchBase = lowerSearch.endsWith('s') ? lowerSearch.slice(0, -1) : lowerSearch;
+      
+      if (searchBase.length > 2) {
+        const match = categories.find(cat => {
+          const slug = cat.slug.toLowerCase();
+          const name = cat.name.toLowerCase();
+          return slug.includes(searchBase) || name.includes(searchBase);
+        });
+        
+        if (match) {
+          matchedCategory = match.slug;
+        }
+      }
+    }
+
     setSearch(s);
-    setCategory(c);
+    setCategory(matchedCategory);
     setPage(1);
-  }, [searchParams]);
+  }, [searchParams, categories]);
 
   // Fetch products whenever filters change
   useEffect(() => {
@@ -72,6 +102,14 @@ function ProductsContent() {
           minRating: minRating || undefined,
           brand: selectedBrands.length > 0 ? selectedBrands.join(',') : undefined,
         };
+
+        // Inject dynamic specification filters
+        Object.entries(selectedSpecs).forEach(([key, values]) => {
+          if (values.length > 0) {
+            params[key] = values.join(',');
+          }
+        });
+
         const res = await getProducts(params);
         setProducts(res.data || []);
         setPagination(res.pagination || {});
@@ -82,10 +120,12 @@ function ProductsContent() {
       }
     };
     fetchProducts();
-  }, [debouncedSearch, category, sort, page, minRating, minPrice, maxPrice, selectedBrands]);
+  }, [debouncedSearch, category, sort, page, minRating, minPrice, maxPrice, selectedBrands, selectedSpecs]);
 
   const handleCategoryChange = (slug) => {
     setCategory(slug === category ? '' : slug);
+    setSelectedBrands([]);
+    setSelectedSpecs({});
     setPage(1);
   };
 
@@ -108,6 +148,7 @@ function ProductsContent() {
     setMinPrice('');
     setMaxPrice('');
     setSelectedBrands([]);
+    setSelectedSpecs({});
     router.push('/products');
   };
 
@@ -124,10 +165,22 @@ function ProductsContent() {
           brands={brands}
           selectedBrands={selectedBrands}
           onBrandToggle={handleBrandToggle}
+          dynamicSpecs={dynamicSpecs}
+          selectedSpecs={selectedSpecs}
+          onSpecToggle={(specKey, val) => {
+            setSelectedSpecs(prev => {
+              const current = prev[specKey] || [];
+              return {
+                ...prev,
+                [specKey]: current.includes(val) ? current.filter(v => v !== val) : [...current, val]
+              };
+            });
+            setPage(1);
+          }}
           minPrice={minPrice}
           maxPrice={maxPrice}
           onPriceChange={(min, max) => { setMinPrice(min); setMaxPrice(max); setPage(1); }}
-          onClear={(category || minRating || debouncedSearch || minPrice || maxPrice || selectedBrands.length > 0) ? handleClear : null}
+          onClear={(category || minRating || debouncedSearch || minPrice || maxPrice || selectedBrands.length > 0 || Object.values(selectedSpecs).some(arr => arr.length > 0)) ? handleClear : null}
         />
 
         {/* ── Main Content ─────────────────────────────────────────── */}

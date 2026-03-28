@@ -61,63 +61,78 @@ const placeOrder = async (req, res) => {
   const finalAmount = cart.items.reduce((sum, item) => sum + item.product.discountPrice * item.quantity, 0);
   const discountAmount = totalAmount - finalAmount;
 
-  // Create order with items in a transaction
-  const order = await prisma.$transaction(async (tx) => {
-    // Create the order
-    const newOrder = await tx.order.create({
-      data: {
-        userId,
-        totalAmount: Math.round(totalAmount),
-        discountAmount: Math.round(discountAmount),
-        finalAmount: Math.round(finalAmount),
-        shippingName,
-        shippingPhone,
-        shippingAddress,
-        shippingCity,
-        shippingState,
-        shippingZip,
-        paymentMethod,
-        status: 'CONFIRMED',
-        items: {
-          create: cart.items.map((item) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            price: item.product.discountPrice,
-            title: item.product.title,
-          })),
+  try {
+    // Create order with items in a transaction
+    const order = await prisma.$transaction(async (tx) => {
+      // 1. Decrement stock atomically, blocking creation if stock is insufficient
+      for (const item of cart.items) {
+        const updateResult = await tx.product.updateMany({
+          where: { 
+            id: item.productId,
+            stock: { gte: item.quantity } // strictly enforce stock availability
+          },
+          data: { stock: { decrement: item.quantity } },
+        });
+
+        // If count is 0, the stock was either insufficient or product was missing
+        if (updateResult.count === 0) {
+          throw new Error(`Insufficient stock for "${item.product.title}". It might have just sold out.`);
+        }
+      }
+
+      // 2. Create the order
+      const newOrder = await tx.order.create({
+        data: {
+          userId,
+          totalAmount: Math.round(totalAmount),
+          discountAmount: Math.round(discountAmount),
+          finalAmount: Math.round(finalAmount),
+          shippingName,
+          shippingPhone,
+          shippingAddress,
+          shippingCity,
+          shippingState,
+          shippingZip,
+          paymentMethod,
+          status: 'CONFIRMED',
+          items: {
+            create: cart.items.map((item) => ({
+              productId: item.productId,
+              quantity: item.quantity,
+              price: item.product.discountPrice,
+              title: item.product.title,
+            })),
+          },
         },
-      },
-      include: { items: true },
+        include: { items: true },
+      });
+
+      // 3. Clear the cart
+      await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
+
+      return newOrder;
     });
 
-    // Decrement stock for each product
-    for (const item of cart.items) {
-      await tx.product.update({
-        where: { id: item.productId },
-        data: { stock: { decrement: item.quantity } },
-      });
+    // Send email notification (fire-and-forget, don't block response)
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true, name: true } });
+    sendOrderConfirmationEmail(user.email, user.name, order).catch(console.error);
+
+    res.status(201).json({
+      success: true,
+      message: 'Order placed successfully!',
+      data: {
+        orderId: order.id,
+        status: order.status,
+        finalAmount: order.finalAmount,
+        itemCount: order.items.length,
+      },
+    });
+  } catch (error) {
+    if (error.message.includes('Insufficient stock')) {
+      error.statusCode = 400;
     }
-
-    // Clear the cart
-    await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
-
-    return newOrder;
-  });
-
-  // Send email notification (fire-and-forget, don't block response)
-  const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true, name: true } });
-  sendOrderConfirmationEmail(user.email, user.name, order).catch(console.error);
-
-  res.status(201).json({
-    success: true,
-    message: 'Order placed successfully!',
-    data: {
-      orderId: order.id,
-      status: order.status,
-      finalAmount: order.finalAmount,
-      itemCount: order.items.length,
-    },
-  });
+    throw error;
+  }
 };
 
 /**

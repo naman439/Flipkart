@@ -14,11 +14,13 @@ const {
   getFeaturedProducts,
   getCategories,
   getBrands,
+  getDynamicFilters,
 } = require('../controllers/product.controller');
 
 router.get('/categories', getCategories);
 router.get('/brands', getBrands);
 router.get('/featured', getFeaturedProducts);
+router.get('/filters', getDynamicFilters);
 router.get('/', getProducts);
 router.get('/:id', getProductById);
 

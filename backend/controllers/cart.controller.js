@@ -102,11 +102,22 @@ const addToCart = async (req, res) => {
 
   let cartItem;
   if (existingItem) {
+    const newQuantity = existingItem.quantity + parseInt(quantity);
+    if (newQuantity > product.stock) {
+      const error = new Error(`Cannot add more. Only ${product.stock} items available in stock.`);
+      error.statusCode = 400;
+      throw error;
+    }
     cartItem = await prisma.cartItem.update({
       where: { id: existingItem.id },
-      data: { quantity: existingItem.quantity + parseInt(quantity) },
+      data: { quantity: newQuantity },
     });
   } else {
+    if (parseInt(quantity) > product.stock) {
+      const error = new Error(`Cannot add more. Only ${product.stock} items available in stock.`);
+      error.statusCode = 400;
+      throw error;
+    }
     cartItem = await prisma.cartItem.create({
       data: { cartId: cart.id, productId: parseInt(productId), quantity: parseInt(quantity) },
     });
@@ -145,11 +156,18 @@ const updateCart = async (req, res) => {
 
   const cartItem = await prisma.cartItem.findFirst({
     where: { id: parseInt(cartItemId), cartId: cart.id },
+    include: { product: { select: { stock: true } } },
   });
 
   if (!cartItem) {
     const error = new Error('Cart item not found');
     error.statusCode = 404;
+    throw error;
+  }
+
+  if (parseInt(quantity) > cartItem.product.stock) {
+    const error = new Error(`Cannot update quantity. Only ${cartItem.product.stock} items available in stock.`);
+    error.statusCode = 400;
     throw error;
   }
 

@@ -1,202 +1,173 @@
-/**
- * Advanced High-Fidelity Database Seed Script (1000+ Products)
- * Seeds realistic products, multiple images, and curated specifications.
- * Run: node backend/prisma/seed_advanced.js
- */
-
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const categories = [
-  { name: 'Mobiles', slug: 'mobiles', imageUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=200' },
-  { name: 'Electronics', slug: 'electronics', imageUrl: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=200' },
-  { name: 'Fashion', slug: 'fashion', imageUrl: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=200' },
-  { name: 'Home & Kitchen', slug: 'home-kitchen', imageUrl: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200' },
-  { name: 'Appliances', slug: 'appliances', imageUrl: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=200' },
-  { name: 'Beauty', slug: 'beauty', imageUrl: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=200' },
-  { name: 'Toys & Baby', slug: 'toys-baby', imageUrl: 'https://images.unsplash.com/photo-1532330393533-443990a51d10?w=200' },
-  { name: 'Sports & Fitness', slug: 'sports', imageUrl: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=200' },
-  { name: 'Books', slug: 'books', imageUrl: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=200' },
-  { name: 'Groceries', slug: 'groceries', imageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=200' }
+  { name: 'Mobiles', slug: 'mobiles', imageUrl: 'https://rukminim1.flixcart.com/flap/128/128/image/22fddf3c7da4c4f4.png' },
+  { name: 'Electronics', slug: 'electronics', imageUrl: 'https://rukminim1.flixcart.com/flap/128/128/image/69c6589653afdb9a.png' },
+  { name: 'Fashion', slug: 'fashion', imageUrl: 'https://rukminim1.flixcart.com/flap/128/128/image/82b3ca5fb2301045.png' },
+  { name: 'Home & Kitchen', slug: 'home-kitchen', imageUrl: 'https://rukminim1.flixcart.com/flap/128/128/image/ab7e2b022a4587dd.jpg' },
+  { name: 'Appliances', slug: 'appliances', imageUrl: 'https://rukminim1.flixcart.com/flap/128/128/image/0ff199d1bd27eb98.png' },
+  { name: 'Beauty', slug: 'beauty', imageUrl: 'https://rukminim1.flixcart.com/flap/128/128/image/dff3f7adcf3a90c6.png' },
+  { name: 'Toys & Baby', slug: 'toys-baby', imageUrl: 'https://rukminim1.flixcart.com/flap/128/128/image/dff3f7adcf3a90c6.png' },
+  { name: 'Sports & Fitness', slug: 'sports-fitness', imageUrl: 'https://rukminim1.flixcart.com/flap/128/128/image/0ff199d1bd27eb98.png' },
+  { name: 'Books', slug: 'books', imageUrl: 'https://rukminim1.flixcart.com/flap/128/128/image/dff3f7adcf3a90c6.png' },
+  { name: 'Groceries', slug: 'groceries', imageUrl: 'https://rukminim1.flixcart.com/flap/128/128/image/29327f40e9c4d26b.png' }
 ];
 
-const productTemplates = {
-  mobiles: [
-    { brand: 'Apple', model: 'iPhone 15 Pro', colors: ['Natural Titanium', 'Blue Titanium', 'Black Titanium'], basePrice: 129990, keyword: 'iphone' },
-    { brand: 'Samsung', model: 'Galaxy S24 Ultra', colors: ['Titanium Gray', 'Titanium Black', 'Titanium Violet'], basePrice: 134990, keyword: 'samsung phone' },
-    { brand: 'Google', model: 'Pixel 8 Pro', colors: ['Obsidian', 'Porcelain', 'Bay'], basePrice: 106990, keyword: 'pixel phone' },
-    { brand: 'OnePlus', model: '12', colors: ['Flowy Emerald', 'Silky Black'], basePrice: 64999, keyword: 'oneplus' },
-    { brand: 'Xiaomi', model: '14 Ultra', colors: ['Black', 'White'], basePrice: 99999, keyword: 'xiaomi phone' },
-    { brand: 'Vivo', model: 'V30 Pro', colors: ['Andaman Blue', 'Classic Black'], basePrice: 41999, keyword: 'vivo phone' },
-    { brand: 'Realme', model: 'GT 5G', colors: ['Dashing Silver', 'Dashing Blue'], basePrice: 29999, keyword: 'realme' }
-  ],
-  electronics: [
-    { brand: 'Apple', model: 'MacBook Air M3 (13-inch)', specs: '8GB RAM, 256GB SSD', basePrice: 114900, keyword: 'laptop' },
-    { brand: 'Sony', model: 'WH-1000XM5 Wireless Headphones', specs: 'Noise Cancelling, 30h Battery', basePrice: 29990, keyword: 'headphones' },
-    { brand: 'Asus', model: 'ROG Zephyrus G14', specs: 'Ryzen 9, RTX 4060, 16GB', basePrice: 149990, keyword: 'gaming laptop' },
-    { brand: 'Canon', model: 'EOS R5 Mirrorless Camera', specs: '45MP, 8K Video', basePrice: 329995, keyword: 'camera' },
-    { brand: 'LG', model: '27-inch 4K UHD Monitor', specs: 'IPS Panel, HDR 10', basePrice: 24990, keyword: 'monitor' },
-    { brand: 'Bose', model: 'QuietComfort Ultra Earbuds', specs: 'World-class Noise Cancellation', basePrice: 24900, keyword: 'earbuds' },
-    { brand: 'HP', model: 'Pavilion Laptop 15', specs: 'Intel Core i5, 16GB RAM', basePrice: 56990, keyword: 'hp laptop' }
-  ],
-  fashion: [
-    { brand: 'Levis', model: '511 Slim Fit Men Jeans', material: '99% Cotton, 1% Elastane', basePrice: 3999, keyword: 'jeans' },
-    { brand: 'Nike', model: 'Air Max 270 Sneakers', material: 'Synthetic & Mesh', basePrice: 12995, keyword: 'shoes' },
-    { brand: 'Zara', model: 'Floral Print Midi Dress', material: '100% Viscose', basePrice: 4590, keyword: 'dress' },
-    { brand: 'Adidas', model: 'Originals Trefoil Hoodie', material: 'Heavyweight Cotton', basePrice: 5999, keyword: 'hoodie' },
-    { brand: 'Casio', model: 'G-Shock GA-2100-1A1DR', material: 'Carbon Core Guard', basePrice: 9995, keyword: 'watch' },
-    { brand: 'H&M', model: 'Regular Fit T-shirt', material: 'Jersey Cotton', basePrice: 799, keyword: 'tshirt' }
-  ],
-  groceries: [
-    { brand: 'Tata Tea', model: 'Gold', variant: '1 kg Pack', basePrice: 650, keyword: 'tea' },
-    { brand: 'Maggi', model: '2-Minute Noodles', variant: 'Pack of 12', basePrice: 168, keyword: 'noodles' },
-    { brand: 'Amul', model: 'Pasteurised Butter', variant: '500 g', basePrice: 275, keyword: 'butter' },
-    { brand: 'Nestle', model: 'Nescafe Classic Coffee', variant: '100 g', basePrice: 340, keyword: 'coffee' },
-    { brand: 'Cadbury', model: 'Celebrations Gift Pack', variant: '183 g', basePrice: 150, keyword: 'chocolate' },
-    { brand: 'Haldiram', model: 'Aloo Bhujia', variant: '200 g', basePrice: 55, keyword: 'snacks' },
-    { brand: 'Fortune', model: 'Refined Mustard Oil', variant: '1 L', basePrice: 145, keyword: 'oil' }
-  ]
+const categoryData = {
+  'mobiles': {
+    brands: ['Apple', 'Samsung', 'OnePlus', 'Google', 'Xiaomi', 'Vivo', 'Oppo'],
+    basePrice: 15000, maxPrice: 150000,
+    specs: {
+      'RAM': ['4GB', '6GB', '8GB', '12GB', '16GB'],
+      'Storage': ['64GB', '128GB', '256GB', '512GB', '1TB'],
+      'Color': ['Midnight Black', 'Pearl White', 'Ocean Blue', 'Titanium Gray', 'Rose Gold']
+    },
+    images: [
+      'https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/k/l/l/-original-imagtc5fz9spysyk.jpeg',
+      'https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/h/i/x/-original-imagtc5qxmwqz2zn.jpeg'
+    ],
+    generateTitle: (brand, color) => `${brand} Galaxy X Pro (${color})`
+  },
+  'electronics': {
+    brands: ['Sony', 'Dell', 'HP', 'Lenovo', 'ASUS', 'Acer', 'Apple'],
+    basePrice: 25000, maxPrice: 250000,
+    specs: {
+      'RAM': ['8GB', '16GB', '32GB'],
+      'Storage': ['256GB SSD', '512GB SSD', '1TB SSD'],
+      'Color': ['Silver', 'Space Gray', 'Matte Black', 'White']
+    },
+    images: [
+      'https://rukminim2.flixcart.com/image/416/416/xif0q/computer/v/d/b/15-fc0028au-thin-and-light-laptop-hp-original-imagp8nzgfbbgg8q.jpeg',
+      'https://rukminim2.flixcart.com/image/416/416/xif0q/computer/9/o/l/-original-imagx733c3a9z86x.jpeg'
+    ],
+    generateTitle: (brand, color) => `${brand} Pavilion/ZenBook Ultralight Laptop (${color})`
+  },
+  'fashion': {
+    brands: ['Nike', 'Adidas', 'Puma', 'Reebok', "Levi's", 'H&M', 'Zara'],
+    basePrice: 799, maxPrice: 14999,
+    specs: {
+      'Size': ['S', 'M', 'L', 'XL', 'XXL', 'UK 7', 'UK 8', 'UK 9'],
+      'Color': ['Black', 'White', 'Navy Blue', 'Red', 'Olive Green', 'Yellow'],
+      'Material': ['Cotton', 'Polyester', 'Leather', 'Denim']
+    },
+    images: [
+      'https://rukminim2.flixcart.com/image/416/416/xif0q/vest/2/y/x/s-8905206254707-jockey-original-imaghkfz2f8gqgxz.jpeg',
+      'https://rukminim2.flixcart.com/image/416/416/xif0q/shoe/c/f/4/-original-imaggcbmqzzv2cyn.jpeg'
+    ],
+    generateTitle: (brand, color) => `${brand} Premium Comfort Wear (${color})`
+  },
+  'home-kitchen': {
+    brands: ['Pigeon', 'Prestige', 'Hawkins', 'Cello', 'Milton', 'Wonderchef', 'Butterfly'],
+    basePrice: 499, maxPrice: 12000,
+    specs: {
+      'Material': ['Stainless Steel', 'Glass', 'Plastic', 'Ceramic', 'Aluminium'],
+      'Color': ['Silver', 'Black', 'Red', 'Blue', 'Transparent'],
+      'Capacity': ['500ml', '1L', '2L', '5L']
+    },
+    images: [
+      'https://rukminim2.flixcart.com/image/416/416/xif0q/water-bottle/w/4/5/750-stainless-steel-fridge-water-bottle-silver-pack-of-3-original-imah4ggtuhhh8g4q.jpeg',
+      'https://rukminim2.flixcart.com/image/416/416/xif0q/cookware-set/k/k/2/3-classic-non-stick-ptfe-coated-cookware-set-3-pc-s-pan-and-kadhai-original-imahfxgftbzz2v8h.jpeg'
+    ],
+    generateTitle: (brand, color) => `${brand} Heavy Duty Kitchen Essential (${color})`
+  },
+  'appliances': {
+    brands: ['Samsung', 'LG', 'Whirlpool', 'Bosch', 'IFB', 'Haier', 'Voltas'],
+    basePrice: 15000, maxPrice: 85000,
+    specs: {
+      'Energy Rating': ['5 Star', '4 Star', '3 Star', '2 Star'],
+      'Color': ['Silver', 'White', 'Black Stainless', 'Maroon'],
+      'Capacity': ['190L', '250L', '300L', '6kg', '7kg', '8kg', '1 Ton', '1.5 Ton']
+    },
+    images: [
+      'https://rukminim2.flixcart.com/image/416/416/xif0q/air-conditioner-new/v/f/t/-original-imahatnt7y2zkxfa.jpeg',
+      'https://rukminim2.flixcart.com/image/416/416/xif0q/refrigerator-new/j/y/2/-original-imagx733c3a9z86x.jpeg'
+    ],
+    generateTitle: (brand, color) => `${brand} Smart Digital Inverter Appliance (${color})`
+  },
+  'beauty': {
+    brands: ["L'Oreal", 'Maybelline', 'Lakme', 'MAC', 'Plum', 'Nivea', 'Dove'],
+    basePrice: 199, maxPrice: 4999,
+    specs: {
+      'Skin Type': ['All Skin Types', 'Oily Skin', 'Dry Skin', 'Sensitive Skin'],
+      'Size': ['50ml', '100ml', '250ml', '500ml'],
+      'Type': ['Face Cream', 'Serum', 'Lotion', 'Shampoo']
+    },
+    images: [
+      'https://rukminim2.flixcart.com/image/416/416/xif0q/face-wash/v/4/u/-original-imagg2gffqgszxgs.jpeg',
+      'https://rukminim2.flixcart.com/image/416/416/xif0q/moisturizer-cream/b/l/w/-original-imagx2f5gbbnzh8j.jpeg'
+    ],
+    generateTitle: (brand, type) => `${brand} Advanced Care Formula (${type})`
+  },
+  'toys-baby': {
+    brands: ['Lego', 'Hasbro', 'Mattel', 'Fisher-Price', 'Hot Wheels', 'Barbie', 'MeeMee'],
+    basePrice: 299, maxPrice: 8999,
+    specs: {
+      'Age Group': ['0-2 Years', '3-5 Years', '6-8 Years', '9-12 Years', '12+ Years'],
+      'Material': ['Plastic', 'Wood', 'Plush/Fabric', 'Metal'],
+      'Color': ['Multicolor', 'Blue', 'Pink', 'Red', 'Yellow']
+    },
+    images: [
+      'https://rukminim2.flixcart.com/image/416/416/xif0q/puzzle/u/p/a/1-kids-educational-wooden-puzzle-toy-game-pegbound-original-imaghfz4zhzx2h6x.jpeg',
+      'https://rukminim2.flixcart.com/image/416/416/xif0q/remote-control-toy/d/7/o/1-exceed-helicopter-white-toys-for-kids-flying-helicopter-with-original-imahfxgftbzz2v8h.jpeg'
+    ],
+    generateTitle: (brand, age) => `${brand} Premium Learning/Activity Toy (${age})`
+  },
+  'sports-fitness': {
+    brands: ['Yonex', 'Nivia', 'Cosco', 'Decathlon', 'Kipsta', 'CultSport', 'SG'],
+    basePrice: 399, maxPrice: 15999,
+    specs: {
+      'Sport': ['Cricket', 'Football', 'Badminton', 'Tennis', 'Gym'],
+      'Color': ['Neon Green', 'Red', 'White', 'Black', 'Blue'],
+      'Size': ['Free Size', 'Size 5', 'Size 4']
+    },
+    images: [
+      'https://rukminim2.flixcart.com/image/416/416/xif0q/ball/l/o/l/350-400-standard-size-5-football-1-12-nivia-original-imagp8nzgfbbgg8q.jpeg',
+      'https://rukminim2.flixcart.com/image/416/416/xif0q/racquet/s/k/1/-original-imaggcbmqzzv2cyn.jpeg'
+    ],
+    generateTitle: (brand, sport) => `${brand} Pro Performance Gear for ${sport}`
+  },
+  'books': {
+    brands: ['Penguin', 'HarperCollins', 'Oxford', 'Bloomsbury', 'Arihant', 'Simon & Schuster', 'Macmillan'],
+    basePrice: 99, maxPrice: 2499,
+    specs: {
+      'Genre': ['Fiction', 'Non-Fiction', 'Biography', 'Educational', 'Sci-Fi', 'Romance'],
+      'Language': ['English', 'Hindi', 'Spanish', 'French'],
+      'Binding': ['Paperback', 'Hardcover'],
+    },
+    images: [
+      'https://rukminim2.flixcart.com/image/416/416/xif0q/book/1/u/1/atomic-habits-original-imagp8nzgfbbgg8q.jpeg', // Fallback cover
+      'https://rukminim2.flixcart.com/image/416/416/xif0q/book/h/k/m/harry-potter-and-the-philosopher-s-stone-original-imaggcbmqzzv2cyn.jpeg' // Fallback cover
+    ],
+    generateTitle: (brand, genre) => `${brand} Bestseller Selection (${genre})`
+  },
+  'groceries': {
+    brands: ['Tata', 'Aashirvaad', 'Maggi', 'Patanjali', 'Amul', 'Britannia', 'Nestle'],
+    basePrice: 40, maxPrice: 2500,
+    specs: {
+      'Dietary Preference': ['Vegetarian', 'Non-Vegetarian', 'Vegan', 'Gluten Free'],
+      'Weight': ['100g', '500g', '1kg', '5kg', '10kg'],
+      'Package Type': ['Pouch', 'Box', 'Bottle', 'Tin']
+    },
+    images: [
+      'https://rukminim2.flixcart.com/image/416/416/xif0q/pulse/j/e/r/-original-imagp8nzgfbbgg8q.jpeg',
+      'https://rukminim2.flixcart.com/image/416/416/xif0q/snack-savourie/v/p/d/-original-imaggcbmqzzv2cyn.jpeg'
+    ],
+    generateTitle: (brand, weight) => `${brand} Everyday Essential Pack (${weight})`
+  }
 };
 
-// ... more templates will be added during generation to reach 1000
+function getRandomArr(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function generateSpecs(categorySlug, product) {
-  const common = {
-    'Warranty': '1 Year Brand Warranty',
-    'Return Policy': '7 Days Replacement Policy',
-    'Country of Origin': 'India'
-  };
-
-  if (categorySlug === 'mobiles') {
-    return {
-      ...common,
-      'Model Name': product.model,
-      'Display Size': '6.7 inch',
-      'RAM': '8 GB / 12 GB',
-      'Internal Storage': '128 GB / 256 GB',
-      'Primary Camera': '50MP + 12MP + 10MP',
-      'Secondary Camera': '12MP Front',
-      'Processor': 'Octa Core',
-      'Battery Capacity': '5000 mAh'
-    };
-  }
-  if (categorySlug === 'electronics') {
-    return {
-      ...common,
-      'Model Name': product.model,
-      'Features': product.specs,
-      'Connectivity': 'Bluetooth, Wi-Fi',
-      'Power Source': 'Battery/DC'
-    };
-  }
-  if (categorySlug === 'fashion') {
-    return {
-      ...common,
-      'Material': product.material || 'Cotton Mix',
-      'Fit': 'Regular Fit',
-      'Occasion': 'Casual',
-      'Type': 'Stylish'
-    };
-  }
-  if (categorySlug === 'groceries') {
-    return {
-      ...common,
-      'Weight': product.variant || '500g',
-      'Shelf Life': '6 Months',
-      'Container Type': 'Pouch/Box',
-      'Ingredients': 'High quality ingredients sourced locally'
-    };
-  }
-  return common;
-}
-
-const highFidelityImages = {
-  apple_iphone: [
-    'photo-1695048133142-1a20484d2569',
-    'photo-1591337676887-a217a6970a8a',
-    'photo-1621330396173-e41b1ae07d5b',
-    'photo-1510557880182-3d4d3cba35a5'
-  ],
-  samsung_phone: [
-    'photo-1610945265064-0e34e5519bbf',
-    'photo-1678911820864-e2c567c655d7',
-    'photo-1610945415295-d9bbf067e59c'
-  ],
-  laptop: [
-    'photo-1517336714460-4c7b8097d51b',
-    'photo-1496181133206-80ce9b88a853',
-    'photo-1541807084-5c52b6b3adef'
-  ],
-  headphones: [
-    'photo-1505740420928-5e560c06d30e',
-    'photo-1546435770-a3e426bb47a7',
-    'photo-1583394838336-acd977736f90'
-  ],
-  shoes: [
-    'photo-1542291026-7eec264c274d',
-    'photo-1606107557195-0e29a4b5b4aa',
-    'photo-1491553895911-0055eca6402d'
-  ],
-  watch: [
-    'photo-1523275335684-37898b6baf30',
-    'photo-1542496658-e33a6d0d50f6',
-    'photo-1508685096489-77a5ad30a04f'
-  ],
-  noodles: [
-    'photo-1569718212165-3a8278d5f624',
-    'photo-1612927621455-d02a02e0a0a1',
-    'photo-1552611052-33e04de081de'
-  ],
-  tea_coffee: [
-    'photo-1544787210-28271393638c',
-    'photo-1595981267035-7b04ec82237e',
-    'photo-1517686469429-8bdb88b9f907'
-  ]
-};
-
-function getProductImages(slug, brand, keyword, seed) {
-  const brandLower = brand.toLowerCase();
-  const keywordLower = (keyword || '').toLowerCase();
-  
-  let ids = [];
-  if (brandLower === 'apple' && (slug === 'mobiles' || keywordLower.includes('phone'))) {
-    ids = highFidelityImages.apple_iphone;
-  } else if (brandLower === 'samsung' && (slug === 'mobiles' || keywordLower.includes('phone'))) {
-    ids = highFidelityImages.samsung_phone;
-  } else if (keywordLower.includes('laptop')) {
-    ids = highFidelityImages.laptop;
-  } else if (keywordLower.includes('headphones')) {
-    ids = highFidelityImages.headphones;
-  } else if (keywordLower.includes('shoes')) {
-    ids = highFidelityImages.shoes;
-  } else if (keywordLower.includes('watch')) {
-    ids = highFidelityImages.watch;
-  } else if (keywordLower.includes('noodles')) {
-    ids = highFidelityImages.noodles;
-  } else if (keywordLower.includes('tea') || keywordLower.includes('coffee')) {
-    ids = highFidelityImages.tea_coffee;
-  }
-
-  if (ids.length > 0) {
-    return ids.map(id => `https://images.unsplash.com/${id}?w=800&q=80`);
-  }
-
-  // Fallback to highly specific loremflickr
-  return [
-    `https://loremflickr.com/800/800/${brand},${keyword || slug}?lock=${seed}`,
-    `https://loremflickr.com/800/800/${keyword || slug}?lock=${seed + 500}`,
-    `https://loremflickr.com/800/800/product?lock=${seed + 1000}`
-  ];
-}
-
 async function main() {
-  console.log('🌱 Starting Advanced High-Fidelity Seeding (V2: Real Images)...');
+  console.log('🌱 Starting Dynamic 6-Brand-Per-Category Extravaganza Seeding...');
 
-  // Reset DB
   await prisma.wishlist.deleteMany();
   await prisma.orderItem.deleteMany();
   await prisma.order.deleteMany();
@@ -204,7 +175,7 @@ async function main() {
   await prisma.cart.deleteMany();
   await prisma.product.deleteMany();
   await prisma.category.deleteMany();
-  console.log('🗑️  Cleared existing data.');
+  console.log('🗑️ Cleared existing data.');
 
   const createdCategories = {};
   for (const cat of categories) {
@@ -214,85 +185,103 @@ async function main() {
   }
 
   const productsToCreate = [];
-  const TOTAL_GOAL = 1000;
-  let count = 0;
+  const TOTAL_PER_CATEGORY = 50; // 50 items per category * 10 = 500 items. That guarantees many brand distributions.
+  
+  for (const cat of categories) {
+    const data = categoryData[cat.slug];
+    const categoryId = createdCategories[cat.slug];
 
-  // 1. Seed from real templates first
-  for (const [slug, templates] of Object.entries(productTemplates)) {
-    const categoryId = createdCategories[slug];
-    for (const t of templates) {
-      const price = t.basePrice;
-      const discountPct = getRandomInt(5, 40);
-      const discountPrice = Math.floor(price * (1 - discountPct / 100));
+    // Ensure every brand gets at least a few products explicitly
+    for (const brand of data.brands) {
+      for (let i = 0; i < 5; i++) {
+        // Generate dynamic spec map
+        const specMap = {};
+        const specKeys = Object.keys(data.specs);
+        
+        let colorOrDynamic = '';
+        for (const sk of specKeys) {
+          specMap[sk] = getRandomArr(data.specs[sk]);
+          if (sk === 'Color' || sk === 'Size' || sk === 'Type' || sk === 'Genre' || sk === 'Sport') {
+            colorOrDynamic = specMap[sk];
+          }
+        }
+
+        const price = getRandomInt(data.basePrice, data.maxPrice);
+        const discountPct = getRandomInt(5, 60);
+        const discountPrice = Math.floor(price * (1 - discountPct / 100));
+
+        productsToCreate.push({
+          title: data.generateTitle(brand, colorOrDynamic || 'Standard'),
+          description: `Experience the cutting edge quality with this premium product from ${brand}. Features include highly durable build and incredible value.`,
+          price,
+          discountPrice,
+          discountPct,
+          stock: getRandomInt(10, 500),
+          rating: parseFloat((Math.random() * (5 - 3.5) + 3.5).toFixed(1)),
+          reviewCount: getRandomInt(10, 5000),
+          brand: brand,
+          categoryId,
+          isFeatured: Math.random() > 0.8,
+          images: JSON.stringify([getRandomArr(data.images), getRandomArr(data.images)]),
+          specifications: JSON.stringify(specMap)
+        });
+      }
+    }
+
+    // Fill the rest randomly
+    while (productsToCreate.length % TOTAL_PER_CATEGORY !== 0 || productsToCreate.length === 0) {
+      const brand = getRandomArr(data.brands);
+      const specMap = {};
+      const specKeys = Object.keys(data.specs);
       
-      const title = slug === 'mobiles' 
-        ? `${t.brand} ${t.model} (${t.colors[0]}, 128 GB)`
-        : `${t.brand} ${t.model} ${t.variant || t.specs || ''}`;
+      let colorOrDynamic = '';
+      for (const sk of specKeys) {
+        specMap[sk] = getRandomArr(data.specs[sk]);
+        if (sk === 'Color' || sk === 'Size' || sk === 'Type' || sk === 'Genre' || sk === 'Sport' || sk === 'Weight') {
+          colorOrDynamic = specMap[sk];
+        }
+      }
+
+      const price = getRandomInt(data.basePrice, data.maxPrice);
+      const discountPct = getRandomInt(5, 60);
+      const discountPrice = Math.floor(price * (1 - discountPct / 100));
 
       productsToCreate.push({
-        title,
-        description: `Experience the excellence of ${t.brand} with the ${t.model}. Built with premium materials and cutting-edge technology to deliver unmatched performance and style. A top choice for modern consumers.`,
+        title: data.generateTitle(brand, colorOrDynamic || 'Deluxe'),
+        description: `Experience the cutting edge quality with this premium product from ${brand}. Includes top-tier components.`,
         price,
         discountPrice,
         discountPct,
-        stock: getRandomInt(10, 200),
-        rating: parseFloat((Math.random() * (5 - 3.8) + 3.8).toFixed(1)),
-        reviewCount: getRandomInt(100, 50000),
-        brand: t.brand,
+        stock: getRandomInt(10, 500),
+        rating: parseFloat((Math.random() * (5 - 3.5) + 3.5).toFixed(1)),
+        reviewCount: getRandomInt(10, 5000),
+        brand: brand,
         categoryId,
-        isFeatured: count < 20,
-        images: JSON.stringify(getProductImages(slug, t.brand, t.keyword, count)),
-        specifications: JSON.stringify(generateSpecs(slug, t))
+        isFeatured: Math.random() > 0.9,
+        images: JSON.stringify([getRandomArr(data.images)]),
+        specifications: JSON.stringify(specMap)
       });
-      count++;
     }
+
+    console.log(`Generated ${data.brands.length} explicit brands for ${cat.name}`);
   }
 
-  // 2. Fill the rest with high-quality variations
-  const slugs = Object.keys(createdCategories);
-  while (count < TOTAL_GOAL) {
-    const slug = slugs[getRandomInt(0, slugs.length - 1)];
-    const templates = productTemplates[slug] || productTemplates['fashion']; // fallback
-    const t = templates[getRandomInt(0, templates.length - 1)];
-    const categoryId = createdCategories[slug];
-    
-    // Create a variation
-    const variation = getRandomInt(1, 9999);
-    const price = slug === 'groceries' ? getRandomInt(20, 999) : getRandomInt(499, 49999);
-    const discountPct = getRandomInt(10, 60);
-    const discountPrice = Math.floor(price * (1 - discountPct / 100));
-
-    productsToCreate.push({
-      title: `${t.brand} ${t.model} Edition ${variation}`,
-      description: `High-quality ${t.brand} product from the ${slug} collection. Durable, stylish, and highly rated for its utility and performance.`,
-      price,
-      discountPrice,
-      discountPct,
-      stock: getRandomInt(5, 500),
-      rating: parseFloat((Math.random() * (5 - 3.5) + 3.5).toFixed(1)),
-      reviewCount: getRandomInt(50, 25000),
-      brand: t.brand,
-      categoryId,
-      isFeatured: false,
-      images: JSON.stringify(getProductImages(slug, t.brand, t.keyword, count)),
-      specifications: JSON.stringify(generateSpecs(slug, t))
-    });
-    count++;
-
-    if (productsToCreate.length >= 100) {
-      await prisma.product.createMany({ data: productsToCreate });
-      console.log(`🚀 Created block of ${productsToCreate.length} products (Total: ${count})`);
-      productsToCreate.length = 0;
-    }
+  // Insert in batches
+  const BATCH_SIZE = 100;
+  for (let i = 0; i < productsToCreate.length; i += BATCH_SIZE) {
+    const chunk = productsToCreate.slice(i, i + BATCH_SIZE);
+    await prisma.product.createMany({ data: chunk });
+    console.log(`🚀 Inserted ${chunk.length} items (Total: ${i + chunk.length})`);
   }
 
-  if (productsToCreate.length > 0) {
-    await prisma.product.createMany({ data: productsToCreate });
-  }
-
-  console.log(`\n🎉 Seeded ${count} high-fidelity products successfully.`);
+  console.log(`🎉 Seeded ${productsToCreate.length} advanced products successfully!`);
 }
 
 main()
-  .catch(e => console.error(e))
-  .finally(() => prisma.$disconnect());
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

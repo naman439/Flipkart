@@ -10,7 +10,10 @@ export default function CategorySidebar({
   onRatingChange, 
   brands = [], 
   selectedBrands = [], 
-  onBrandToggle, 
+  onBrandToggle,
+  dynamicSpecs = {},
+  selectedSpecs = {},
+  onSpecToggle,
   minPrice, 
   maxPrice, 
   onPriceChange, 
@@ -92,6 +95,31 @@ export default function CategorySidebar({
           </div>
         </div>
       )}
+
+      {/* Dynamic Specifications */}
+      {Object.entries(dynamicSpecs).map(([specName, specValues]) => {
+        if (!specValues || specValues.length === 0) return null;
+        return (
+          <div key={specName} className="sidebar-section">
+            <p className="sidebar-section-title">{specName}</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 200, overflowY: 'auto' }} className="no-scrollbar">
+              {specValues.map((val) => {
+                const isSelected = selectedSpecs[specName]?.includes(val);
+                return (
+                  <label key={val} className="sidebar-option">
+                    <input
+                      type="checkbox"
+                      checked={!!isSelected}
+                      onChange={() => onSpecToggle(specName, val)}
+                    />
+                    <span style={{ fontSize: 13 }}>{val}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
 
       {/* Customer Rating */}
       <div className="sidebar-section">

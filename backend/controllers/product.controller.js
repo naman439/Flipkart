@@ -73,6 +73,25 @@ const getProducts = async (req, res) => {
     where.rating = { gte: parseFloat(minRating) };
   }
 
+  // Handle dynamic specification filters (anything not standard)
+  const standardParams = ['search', 'category', 'sort', 'order', 'page', 'limit', 'minPrice', 'maxPrice', 'brand', 'minRating', 'isFeatured'];
+  for (const [key, value] of Object.entries(req.query)) {
+    if (!standardParams.includes(key)) {
+      // It's a dynamic spec like ?Color=Red or ?RAM=8GB
+      // Since specs are stored as JSON string, we match substring. 
+      // e.g., "Color":"Red"
+      
+      const specArr = [];
+      const values = value.split(','); // handle comma separated values
+      for (const val of values) {
+        specArr.push({ specifications: { contains: `"${key}":"${val}"` } });
+      }
+      
+      if (!where.AND) where.AND = [];
+      where.AND.push({ OR: specArr });
+    }
+  }
+
   // Build ORDER BY
   const validSortFields = ['price', 'discountPrice', 'rating', 'createdAt', 'title'];
   const sortField = validSortFields.includes(sort) ? sort : 'createdAt';
@@ -197,4 +216,61 @@ const getBrands = async (req, res) => {
   res.json({ success: true, data: brands });
 };
 
-module.exports = { getProducts, getProductById, getFeaturedProducts, getCategories, getBrands };
+/**
+ * GET /api/products/filters
+ * Extract all unique brands and dynamic specifications for a given category
+ */
+const getDynamicFilters = async (req, res) => {
+  const { category, search } = req.query;
+  
+  const where = {};
+  if (category) {
+    where.category = { slug: category };
+  }
+  
+  if (search) {
+    where.OR = [
+      { title: { contains: search } },
+      { description: { contains: search } },
+      { category: { is: { name: { contains: search } } } }
+    ];
+  }
+
+  // Only grab what we need to build filters
+  const products = await prisma.product.findMany({
+    where,
+    select: { brand: true, specifications: true }
+  });
+
+  const brands = new Set();
+  const specsMap = {};
+
+  products.forEach(p => {
+    if (p.brand) brands.add(p.brand);
+    if (p.specifications) {
+      try {
+        const specs = JSON.parse(p.specifications);
+        for (const [key, value] of Object.entries(specs)) {
+          if (!specsMap[key]) specsMap[key] = new Set();
+          specsMap[key].add(value);
+        }
+      } catch (e) {}
+    }
+  });
+
+  // Convert Sets to Arrays
+  const formattedSpecs = {};
+  for (const [k, v] of Object.entries(specsMap)) {
+    formattedSpecs[k] = Array.from(v).sort();
+  }
+
+  res.json({
+    success: true,
+    data: {
+      brands: Array.from(brands).sort(),
+      specifications: formattedSpecs
+    }
+  });
+};
+
+module.exports = { getProducts, getProductById, getFeaturedProducts, getCategories, getBrands, getDynamicFilters };

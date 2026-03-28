@@ -29,3 +29,9 @@ export const getBrands = async () => {
   const res = await api.get('/products/brands');
   return res.data;
 };
+
+/** Fetch dynamic specs and brands for a specific category or search */
+export const getDynamicFilters = async (params = {}) => {
+  const res = await api.get('/products/filters', { params });
+  return res.data;
+};
