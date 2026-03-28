@@ -4,48 +4,166 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+// Inline SVG icons matching Flipkart's styling from the user reference
+const NAV_ICONS = {
+  'for-you': (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <rect x="0" y="0" width="32" height="32" rx="8" fill="#e1edff"/>
+      <path d="M11 11V8a5 5 0 0110 0v3" stroke="#212121" strokeWidth="1.8"/>
+      <rect x="6" y="11" width="20" height="15" rx="3" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+      <path d="M12 16a4 4 0 008 0" stroke="#FFC200" strokeWidth="2" strokeLinecap="round"/>
+    </svg>
+  ),
+  'fashion': (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <path d="M11 5L6 11H11V25H21V11H26L21 5H18C18 6.66 16.66 8 15 8C13.34 8 12 6.66 12 5H11Z" fill="#fff" stroke="#212121" strokeWidth="1.8" strokeLinejoin="round"/>
+      <path d="M12 5C12 6.66 13.34 8 15 8C16.66 8 18 6.66 18 5" fill="#FFC200" stroke="#212121" strokeWidth="1.8" />
+    </svg>
+  ),
+  'mobiles': (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <rect x="8" y="3" width="16" height="26" rx="3" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+      <rect x="10" y="5" width="12" height="19" rx="1" fill="#FFC200"/>
+      <circle cx="16" cy="26" r="1.5" fill="#212121"/>
+    </svg>
+  ),
+  'beauty': (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <rect x="13" y="14" width="6" height="8" fill="#FFC200" stroke="#212121" strokeWidth="1.8"/>
+      <path d="M14 14V7c0-1.5 1-3 2-3s2 1.5 2 3v7h-4z" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+      <rect x="12" y="22" width="8" height="4" rx="1" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+    </svg>
+  ),
+  'electronics': (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <rect x="4" y="7" width="20" height="14" rx="2" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+      <rect x="6" y="9" width="16" height="10" fill="#FFC200"/>
+      <path d="M11 21v4m6-4v4m-6 0h6" stroke="#212121" strokeWidth="1.8"/>
+      <path d="M22 18a6 6 0 016-6v5" stroke="#212121" strokeWidth="1.8" fill="none"/>
+      <circle cx="28" cy="17" r="1.5" fill="#212121"/>
+    </svg>
+  ),
+  'home': (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <path d="M7 16L16 4l9 12H7z" fill="#FFC200" stroke="#212121" strokeLinejoin="round" strokeWidth="1.8"/>
+      <path d="M16 16v12m-5 0h10" stroke="#212121" strokeWidth="1.8"/>
+    </svg>
+  ),
+  'appliances': (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <rect x="3" y="7" width="26" height="18" rx="2" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+      <rect x="5" y="9" width="16" height="14" rx="1" fill="#FFC200"/>
+      <circle cx="25" cy="12" r="1.5" fill="#212121"/>
+      <circle cx="25" cy="17" r="1.5" fill="#212121"/>
+      <circle cx="25" cy="22" r="1.5" fill="#212121"/>
+    </svg>
+  ),
+  'toys': (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <circle cx="10" cy="8" r="4" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+      <circle cx="22" cy="8" r="4" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+      <circle cx="16" cy="16" r="7" fill="#FFC200" stroke="#212121" strokeWidth="1.8"/>
+      <circle cx="13" cy="14" r="1.5" fill="#212121"/>
+      <circle cx="19" cy="14" r="1.5" fill="#212121"/>
+      <path d="M16 19c-1.5 0-3-.5-3-1h6c0 .5-1.5 1-3 1z" fill="#212121"/>
+      <circle cx="16" cy="24" r="5" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+    </svg>
+  ),
+  'food': (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <path d="M10 8v14a2 2 0 002 2h8a2 2 0 002-2V8H10z" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+      <rect x="11" y="4" width="10" height="4" rx="1" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+      <rect x="10" y="12" width="12" height="7" fill="#FFC200" stroke="#212121" strokeWidth="1.8"/>
+    </svg>
+  ),
+  'auto': (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <path d="M16 4a9 9 0 00-9 9v10h18V13a9 9 0 00-9-9z" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+      <path d="M7 14a8 8 0 0111-5v9H7v-4z" fill="#FFC200" stroke="#212121" strokeWidth="1.8"/>
+      <path d="M20 14v8m-5-8v8" stroke="#212121" strokeWidth="1.8"/>
+    </svg>
+  ),
+  '2-wheelers': (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <circle cx="8" cy="21" r="5" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+      <circle cx="24" cy="21" r="5" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+      <path d="M8 21L13 11H20L24 21" fill="#FFC200" stroke="#212121" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M16 11V6H21L24 11" stroke="#212121" strokeWidth="1.8" strokeLinecap="round"/>
+      <circle cx="8" cy="21" r="1.5" fill="#212121"/>
+      <circle cx="24" cy="21" r="1.5" fill="#212121"/>
+    </svg>
+  ),
+  'sports': (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <rect x="8" y="8" width="6" height="16" rx="1" fill="#fff" stroke="#212121" strokeWidth="1.8" transform="rotate(-45 8 8)"/>
+      <rect x="5" y="24" width="3" height="7" rx="1" fill="#212121" transform="rotate(-45 5 24)"/>
+      <circle cx="24" cy="20" r="5" fill="#FFC200" stroke="#212121" strokeWidth="1.8"/>
+    </svg>
+  ),
+  'books': (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <rect x="7" y="5" width="16" height="22" rx="1" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+      <rect x="7" y="5" width="5" height="22" fill="#FFC200" stroke="#212121" strokeWidth="1.8"/>
+      <path d="M15 11h5M15 15h5M15 19h3" stroke="#212121" strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  ),
+  'furniture': (
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <rect x="4" y="16" width="24" height="7" rx="2" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+      <rect x="6" y="9" width="20" height="7" rx="2" fill="#FFC200" stroke="#212121" strokeWidth="1.8"/>
+      <line x1="6" y1="23" x2="6" y2="28" stroke="#212121" strokeWidth="1.8" strokeLinecap="round"/>
+      <line x1="26" y1="23" x2="26" y2="28" stroke="#212121" strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  ),
+};
+
+const categories = [
+  { name: 'For You',       slug: '',                 iconKey: 'for-you' },
+  { name: 'Fashion',       slug: 'fashion',          iconKey: 'fashion' },
+  { name: 'Mobiles',       slug: 'mobiles',          iconKey: 'mobiles' },
+  { name: 'Beauty',        slug: 'beauty',           iconKey: 'beauty' },
+  { name: 'Electronics',   slug: 'electronics',      iconKey: 'electronics' },
+  { name: 'Home',          slug: 'home-kitchen',     iconKey: 'home' },
+  { name: 'Appliances',    slug: 'appliances',       iconKey: 'appliances' },
+  { name: 'Toys, ba...',   slug: 'toys-baby',        iconKey: 'toys' },
+  { name: 'Food & H...',   slug: 'groceries',        iconKey: 'food' },
+  { name: 'Auto Acc...',   slug: 'auto-accessories', iconKey: 'auto' },
+  { name: '2 Wheele...',   slug: '2-wheelers',       iconKey: '2-wheelers' },
+  { name: 'Sports & ...',  slug: 'sports-fitness',   iconKey: 'sports' },
+  { name: 'Books & ...',   slug: 'books',            iconKey: 'books' },
+  { name: 'Furniture',     slug: 'furniture',        iconKey: 'furniture' },
+];
+
 export default function CategoryNav() {
   const pathname = usePathname();
-
-  const categories = [
-    { name: 'For You', slug: '', icon: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=128&q=80' },
-    { name: 'Fashion', slug: 'fashion', icon: 'https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=128&q=80' },
-    { name: 'Mobiles', slug: 'mobiles', icon: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=128&q=80' },
-    { name: 'Beauty', slug: 'beauty', icon: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=128&q=80' },
-    { name: 'Electronics', slug: 'electronics', icon: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=128&q=80' },
-    { name: 'Home', slug: 'home-kitchen', icon: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=128&q=80' },
-    { name: 'Appliances', slug: 'appliances', icon: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=128&q=80' },
-    { name: 'Toys, Baby...', slug: 'toys-baby', icon: 'https://images.unsplash.com/photo-1532330393533-443990a51d10?auto=format&fit=crop&w=128&q=80' },
-    { name: 'Food & Health', slug: 'groceries', icon: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=128&q=80' },
-    { name: 'Auto Access...', slug: 'auto-accessories', icon: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=128&q=80' },
-    { name: '2 Wheelers', slug: '2-wheelers', icon: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=128&q=80' },
-    { name: 'Sports & Fit...', slug: 'sports-fitness', icon: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=128&q=80' },
-    { name: 'Books & More', slug: 'books', icon: 'https://images.unsplash.com/photo-1524578271613-d550eacf6090?auto=format&fit=crop&w=128&q=80' },
-    { name: 'Furniture', slug: 'furniture', icon: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=128&q=80' }
-  ];
-
   if (pathname.includes('/checkout')) return null;
 
   return (
-    <div style={{ background: 'white', boxShadow: '0 1px 1px 0 rgba(0,0,0,.16)', marginBottom: 8, marginTop: 4 }}>
-      <div className="main-container no-scrollbar" style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 10px', overflowX: 'auto', gap: 16 }}>
+    <div style={{ background: 'white', borderBottom: '1px solid #e0e0e0', marginBottom: 8, padding: '0 8px' }}>
+      <div
+        className="main-container no-scrollbar"
+        style={{ display: 'flex', justifyContent: 'space-between', overflowX: 'auto', alignItems: 'flex-end', gap: 4 }}
+      >
         {categories.map((cat, idx) => {
-          const isActive = pathname === `/categories/${cat.slug}` || (cat.slug === '' && pathname === '/');
-          
+          const isActive =
+            pathname === `/categories/${cat.slug}` || (cat.slug === '' && pathname === '/');
           return (
-            <Link 
-              key={idx} 
-              href={cat.slug === '' ? '/' : `/categories/${cat.slug}`} 
-              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, textDecoration: 'none', minWidth: 70 }}
+            <Link
+              key={idx}
+              href={cat.slug === '' ? '/' : `/categories/${cat.slug}`}
+              style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center',
+                gap: 8, textDecoration: 'none', padding: '12px 6px 10px',
+                borderBottom: isActive ? '3px solid #2874f0' : '3px solid transparent',
+                marginBottom: '-1px', // overlap container border
+                color: '#212121', // exact Match to text styling from image
+                minWidth: '68px', flexShrink: 0,
+              }}
             >
-              <div style={{ width: 64, height: 64, borderRadius: '50%', overflow: 'hidden', padding: 2, background: isActive ? 'var(--fk-blue)' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <img 
-                  src={cat.icon} 
-                  alt={cat.name} 
-                  style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover', transition: 'transform 0.2s', transform: isActive ? 'scale(1.1)' : 'scale(1)' }} 
-                />
-              </div>
-              <span style={{ fontSize: 13, fontWeight: isActive ? 700 : 500, color: isActive ? 'var(--fk-blue)' : '#333', whiteSpace: 'nowrap' }}>
+              <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '36px', color: 'inherit' }}>
+                {NAV_ICONS[cat.iconKey]}
+              </span>
+              <span style={{ fontSize: 13, fontWeight: isActive ? 600 : 500, whiteSpace: 'nowrap', lineHeight: 1.2 }}>
                 {cat.name}
               </span>
             </Link>

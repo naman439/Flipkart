@@ -10,9 +10,12 @@ import Footer from '@/components/Footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'Flipkart Clone - India\'s Best Online Shopping',
-  description: 'Shop online at Flipkart Clone for electronics, mobiles, fashion, home appliances and more. Best deals with fast delivery.',
-  keywords: 'online shopping, electronics, mobiles, fashion, flipkart',
+  title: "Flipkart Clone - India's Best Online Shopping",
+  description: "Online Shopping — Shop Online for Mobiles, Books, Watches, Shoes at Best Prices in India",
+  icons: {
+    icon: 'https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/favicon-32557a.ico',
+    shortcut: 'https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/favicon-32557a.ico',
+  }
 };
 
 import ErrorBoundary from '@/components/ErrorBoundary';

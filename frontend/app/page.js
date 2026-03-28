@@ -6,6 +6,8 @@ import ProductCard from '@/components/ProductCard';
 import { ProductGridSkeleton } from '@/components/LoadingSkeleton';
 import { getCategories, getProducts } from '@/services/api/products.api';
 import Banner from '@/components/Banner';
+import StillLooking from '@/components/StillLooking';
+import HotPick from '@/components/HotPick';
 import { FiChevronRight } from 'react-icons/fi';
 
 const categoryIcons = {
@@ -54,6 +56,9 @@ export default function HomePage() {
         <div style={{ marginBottom: 16 }}>
           <Banner />
         </div>
+
+        <StillLooking />
+        <HotPick />
 
         {/* ── Best of Electronics ───────────────────────────────────── */}
         <section style={{ background: 'white', marginBottom: 16, boxShadow: 'var(--shadow-sm)' }}>

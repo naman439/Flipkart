@@ -1,118 +1,83 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
-const bannerSlides = [
+const banners = [
   {
-    bg: '#2874f0',
-    title: 'Samsung Galaxy S24 Ultra',
-    subtitle: 'Epic. Just like that. Exclusive launch offers.',
-    cta: 'Explore Now',
-    href: '/products?category=mobiles',
-    accent: '#fb641b',
-    image: 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&w=1600&q=80',
+    id: 1,
+    content: (
+      <div style={{ background: 'linear-gradient(to right, #f4ecd8, #e0d5b5)', height: '100%', padding: '24px 20px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: '60%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+            <span style={{ fontWeight: 800, fontSize: 20, letterSpacing: '-1px' }}>boAt</span>
+            <span style={{ fontSize: 10, fontWeight: 700, borderLeft: '1px solid #333', paddingLeft: 6, lineHeight: 1.1 }}>INDIA'S #1<br/>AUDIO BRAND</span>
+          </div>
+          <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 2 }}>boAt home audio</h2>
+          <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 6 }}>From ₹599</h2>
+          <p style={{ fontSize: 11, color: '#444' }}>Bold sound for bold celebrations</p>
+        </div>
+        <img src="https://rukminim2.flixcart.com/image/416/416/xif0q/speaker/mobile-tablet-speaker/m/6/v/stone-350-boat-original-imagy4yxgzxj5cya.jpeg" style={{ position: 'absolute', right: -20, top: '5%', height: '110%', objectFit: 'contain', mixBlendMode: 'multiply' }} alt="boAt" />
+        <span style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(255,255,255,0.7)', padding: '2px 4px', fontSize: 10, fontWeight: 700, borderRadius: 2, color: '#666' }}>AD</span>
+      </div>
+    ),
+    href: '/products?search=boat'
   },
   {
-    bg: '#172337',
-    title: 'Top Deals on Electronics',
-    subtitle: 'From Smart Televisions to Gaming Laptops.',
-    cta: 'Shop Now',
-    href: '/products?category=electronics',
-    accent: '#2874f0',
-    image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=1600&q=80',
+    id: 2,
+    content: (
+      <div style={{ background: 'linear-gradient(to bottom right, #f4fcff, #d7eeff, #9fe6f2)', height: '100%', padding: '24px 20px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: '60%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+            <span style={{ background: 'black', color: 'white', padding: '0 4px', borderRadius: 2, fontStyle: 'italic', fontWeight: 800, fontSize: 14 }}>M</span>
+            <span style={{ fontSize: 12, fontWeight: 700 }}>moto book 60 PRO | intel</span>
+          </div>
+          <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 2 }}>moto book 60 Pro</h2>
+          <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 6 }}>From ₹63,990*</h2>
+          <p style={{ fontSize: 11, color: '#444' }}>Brilliance in every frame</p>
+        </div>
+        <img src="https://rukminim2.flixcart.com/image/416/416/xif0q/computer/v/d/b/15-fc0028au-thin-and-light-laptop-hp-original-imagp8nzgfbbgg8q.jpeg" style={{ position: 'absolute', right: -10, top: '20%', height: '70%', objectFit: 'contain', mixBlendMode: 'multiply' }} alt="Laptop" />
+        <span style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(255,255,255,0.7)', padding: '2px 4px', fontSize: 10, fontWeight: 700, borderRadius: 2, color: '#666' }}>AD</span>
+        
+        {/* Mock pagination dots on the center banner to exactly match screenshot */}
+        <div style={{ position: 'absolute', bottom: 8, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 4 }}>
+          {[0,1,2,3,4].map(i => (
+            <div key={i} style={{ width: i === 0 ? 6 : 4, height: i === 0 ? 6 : 4, borderRadius: '50%', background: i === 0 ? '#333' : '#a0a0a0' }} />
+          ))}
+        </div>
+      </div>
+    ),
+    href: '/products?category=electronics'
   },
   {
-    bg: '#fb641b',
-    title: 'Fashion Extravaganza',
-    subtitle: 'Get 50-80% Off on Top Brands.',
-    cta: 'See offers',
-    href: '/products?category=fashion',
-    accent: '#ffffff',
-    image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=1600&q=80',
-  },
+    id: 3,
+    content: (
+      <div style={{ background: 'linear-gradient(to bottom, #f4f6fa, #e8edf5)', height: '100%', padding: '24px 20px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: '70%' }}>
+          <div style={{ marginBottom: 8 }}>
+             <span style={{ fontSize: 11, fontWeight: 800, color: '#d32f2f' }}>HEALTH & WELLNESS DAYS</span>
+          </div>
+          <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 2 }}>Big discounts</h2>
+          <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 6 }}>Up to 85% Off</h2>
+          <p style={{ fontSize: 11, color: '#444' }}>Protein, energy drinks & more</p>
+        </div>
+        <span style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(255,255,255,0.7)', padding: '2px 4px', fontSize: 10, fontWeight: 700, borderRadius: 2, color: '#666' }}>AD</span>
+      </div>
+    ),
+    href: '/products'
+  }
 ];
 
 export default function Banner() {
-  const [index, setIndex] = useState(0);
-
-  // Auto-rotate banner
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setIndex((i) => (i + 1) % bannerSlides.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const slide = bannerSlides[index];
-
   return (
-    <div
-      style={{
-        background: slide.bg,
-        minHeight: 280,
-        display: 'flex',
-        alignItems: 'center',
-        position: 'relative',
-        transition: 'all 0.5s ease',
-        overflow: 'hidden',
-        borderRadius: 4,
-        boxShadow: '0 1px 5px rgba(0,0,0,0.1)'
-      }}
-    >
-      {/* Background Image Layer */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        bottom: 0,
-        left: 0,
-        backgroundImage: `url(${slide.image})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        transition: 'opacity 0.5s ease',
-        zIndex: 0
-      }} />
-
-      {/* Content Layer (Overlaid if needed, or just the image) */}
-      <div style={{ padding: '0 5%', zIndex: 1, color: 'white', maxWidth: '50%' }}>
-        {/* We hide the text for now as the Flipkart banner images usually contain text */}
-        {/* <h1 style={{ fontSize: 36, fontWeight: 800, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>{slide.title}</h1> */}
-      </div>
-
-      {/* Navigation dots */}
-      <div style={{ position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 6 }}>
-        {bannerSlides.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setIndex(i)}
-            style={{
-              width: i === index ? 16 : 8,
-              height: 8,
-              borderRadius: 4,
-              border: 'none',
-              background: i === index ? 'white' : 'rgba(255,255,255,0.5)',
-              cursor: 'pointer',
-              transition: 'all 0.3s',
-            }}
-          />
+    <div style={{ position: 'relative', marginBottom: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, height: 180 }}>
+        {banners.map((b) => (
+          <Link href={b.href} key={b.id} style={{ textDecoration: 'none', color: 'inherit', borderRadius: 8, overflow: 'hidden', display: 'block', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+            {b.content}
+          </Link>
         ))}
       </div>
-
-      {/* Left/Right controls */}
-      <button
-        onClick={() => setIndex((i) => (i - 1 + bannerSlides.length) % bannerSlides.length)}
-        style={{ position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.9)', border: 'none', borderTopRightRadius: 4, borderBottomRightRadius: 4, width: 40, height: 80, cursor: 'pointer', color: '#333', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '2px 0 5px rgba(0,0,0,0.1)' }}
-      >
-        <FiChevronLeft size={24} />
-      </button>
-      <button
-        onClick={() => setIndex((i) => (i + 1) % bannerSlides.length)}
-        style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.9)', border: 'none', borderTopLeftRadius: 4, borderBottomLeftRadius: 4, width: 40, height: 80, cursor: 'pointer', color: '#333', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '-2px 0 5px rgba(0,0,0,0.1)' }}
-      >
-        <FiChevronRight size={24} />
-      </button>
     </div>
   );
 }
