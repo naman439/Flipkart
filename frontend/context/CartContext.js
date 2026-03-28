@@ -22,8 +22,8 @@ export function CartProvider({ children }) {
       setLoading(true);
       const data = await getCartApi();
       setCart(data.data);
-    } catch (err) {
-      console.error('Failed to fetch cart', err);
+    } catch (_err) {
+      console.error('Failed to fetch cart');
     } finally {
       setLoading(false);
     }
@@ -76,8 +76,8 @@ export function CartProvider({ children }) {
     try {
       await clearCartApi();
       setCart({ items: [], summary: { subtotal: 0, discount: 0, total: 0, itemCount: 0 } });
-    } catch (err) {
-      console.error(err);
+    } catch (_err) {
+      // Error logged or handled by toast
     }
   }, []);
 

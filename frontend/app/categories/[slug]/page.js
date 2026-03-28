@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { notFound } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { notFound, useParams } from 'next/navigation';
 import { getProducts } from '@/services/api/products.api';
 import CategorySubNav from '@/components/clp/CategorySubNav';
 import AdBannerSlider from '@/components/clp/AdBannerSlider';
@@ -9,8 +9,8 @@ import ThemedProductRow from '@/components/clp/ThemedProductRow';
 import ProductCard from '@/components/ProductCard';
 import { Spinner } from '@/components/LoadingSkeleton';
 
-export default function CategoryLandingPage({ params }) {
-  const { slug } = React.use(params);
+export default function CategoryLandingPage() {
+  const { slug } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 

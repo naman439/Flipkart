@@ -7,18 +7,21 @@ import toast from 'react-hot-toast';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const storedUser = localStorage.getItem('user');
+        return storedUser ? JSON.parse(storedUser) : null;
+      } catch (err) {
+        return null;
+      }
+    }
+    return null;
+  });
   const [loading, setLoading] = useState(true);
 
-  // Restore user from localStorage on mount
+  // Mark loading as false once hydration/initialization is complete
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-    if (token && storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch {}
-    }
     setLoading(false);
   }, []);
 

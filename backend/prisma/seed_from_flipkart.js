@@ -128,21 +128,39 @@ async function main() {
   for (const cat of categories) {
     console.log(`📡 Fetching real data for Category: ${cat.name}...`);
     
-    const createdCat = await prisma.category.create({
-      data: { name: cat.name, slug: cat.slug, imageUrl: '' } // Placeholder for category image
-    });
-
-    const products = await scrapeFlipkart(cat.query);
-    console.log(`✅ Found ${products.length} products for ${cat.name}`);
-
-    if (products.length > 0) {
-      const data = products.map(p => ({ ...p, categoryId: createdCat.id }));
-      await prisma.product.createMany({ data });
-      console.log(`🚀 Seeded ${products.length} real products.`);
+    // Check if category exists or create it
+    let record = await prisma.category.findUnique({ where: { slug: cat.slug } });
+    if (!record) {
+      record = await prisma.category.create({
+        data: { name: cat.name, slug: cat.slug, imageUrl: '' }
+      });
     }
 
-    // Delay to avoid being blocked
-    await new Promise(r => setTimeout(r, 2000));
+    // Empowerment: For Mobiles, fetch multiple brand queries
+    const queries = cat.slug === 'mobiles' 
+      ? ['iphone 15', 'samsung galaxy s24', 'google pixel 8', 'oneplus 12', 'poco x6', 'realme 12 pro']
+      : [cat.query];
+
+    for (const q of queries) {
+      console.log(`🔍 Scraping logic for: ${q}...`);
+      const products = await scrapeFlipkart(q);
+      console.log(`✅ Found ${products.length} products for query: ${q}`);
+
+      if (products.length > 0) {
+        const data = products.map(p => ({ ...p, categoryId: record.id }));
+        // Use create instead of createMany if needed or handle duplicates
+        for (const pd of data) {
+           try {
+             await prisma.product.create({ data: pd });
+           } catch (e) {
+             // Skip duplicates or log
+           }
+        }
+        console.log(`🚀 Seeded products for ${q}.`);
+      }
+      // Small delay between scrapes
+      await new Promise(r => setTimeout(r, 1500));
+    }
   }
 
   console.log('✨ Real-world data sync complete!');

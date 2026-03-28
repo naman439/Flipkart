@@ -51,7 +51,7 @@ const getProducts = async (req, res) => {
   }
 
   if (category) {
-    where.category = { slug: category };
+    where.category = { slug: category.toLowerCase() };
   }
 
   if (isFeatured === 'true' || isFeatured === true) {
@@ -225,7 +225,7 @@ const getDynamicFilters = async (req, res) => {
   
   const where = {};
   if (category) {
-    where.category = { slug: category };
+    where.category = { slug: category.toLowerCase() };
   }
   
   if (search) {
