@@ -71,25 +71,31 @@ export default function CategorySidebar({
                 checked={currentCategory === cat.slug}
                 onChange={() => onCategoryChange(cat.slug)}
               />
-              <span style={{ fontSize: 13 }}>{cat.name}</span>
+              <span style={{ fontSize: 13 }}>
+                {cat.name} 
+                <span style={{ color: '#878787', fontSize: 11, marginLeft: 4 }}>({cat._count?.products || 0})</span>
+              </span>
             </label>
           ))}
         </div>
       </div>
 
       {/* Brands */}
-      {brands.length > 0 && (
+      {Object.keys(brands).length > 0 && (
         <div className="sidebar-section">
           <p className="sidebar-section-title">Brand</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 250, overflowY: 'auto' }} className="no-scrollbar">
-            {brands.map((b) => (
-              <label key={b} className="sidebar-option">
+            {Object.entries(brands).sort((a,b) => b[1] - a[1]).map(([brandName, count]) => (
+              <label key={brandName} className="sidebar-option">
                 <input
                   type="checkbox"
-                  checked={selectedBrands.includes(b)}
-                  onChange={() => onBrandToggle(b)}
+                  checked={selectedBrands.includes(brandName)}
+                  onChange={() => onBrandToggle(brandName)}
                 />
-                <span style={{ fontSize: 13 }}>{b}</span>
+                <span style={{ fontSize: 13 }}>
+                  {brandName}
+                  <span style={{ color: '#878787', fontSize: 11, marginLeft: 4 }}>({count})</span>
+                </span>
               </label>
             ))}
           </div>
@@ -98,12 +104,13 @@ export default function CategorySidebar({
 
       {/* Dynamic Specifications */}
       {Object.entries(dynamicSpecs).map(([specName, specValues]) => {
-        if (!specValues || specValues.length === 0) return null;
+        const sortedValues = Object.entries(specValues).sort((a, b) => b[1] - a[1]);
+        if (sortedValues.length === 0) return null;
         return (
           <div key={specName} className="sidebar-section">
             <p className="sidebar-section-title">{specName}</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 200, overflowY: 'auto' }} className="no-scrollbar">
-              {specValues.map((val) => {
+              {sortedValues.map(([val, count]) => {
                 const isSelected = selectedSpecs[specName]?.includes(val);
                 return (
                   <label key={val} className="sidebar-option">
@@ -112,7 +119,10 @@ export default function CategorySidebar({
                       checked={!!isSelected}
                       onChange={() => onSpecToggle(specName, val)}
                     />
-                    <span style={{ fontSize: 13 }}>{val}</span>
+                    <span style={{ fontSize: 13 }}>
+                      {val}
+                      <span style={{ color: '#878787', fontSize: 11, marginLeft: 4 }}>({count})</span>
+                    </span>
                   </label>
                 );
               })}

@@ -95,8 +95,14 @@ export default function ProductCard({ product }) {
                 </>
               )}
             </div>
-            <div style={{ fontSize: 12, color: product.stock === 0 ? '#d32f2f' : '#212121', marginTop: 4, fontWeight: product.stock === 0 ? 600 : 400 }}>
-              {product.stock === 0 ? 'Temporarily Unavailable' : 'Free delivery'}
+            <div style={{ fontSize: 12, marginTop: 4 }}>
+              {product.stock === 0 ? (
+                <span style={{ color: '#d32f2f', fontWeight: 600 }}>Temporarily Unavailable</span>
+              ) : product.stock < 10 ? (
+                <span style={{ color: '#ff6161', fontWeight: 600 }}>Only {product.stock} left!</span>
+              ) : (
+                <span style={{ color: '#212121' }}>Free delivery</span>
+              )}
             </div>
           </div>
         </div>

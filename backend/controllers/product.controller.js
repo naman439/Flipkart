@@ -242,33 +242,29 @@ const getDynamicFilters = async (req, res) => {
     select: { brand: true, specifications: true }
   });
 
-  const brands = new Set();
+  const brandsMap = {};
   const specsMap = {};
 
   products.forEach(p => {
-    if (p.brand) brands.add(p.brand);
+    if (p.brand) {
+      brandsMap[p.brand] = (brandsMap[p.brand] || 0) + 1;
+    }
     if (p.specifications) {
       try {
         const specs = JSON.parse(p.specifications);
         for (const [key, value] of Object.entries(specs)) {
-          if (!specsMap[key]) specsMap[key] = new Set();
-          specsMap[key].add(value);
+          if (!specsMap[key]) specsMap[key] = {};
+          specsMap[key][value] = (specsMap[key][value] || 0) + 1;
         }
       } catch (e) {}
     }
   });
 
-  // Convert Sets to Arrays
-  const formattedSpecs = {};
-  for (const [k, v] of Object.entries(specsMap)) {
-    formattedSpecs[k] = Array.from(v).sort();
-  }
-
   res.json({
     success: true,
     data: {
-      brands: Array.from(brands).sort(),
-      specifications: formattedSpecs
+      brands: brandsMap,
+      specifications: specsMap
     }
   });
 };
