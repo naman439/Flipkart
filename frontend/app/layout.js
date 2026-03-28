@@ -2,6 +2,7 @@ import './globals.css';
 import { Inter } from 'next/font/google';
 import { AuthProvider } from '@/context/AuthContext';
 import { CartProvider } from '@/context/CartContext';
+import { WishlistProvider } from '@/context/WishlistContext';
 import { Toaster } from 'react-hot-toast';
 import Navbar from '@/components/Navbar';
 import CategoryNav from '@/components/CategoryNav';
@@ -26,8 +27,9 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <ErrorBoundary>
           <AuthProvider>
-            <CartProvider>
-              <Navbar />
+            <WishlistProvider>
+              <CartProvider>
+                <Navbar />
               <CategoryNav />
               <main style={{ minHeight: 'calc(100vh - 64px)' }}>
                 {children}
@@ -47,7 +49,8 @@ export default function RootLayout({ children }) {
                   error: { iconTheme: { primary: '#d32f2f', secondary: '#fff' } },
                 }}
               />
-            </CartProvider>
+              </CartProvider>
+            </WishlistProvider>
           </AuthProvider>
         </ErrorBoundary>
       </body>

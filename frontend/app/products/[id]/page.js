@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getProductById } from '@/services/api/products.api';
 import { useCart } from '@/context/CartContext';
-import { useWishlist } from '@/hooks/useWishlist';
+import { useWishlist } from '@/context/WishlistContext';
 import { Spinner } from '@/components/LoadingSkeleton';
 import { FiStar, FiShoppingCart, FiZap, FiMapPin, FiInfo, FiTag } from 'react-icons/fi';
 import ImageCarousel from '@/components/ImageCarousel';
@@ -36,7 +36,14 @@ export default function ProductDetailPage({ params }) {
   }, [id, router]);
 
   if (loading) {
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}><Spinner size={40} /></div>;
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16, justifyContent: 'center', alignItems: 'center', height: '80vh', background: '#f1f3f6' }}>
+        <Spinner size={40} />
+        <div style={{ color: '#878787', fontSize: 14, fontWeight: 500 }}>
+          Fetching real-time product details and specifications directly from Flipkart...
+        </div>
+      </div>
+    );
   }
 
   if (!product) return null;
@@ -136,9 +143,11 @@ export default function ProductDetailPage({ params }) {
           <div style={{ display: 'flex', gap: 30, marginBottom: 24 }}>
             <div style={{ color: '#878787', fontSize: 14, minWidth: 80 }}>Highlights</div>
             <ul style={{ fontSize: 14, lineHeight: 1.8, color: '#212121', paddingLeft: 18 }}>
-              <li>{product.description?.substring(0, 100)}...</li>
-              <li>1 Year Manufacturer Warranty</li>
-              <li>7 Days Replacement Policy</li>
+              {product.description?.split('\n').map((line, idx) => (
+                <li key={idx} style={{ marginBottom: 4 }}>{line.replace(/^•\s*/, '')}</li>
+              ))}
+              {!product.description?.includes('Warranty') && <li>1 Year Manufacturer Warranty</li>}
+              {!product.description?.includes('Replacement') && <li>7 Days Replacement Policy</li>}
             </ul>
           </div>
 

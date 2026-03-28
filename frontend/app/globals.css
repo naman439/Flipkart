@@ -1363,3 +1363,101 @@ h1, h2, h3, h4, h5, h6 {
 .btn-orange:hover {
   background: #f4511e;
 }
+
+/* ── Flipkart Sidebar Filter UI Overhaul ─────────────────────────────────── */
+.fk-sidebar-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.fk-sidebar-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.fk-sidebar-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #c2c2c2;
+  border-radius: 4px;
+}
+
+.fk-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  background-color: #fff;
+  border: 1px solid #c2c2c2;
+  border-radius: 1px;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.fk-checkbox:checked {
+  background-color: var(--fk-blue);
+  border-color: var(--fk-blue);
+}
+
+.fk-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 4px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.fk-checkbox:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.fk-brand-search {
+  border: none;
+  border-bottom: 2px solid var(--fk-blue);
+  outline: none;
+  font-size: 13px;
+  padding: 8px 0;
+  width: 100%;
+  color: var(--text-primary);
+  background: transparent;
+}
+
+.fk-brand-search::placeholder {
+  color: #878787;
+  font-weight: 500;
+}
+
+/* Base Accordion Style */
+.sidebar-section-accordion {
+  padding: 16px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.sidebar-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-transform: uppercase;
+}
+
+.sidebar-section-content {
+  margin-top: 12px;
+}
+
+/* Category Breadcrumb Specific */
+.fk-breadcrumb-item {
+  font-size: 13px;
+  cursor: pointer;
+  color: #212121;
+}
+.fk-breadcrumb-item.inactive {
+  color: #878787;
+}
+.fk-breadcrumb-item:hover, .fk-breadcrumb-item.inactive:hover {
+  text-decoration: underline;
+}

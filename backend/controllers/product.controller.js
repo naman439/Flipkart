@@ -4,6 +4,7 @@
  */
 
 const prisma = require('../config/db');
+const { fetchLiveProductDetails } = require('../services/flipkartScraper');
 
 // Helper to shuffle an array
 const shuffleArray = (array) => {
@@ -44,9 +45,9 @@ const getProducts = async (req, res) => {
 
   if (search) {
     where.OR = [
-      { title: { contains: search } },
-      { description: { contains: search } },
-      { category: { is: { name: { contains: search } } } }
+      { title: { contains: search, mode: 'insensitive' } },
+      { description: { contains: search, mode: 'insensitive' } },
+      { category: { is: { name: { contains: search, mode: 'insensitive' } } } }
     ];
   }
 
@@ -157,12 +158,48 @@ const getProductById = async (req, res) => {
     throw error;
   }
 
+  let parsedImages = JSON.parse(product.images || '[]');
+  let parsedSpecs = product.specifications ? JSON.parse(product.specifications) : {};
+
+  // Check if we need to fetch live details
+  // Condition: Dummy specs or very few images
+  const isDummyData = 
+    parsedImages.length <= 1 || 
+    Object.keys(parsedSpecs).length <= 2 || 
+    (parsedSpecs.Authenticity === 'Verified');
+
+  if (isDummyData) {
+    try {
+      const liveData = await fetchLiveProductDetails(product.brand ? `${product.brand} ${product.title}` : product.title);
+      
+      if (liveData.success) {
+        // Update DB
+        product = await prisma.product.update({
+          where: { id: parseInt(id) },
+          data: {
+            images: JSON.stringify(liveData.data.images.length > 0 ? liveData.data.images : parsedImages),
+            specifications: JSON.stringify(liveData.data.specifications),
+            description: liveData.data.description || product.description
+          },
+          include: {
+            category: { select: { id: true, name: true, slug: true } },
+          },
+        });
+        
+        parsedImages = JSON.parse(product.images || '[]');
+        parsedSpecs = product.specifications ? JSON.parse(product.specifications) : {};
+      }
+    } catch (err) {
+      console.error('Error fetching live data:', err.message);
+    }
+  }
+
   res.json({
     success: true,
     data: {
       ...product,
-      images: JSON.parse(product.images || '[]'),
-      specifications: product.specifications ? JSON.parse(product.specifications) : {},
+      images: parsedImages,
+      specifications: parsedSpecs,
     },
   });
 };
@@ -230,9 +267,9 @@ const getDynamicFilters = async (req, res) => {
   
   if (search) {
     where.OR = [
-      { title: { contains: search } },
-      { description: { contains: search } },
-      { category: { is: { name: { contains: search } } } }
+      { title: { contains: search, mode: 'insensitive' } },
+      { description: { contains: search, mode: 'insensitive' } },
+      { category: { is: { name: { contains: search, mode: 'insensitive' } } } }
     ];
   }
 

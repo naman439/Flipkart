@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { FiStar, FiHeart } from 'react-icons/fi';
-import { useWishlist } from '@/hooks/useWishlist';
+import { useWishlist } from '@/context/WishlistContext';
 
 export default function ProductCard({ product }) {
   const { isInWishlist, toggleWishlist } = useWishlist();
@@ -35,7 +35,7 @@ export default function ProductCard({ product }) {
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          toggleWishlist(product);
+          toggleWishlist(product.id);
         }}
         style={{
           position: 'absolute', top: 12, right: 12, border: 'none', background: 'rgba(255,255,255,0.8)',

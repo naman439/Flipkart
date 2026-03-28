@@ -90,9 +90,25 @@ function ProductsContent() {
       setLoading(true);
       try {
         const [sortField, sortOrder] = sort.split(':');
+        
+        // Prevent double-filtering: if the search text exactly matches the category name,
+        // treat it purely as a category load rather than a raw text match (which restricts results)
+        let finalSearch = debouncedSearch;
+        if (category && finalSearch && categories.length > 0) {
+          const catObj = categories.find(c => c.slug === category);
+          if (catObj) {
+            const sBase = finalSearch.toLowerCase().trim().replace(/s$/, '');
+            const cBase = catObj.name.toLowerCase().replace(/s$/, '');
+            const slugBase = catObj.slug.toLowerCase().replace(/s$/, '');
+            if (cBase.includes(sBase) || slugBase.includes(sBase) || sBase.includes(slugBase)) {
+              finalSearch = '';
+            }
+          }
+        }
+
         const params = {
-          search: debouncedSearch,
-          category,
+          search: finalSearch || undefined,
+          category: category || undefined,
           sort: sortField,
           order: sortOrder,
           page,
