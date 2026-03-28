@@ -1,94 +1,165 @@
+'use client';
 import React from 'react';
 import Link from 'next/link';
 
-export default function CategorySubNav({ categorySlug }) {
-  // Mock sub-category mappings based on Flipkart screens
-  const subCategoryData = {
-    'mobiles': [
-      { name: 'Smartphones', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/mobile/h/d/9/-original-imagtc2qzpz2ffqq.jpeg' },
-      { name: 'Keypad Phones', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/mobile/k/w/k/-original-imagg2abzhj2fpgs.jpeg' },
-      { name: 'Cases & Covers', img: 'https://rukminim2.flixcart.com/image/128/128/k3rmm4w0/cases-covers/back-cover/w/s/d/spigen-acs00080-original-imafmtt4tz2fmmzz.jpeg' },
-      { name: 'Screen Guards', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/screen-guard/screen-guard/c/r/d/pg-105-02-tempered-glass-for-apple-iphone-13-13-pro-14-gorilla-original-imagzzfzqzhzjtzd.jpeg' },
-      { name: 'Power Banks', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/power-bank/d/a/f/-original-imagky3e8yp5ebvr.jpeg' }
-    ],
-    'electronics': [
-      { name: 'Laptops', img: 'https://rukminim2.flixcart.com/image/128/128/l5h2xdc0/computer/y/i/8/-original-imag7n2hyzyffyxy.jpeg' },
-      { name: 'Tablets', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/tablet/o/f/5/-original-imagm9vzvzb4zb3f.jpeg' },
-      { name: 'Headphones', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/headphone/s/p/c/-original-imagg5jy66mzmhzg.jpeg' },
-      { name: 'Smartwatches', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/smartwatch/c/5/t/-original-imagpeqysghztzwx.jpeg' },
-      { name: 'Speakers', img: 'https://rukminim2.flixcart.com/image/128/128/l2ghgnk0/speaker/mobile-tablet-speaker/r/z/6/-original-imagdth4qbzdzf2v.jpeg' }
-    ],
-    'appliances': [
-      { name: 'ACs', img: 'https://rukminim2.flixcart.com/flap/128/128/image/48ea111.jpg' },
-      { name: 'Inverters', img: 'https://rukminim2.flixcart.com/flap/128/128/image/1d19830.jpg' },
-      { name: 'Fridges', img: 'https://rukminim2.flixcart.com/flap/128/128/image/78eb171.png' },
-      { name: 'Fans', img: 'https://rukminim2.flixcart.com/flap/128/128/image/78db191.jpg' },
-      { name: 'Televisions', img: 'https://rukminim2.flixcart.com/flap/128/128/image/3b1450a.png' },
-      { name: 'Washing Machines', img: 'https://rukminim2.flixcart.com/flap/128/128/image/9e604ec03ff28d61.jpg' }
-    ],
-    'fashion': [
-      { name: 'T-Shirts', img: 'https://rukminim2.flixcart.com/flap/128/128/image/72b8c59f2a991873.jpg' },
-      { name: 'Jeans', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/jean/r/a/b/38-eps-black-03-urbano-fashion-original-imaghwgxgemzkqjz.jpeg' },
-      { name: 'Shoes', img: 'https://rukminim2.flixcart.com/flap/128/128/image/49340f1a94ac8bc5.jpeg' },
-      { name: 'Watches', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/watch/z/p/j/-original-imagpcdgbnzzv28r.jpeg' },
-      { name: 'Accessories', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/belt/2/h/q/36-formal-men-s-genuine-leather-belt-k1-1-tq-36-k-d-1-tq-original-imahyg8b3zt8aebx.jpeg' }
-    ],
-    '2-wheelers': [
-      { name: 'Helmets', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/helmet/p/y/m/-original-imaggj7hf8qyzv8z.jpeg' },
-      { name: 'Riding Gears', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/biking-glove/2/a/1/-original-imagna4e7n6fyyqy.jpeg' },
-      { name: 'Vehicle Covers', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/vehicle-cover/y/f/h/1-royal-enfield-classic-350-red-black-bike-cover-water-resis-original-imagqg5z2z4h7fzr.jpeg' },
-      { name: 'Cleaning Care', img: 'https://rukminim2.flixcart.com/image/128/128/kxrfr0w0/vehicle-cleaner/m/8/n/500-dashboard-polish-wavex-original-imaga5u8fyzqhqyq.jpeg' }
-    ],
-    'home-kitchen': [
-      { name: 'Decor', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/showpiece-figurine/s/6/r/5-brass-nandi-statue-nandi-idol-god-nandi-bull-vridhab-statue-of-original-imahysf5yfzjpf7x.jpeg' },
-      { name: 'Kitchenware', img: 'https://rukminim2.flixcart.com/image/128/128/l5jxt3k0/kitchen-container-set/d/j/u/clear-plastic-storage-containers-for-kitchen-pantry-storage-original-imagg5h68s7p7aht.jpeg' },
-      { name: 'Furnishings', img: 'https://rukminim2.flixcart.com/image/128/128/kbb49zk0/bedsheet/u/y/t/maroon-leaf-maroon-leaf-flat-bella-casa-original-imafsmjgzbmgzhhy.jpeg' }
-    ],
-    'beauty': [
-      { name: 'Makeup', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/foundation/z/e/h/30-superstay-full-coverage-liquid-foundation-maybelline-new-original-imagq9zh3hgxbbhz.jpeg' },
-      { name: 'Skincare', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/face-wash/s/y/l/-original-imagm9gzfzzzyzb2.jpeg' },
-      { name: 'Fragrances', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/perfume/m/w/x/100-long-lasting-edp-eau-de-parfum-villain-men-original-imagkfxzwzhy4f8p.jpeg' }
-    ],
-    'toys-baby': [
-      { name: 'Toys', img: 'https://rukminim2.flixcart.com/image/128/128/kid-toy/y/x/r/wndg-plstc-tys-j14-wonder-plastic-toys-original-imadf6623h5yzcch.jpeg' },
-      { name: 'Diapers', img: 'https://rukminim2.flixcart.com/image/128/128/diaper/f/5/m/pampers-active-baby-large-64-pampers-original-imado6zy3uwn4ztz.jpeg' }
-    ],
-    'groceries': [
-      { name: 'Staples', img: 'https://rukminim2.flixcart.com/image/128/128/kfcv6vk0/dal-pulses/z/z/q/1-masoor-dal-urad-dal-tata-sampann-unpolished-original-imafvtfgh2bzzh3j.jpeg' },
-      { name: 'Snacks', img: 'https://rukminim2.flixcart.com/image/128/128/kzrbiq80/snack-savourie/g/p/p/-original-imagbq2xhyjygfhn.jpeg' }
-    ],
-    'books': [
-      { name: 'Fiction', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/book/1/5/l/fiction-factory-original-imagy4t99hq8fhqg.jpeg' },
-      { name: 'Non-Fiction', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/book/h/8/d/the-psychology-of-money-original-imaguzghzhhzszy6.jpeg' },
-      { name: 'Educational', img: 'https://rukminim2.flixcart.com/image/128/128/kufuikw0/book/0/6/q/lucant-general-knowledge-original-imag7k9pzyzz4h9x.jpeg' }
-    ],
-    'auto-accessories': [
-      { name: 'Car Care', img: 'https://rukminim2.flixcart.com/image/128/128/kxrfr0w0/vehicle-cleaner/m/8/n/500-dashboard-polish-wavex-original-imaga5u8fyzqhqyq.jpeg' },
-      { name: 'Wiper Blades', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/wiper-blade/n/8/y/frameless-bosch-original-imahyvhzqhczqzhq.jpeg' },
-      { name: 'Air Compressors', img: 'https://rukminim2.flixcart.com/image/128/128/xif0q/tyre-inflator/9/8/a/portable-12v-dc-air-compressor-pump-digital-display-tyre-original-imahf2zvzfzyqzhc.jpeg' }
-    ],
-    'sports-fitness': [
-      { name: 'Footballs', img: 'https://rukminim2.flixcart.com/image/128/128/jxzfx8w0/football/y/q/4/4-430-storm-1-1-nivia-original-imafgaufzgcfk6zh.jpeg' },
-      { name: 'Yoga Mats', img: 'https://rukminim2.flixcart.com/image/128/128/kdqafe80/yoga-mat/e/q/t/premium-extra-thick-anti-slip-6-mat-for-gym-workout-yoga-original-imafukhvzymhfytj.jpeg' },
-      { name: 'Dumbbells', img: 'https://rukminim2.flixcart.com/image/128/128/kg2l47k0/dumbbell/8/h/k/pvc-dumbbell-set-for-home-gym-fitness-equipment-fixed-weight-original-imafwcth6zfcyfz9.jpeg' }
-    ],
-    'furniture': [
-      { name: 'Beds', img: 'https://rukminim2.flixcart.com/image/128/128/bed/d/u/m/queen-sw-bed-01-sparrow-world-original-imaehzuzgz3s6wgb.jpeg' },
-      { name: 'Sofas', img: 'https://rukminim2.flixcart.com/image/128/128/sofa-set/3/g/w/grey-cotton-fabric-sf010-grey-urban-ladder-original-imaer6f6rgg7cgzq.jpeg' },
-      { name: 'Wardrobes', img: 'https://rukminim2.flixcart.com/image/128/128/wardrobe-closet/h/s/m/particle-board-hw92-hometown-original-imaenyhbcfzfgg67.jpeg' }
-    ]
+// ---------------------------------------------------------------------------
+// Real product photography via Unsplash — always loads, no hotlink blocks
+// ---------------------------------------------------------------------------
+const subCategoryData = {
+  'mobiles': [
+    { name: 'Latest Mobiles', img: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&q=80&fit=crop' },
+    { name: 'POCO Series',    img: 'https://images.unsplash.com/photo-1592890288564-76628a30a657?w=300&q=80&fit=crop' },
+    { name: 'Realme',         img: 'https://images.unsplash.com/photo-1616348436168-de43ad0db179?w=300&q=80&fit=crop' },
+    { name: 'Samsung',        img: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=300&q=80&fit=crop' },
+  ],
+  'electronics': [
+    { name: 'Laptops',      img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=200&q=80&fit=crop' },
+    { name: 'Smartwatches', img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&q=80&fit=crop' },
+    { name: 'Headphones',   img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80&fit=crop' },
+    { name: 'Tablets',      img: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=200&q=80&fit=crop' },
+    { name: 'Cameras',      img: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=200&q=80&fit=crop' },
+  ],
+  'appliances': [
+    { name: 'Air Conditioners', img: 'https://images.unsplash.com/photo-1617878227870-3d9d5c9d81a1?w=200&q=80&fit=crop' },
+    { name: 'Washing Machines', img: 'https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=200&q=80&fit=crop' },
+    { name: 'Televisions',      img: 'https://images.unsplash.com/photo-1593784991095-a205069470b6?w=200&q=80&fit=crop' },
+    { name: 'Refrigerators',    img: 'https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=200&q=80&fit=crop' },
+  ],
+  'fashion': [
+    { name: 'Mens Wear',   img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=200&q=80&fit=crop' },
+    { name: 'Footwear',    img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&q=80&fit=crop' },
+    { name: 'Watches',     img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&q=80&fit=crop' },
+    { name: 'Womens Wear', img: 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=200&q=80&fit=crop' },
+    { name: 'Accessories', img: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&q=80&fit=crop' },
+  ],
+  'home-kitchen': [
+    { name: 'Home Decor',  img: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=200&q=80&fit=crop' },
+    { name: 'Kitchenware', img: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200&q=80&fit=crop' },
+    { name: 'Furnishings', img: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=200&q=80&fit=crop' },
+  ],
+  'beauty': [
+    { name: 'Skincare',   img: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=200&q=80&fit=crop' },
+    { name: 'Makeup',     img: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=200&q=80&fit=crop' },
+    { name: 'Fragrances', img: 'https://images.unsplash.com/photo-1588776814546-1ffbb3fef21b?w=200&q=80&fit=crop' },
+  ],
+  'toys-baby': [
+    { name: 'Learning Toys', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&q=80&fit=crop' },
+    { name: 'Baby Care',     img: 'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=200&q=80&fit=crop' },
+  ],
+  'groceries': [
+    { name: 'Staples', img: 'https://images.unsplash.com/photo-1543168256-418811576931?w=200&q=80&fit=crop' },
+    { name: 'Snacks',  img: 'https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=200&q=80&fit=crop' },
+  ],
+  'books': [
+    { name: 'Academic',    img: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=200&q=80&fit=crop' },
+    { name: 'Bestsellers', img: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=200&q=80&fit=crop' },
+  ],
+  'sports-fitness': [
+    { name: 'Badminton', img: 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=200&q=80&fit=crop' },
+    { name: 'Cricket',   img: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=200&q=80&fit=crop' },
+    { name: 'Fitness',   img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=200&q=80&fit=crop' },
+  ],
+  'furniture': [
+    { name: 'Sofas',     img: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=200&q=80&fit=crop' },
+    { name: 'Beds',      img: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=200&q=80&fit=crop' },
+    { name: 'Home Decor', img: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=200&q=80&fit=crop' },
+  ],
+  'auto': [
+    { name: 'Car Care',    img: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=200&q=80&fit=crop' },
+    { name: 'Accessories', img: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=200&q=80&fit=crop' },
+  ],
+  '2-wheelers': [
+    { name: 'Helmets',     img: 'https://images.unsplash.com/photo-1558981420-87aa9dad1c89?w=200&q=80&fit=crop' },
+    { name: 'Accessories', img: 'https://images.unsplash.com/photo-1558981033-0f0309284409?w=200&q=80&fit=crop' },
+  ],
+};
+
+// ---------------------------------------------------------------------------
+// SubIcon component — image with a simple Flipkart-blue initial fallback
+// ---------------------------------------------------------------------------
+function SubIcon({ sub }) {
+  const [failed, setFailed] = React.useState(false);
+
+  const container = {
+    width: 80,
+    height: 80,
+    borderRadius: '50%',
+    background: '#f0f5ff',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    boxShadow: '0 2px 8px rgba(40,116,240,0.12)',
+    border: '2px solid #e8eef9',
+    flexShrink: 0,
   };
 
-  const currentSubs = subCategoryData[categorySlug] || subCategoryData['fashion'];
+  if (failed) {
+    // Branded initial pill — last resort, never a plain letter
+    return (
+      <div style={{ ...container, background: 'linear-gradient(135deg,#2874f0,#047bd5)' }}>
+        <span style={{ color: '#fff', fontWeight: 800, fontSize: 26, letterSpacing: -1 }}>
+          {sub.name.charAt(0)}
+        </span>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ background: 'white', padding: '16px 20px', display: 'flex', gap: '30px', overflowX: 'auto', borderBottom: '1px solid #f0f0f0' }} className="no-scrollbar">
+    <div style={container}>
+      <img
+        src={sub.img}
+        alt={sub.name}
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        onError={() => setFailed(true)}
+      />
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+export default function CategorySubNav({ categorySlug }) {
+  const currentSubs =
+    subCategoryData[categorySlug] ||
+    subCategoryData['fashion'];
+
+  return (
+    <div
+      style={{
+        background: 'white',
+        padding: '16px 20px',
+        display: 'flex',
+        gap: '28px',
+        overflowX: 'auto',
+        borderBottom: '1px solid #f0f0f0',
+      }}
+      className="no-scrollbar"
+    >
       {currentSubs.map((sub, idx) => (
-        <Link href={`/products?category=${categorySlug}&q=${sub.name}`} key={idx} style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, minWidth: 80 }}>
-          <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#f5f7fa', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-            <img src={sub.img} alt={sub.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} onError={(e) => { e.target.src = 'https://dummyimage.com/64x64/f0f0f0/666.png&text=Icon'; }} />
-          </div>
-          <span style={{ fontSize: 13, fontWeight: 500, color: '#212121', whiteSpace: 'nowrap' }}>{sub.name}</span>
+        <Link
+          href={`/products?category=${categorySlug}&q=${sub.name}`}
+          key={idx}
+          style={{
+            textDecoration: 'none',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 8,
+            minWidth: 80,
+          }}
+        >
+          <SubIcon sub={sub} />
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 500,
+              color: '#212121',
+              whiteSpace: 'nowrap',
+              textAlign: 'center',
+            }}
+          >
+            {sub.name}
+          </span>
         </Link>
       ))}
     </div>

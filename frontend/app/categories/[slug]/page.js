@@ -59,7 +59,12 @@ export default function CategoryLandingPage({ params }) {
   let row2Title = "Trending Right Now";
   let row2Bg = "#2874f0"; // Flipkart blue
 
-  if (slug === 'electronics') {
+  if (slug === 'mobiles') {
+    row1Title = "Trending in Mobiles";
+    row1Bg = "#e3f2fd";
+    row2Title = "Best Sellers";
+    row2Bg = "#f5f7fa";
+  } else if (slug === 'electronics') {
     row1Title = "Trending tech";
     row1Bg = "#e3f2fd";  // Light blue
     row2Title = "Exclusive Student Deals";

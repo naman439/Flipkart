@@ -4,54 +4,54 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-// Inline SVG icons matching Flipkart's styling from the user reference
+// Inline SVG icons matching Flipkart's styling with maximum visual weight (2.5 stroke for HD clarity)
 const NAV_ICONS = {
   'for-you': (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+    <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
       <rect x="0" y="0" width="32" height="32" rx="8" fill="#e1edff"/>
-      <path d="M11 11V8a5 5 0 0110 0v3" stroke="#212121" strokeWidth="1.8"/>
-      <rect x="6" y="11" width="20" height="15" rx="3" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
-      <path d="M12 16a4 4 0 008 0" stroke="#FFC200" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M11 11V8a5 5 0 0110 0v3" stroke="#212121" strokeWidth="2.5"/>
+      <rect x="6" y="11" width="20" height="15" rx="3" fill="#fff" stroke="#212121" strokeWidth="2.5"/>
+      <path d="M12 16a4 4 0 008 0" stroke="#FFC200" strokeWidth="2.8" strokeLinecap="round"/>
     </svg>
   ),
   'fashion': (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <path d="M11 5L6 11H11V25H21V11H26L21 5H18C18 6.66 16.66 8 15 8C13.34 8 12 6.66 12 5H11Z" fill="#fff" stroke="#212121" strokeWidth="1.8" strokeLinejoin="round"/>
-      <path d="M12 5C12 6.66 13.34 8 15 8C16.66 8 18 6.66 18 5" fill="#FFC200" stroke="#212121" strokeWidth="1.8" />
+    <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
+      <path d="M11 5L6 11H11V25H21V11H26L21 5H18C18 6.66 16.66 8 15 8C13.34 8 12 6.66 12 5H11Z" fill="#fff" stroke="#212121" strokeWidth="2.5" strokeLinejoin="round"/>
+      <path d="M12 5C12 6.66 13.34 8 15 8C16.66 8 18 6.66 18 5" fill="#FFC200" stroke="#212121" strokeWidth="2.5" />
     </svg>
   ),
   'mobiles': (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <rect x="8" y="3" width="16" height="26" rx="3" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+    <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
+      <rect x="8" y="3" width="16" height="26" rx="3" fill="#fff" stroke="#212121" strokeWidth="2.5"/>
       <rect x="10" y="5" width="12" height="19" rx="1" fill="#FFC200"/>
       <circle cx="16" cy="26" r="1.5" fill="#212121"/>
     </svg>
   ),
   'beauty': (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <rect x="13" y="14" width="6" height="8" fill="#FFC200" stroke="#212121" strokeWidth="1.8"/>
-      <path d="M14 14V7c0-1.5 1-3 2-3s2 1.5 2 3v7h-4z" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
-      <rect x="12" y="22" width="8" height="4" rx="1" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+    <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
+      <rect x="13" y="14" width="6" height="8" fill="#FFC200" stroke="#212121" strokeWidth="2.5"/>
+      <path d="M14 14V7c0-1.5 1-3 2-3s2 1.5 2 3v7h-4z" fill="#fff" stroke="#212121" strokeWidth="2.5"/>
+      <rect x="12" y="22" width="8" height="4" rx="1" fill="#fff" stroke="#212121" strokeWidth="2.5"/>
     </svg>
   ),
   'electronics': (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <rect x="4" y="7" width="20" height="14" rx="2" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+    <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
+      <rect x="4" y="7" width="20" height="14" rx="2" fill="#fff" stroke="#212121" strokeWidth="2.5"/>
       <rect x="6" y="9" width="16" height="10" fill="#FFC200"/>
-      <path d="M11 21v4m6-4v4m-6 0h6" stroke="#212121" strokeWidth="1.8"/>
-      <path d="M22 18a6 6 0 016-6v5" stroke="#212121" strokeWidth="1.8" fill="none"/>
+      <path d="M11 21v4m6-4v4m-6 0h6" stroke="#212121" strokeWidth="2.5"/>
+      <path d="M22 18a6 6 0 016-6v5" stroke="#212121" strokeWidth="2.5" fill="none"/>
       <circle cx="28" cy="17" r="1.5" fill="#212121"/>
     </svg>
   ),
   'home': (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <path d="M7 16L16 4l9 12H7z" fill="#FFC200" stroke="#212121" strokeLinejoin="round" strokeWidth="1.8"/>
-      <path d="M16 16v12m-5 0h10" stroke="#212121" strokeWidth="1.8"/>
+    <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
+      <path d="M7 16L16 4l9 12H7z" fill="#FFC200" stroke="#212121" strokeLinejoin="round" strokeWidth="2.5"/>
+      <path d="M16 16v12m-5 0h10" stroke="#212121" strokeWidth="2.5"/>
     </svg>
   ),
   'appliances': (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <rect x="3" y="7" width="26" height="18" rx="2" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+    <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
+      <rect x="3" y="7" width="26" height="18" rx="2" fill="#fff" stroke="#212121" strokeWidth="2.5"/>
       <rect x="5" y="9" width="16" height="14" rx="1" fill="#FFC200"/>
       <circle cx="25" cy="12" r="1.5" fill="#212121"/>
       <circle cx="25" cy="17" r="1.5" fill="#212121"/>
@@ -59,60 +59,35 @@ const NAV_ICONS = {
     </svg>
   ),
   'toys': (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <circle cx="10" cy="8" r="4" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
-      <circle cx="22" cy="8" r="4" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
-      <circle cx="16" cy="16" r="7" fill="#FFC200" stroke="#212121" strokeWidth="1.8"/>
+    <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
+      <circle cx="10" cy="8" r="4" fill="#fff" stroke="#212121" strokeWidth="2.5"/>
+      <circle cx="22" cy="8" r="4" fill="#fff" stroke="#212121" strokeWidth="2.5"/>
+      <circle cx="16" cy="16" r="7" fill="#FFC200" stroke="#212121" strokeWidth="2.5"/>
       <circle cx="13" cy="14" r="1.5" fill="#212121"/>
       <circle cx="19" cy="14" r="1.5" fill="#212121"/>
       <path d="M16 19c-1.5 0-3-.5-3-1h6c0 .5-1.5 1-3 1z" fill="#212121"/>
-      <circle cx="16" cy="24" r="5" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
+      <circle cx="16" cy="24" r="5" fill="#fff" stroke="#212121" strokeWidth="2.5"/>
     </svg>
   ),
   'food': (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <path d="M10 8v14a2 2 0 002 2h8a2 2 0 002-2V8H10z" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
-      <rect x="11" y="4" width="10" height="4" rx="1" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
-      <rect x="10" y="12" width="12" height="7" fill="#FFC200" stroke="#212121" strokeWidth="1.8"/>
-    </svg>
-  ),
-  'auto': (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <path d="M16 4a9 9 0 00-9 9v10h18V13a9 9 0 00-9-9z" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
-      <path d="M7 14a8 8 0 0111-5v9H7v-4z" fill="#FFC200" stroke="#212121" strokeWidth="1.8"/>
-      <path d="M20 14v8m-5-8v8" stroke="#212121" strokeWidth="1.8"/>
-    </svg>
-  ),
-  '2-wheelers': (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <circle cx="8" cy="21" r="5" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
-      <circle cx="24" cy="21" r="5" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
-      <path d="M8 21L13 11H20L24 21" fill="#FFC200" stroke="#212121" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M16 11V6H21L24 11" stroke="#212121" strokeWidth="1.8" strokeLinecap="round"/>
-      <circle cx="8" cy="21" r="1.5" fill="#212121"/>
-      <circle cx="24" cy="21" r="1.5" fill="#212121"/>
+    <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
+      <path d="M10 8v14a2 2 0 002 2h8a2 2 0 002-2V8H10z" fill="#fff" stroke="#212121" strokeWidth="2.5"/>
+      <rect x="11" y="4" width="10" height="4" rx="1" fill="#fff" stroke="#212121" strokeWidth="2.5"/>
+      <rect x="10" y="12" width="12" height="7" fill="#FFC200" stroke="#212121" strokeWidth="2.5"/>
     </svg>
   ),
   'sports': (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <rect x="8" y="8" width="6" height="16" rx="1" fill="#fff" stroke="#212121" strokeWidth="1.8" transform="rotate(-45 8 8)"/>
+    <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
+      <rect x="8" y="8" width="6" height="16" rx="1" fill="#fff" stroke="#212121" strokeWidth="2.5" transform="rotate(-45 8 8)"/>
       <rect x="5" y="24" width="3" height="7" rx="1" fill="#212121" transform="rotate(-45 5 24)"/>
-      <circle cx="24" cy="20" r="5" fill="#FFC200" stroke="#212121" strokeWidth="1.8"/>
+      <circle cx="24" cy="20" r="5" fill="#FFC200" stroke="#212121" strokeWidth="2.5"/>
     </svg>
   ),
   'books': (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <rect x="7" y="5" width="16" height="22" rx="1" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
-      <rect x="7" y="5" width="5" height="22" fill="#FFC200" stroke="#212121" strokeWidth="1.8"/>
-      <path d="M15 11h5M15 15h5M15 19h3" stroke="#212121" strokeWidth="1.8" strokeLinecap="round"/>
-    </svg>
-  ),
-  'furniture': (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-      <rect x="4" y="16" width="24" height="7" rx="2" fill="#fff" stroke="#212121" strokeWidth="1.8"/>
-      <rect x="6" y="9" width="20" height="7" rx="2" fill="#FFC200" stroke="#212121" strokeWidth="1.8"/>
-      <line x1="6" y1="23" x2="6" y2="28" stroke="#212121" strokeWidth="1.8" strokeLinecap="round"/>
-      <line x1="26" y1="23" x2="26" y2="28" stroke="#212121" strokeWidth="1.8" strokeLinecap="round"/>
+    <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
+      <rect x="7" y="5" width="16" height="22" rx="1" fill="#fff" stroke="#212121" strokeWidth="2.5"/>
+      <rect x="7" y="5" width="5" height="22" fill="#FFC200" stroke="#212121" strokeWidth="2.5"/>
+      <path d="M15 11h5M15 15h5M15 19h3" stroke="#212121" strokeWidth="2.5" strokeLinecap="round"/>
     </svg>
   ),
 };
@@ -125,13 +100,10 @@ const categories = [
   { name: 'Electronics',   slug: 'electronics',      iconKey: 'electronics' },
   { name: 'Home',          slug: 'home-kitchen',     iconKey: 'home' },
   { name: 'Appliances',    slug: 'appliances',       iconKey: 'appliances' },
-  { name: 'Toys, ba...',   slug: 'toys-baby',        iconKey: 'toys' },
-  { name: 'Food & H...',   slug: 'groceries',        iconKey: 'food' },
-  { name: 'Auto Acc...',   slug: 'auto-accessories', iconKey: 'auto' },
-  { name: '2 Wheele...',   slug: '2-wheelers',       iconKey: '2-wheelers' },
-  { name: 'Sports & ...',  slug: 'sports-fitness',   iconKey: 'sports' },
-  { name: 'Books & ...',   slug: 'books',            iconKey: 'books' },
-  { name: 'Furniture',     slug: 'furniture',        iconKey: 'furniture' },
+  { name: 'Toys',          slug: 'toys-baby',        iconKey: 'toys' },
+  { name: 'Groceries',     slug: 'groceries',        iconKey: 'food' },
+  { name: 'Sports',        slug: 'sports-fitness',   iconKey: 'sports' },
+  { name: 'Books',         slug: 'books',            iconKey: 'books' },
 ];
 
 export default function CategoryNav() {

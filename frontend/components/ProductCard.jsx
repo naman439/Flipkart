@@ -46,13 +46,30 @@ export default function ProductCard({ product }) {
         <FiHeart fill={isInWishlist(product.id) ? '#ff4343' : 'none'} stroke={isInWishlist(product.id) ? '#ff4343' : '#999'} size={16} />
       </button>
 
-      <Link href={`/products/${product.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <div style={{ height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 12 }}>
+      <Link href={product.stock === 0 ? '#' : `/products/${product.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', height: '100%', opacity: product.stock === 0 ? 0.6 : 1, cursor: product.stock === 0 ? 'default' : 'pointer' }}>
+        <div style={{ height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 12, position: 'relative' }}>
           <img 
             src={displayImage} 
             alt={product.title} 
-            style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} 
+            style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain', filter: product.stock === 0 ? 'grayscale(1)' : 'none' }} 
           />
+          {product.stock === 0 && (
+            <div style={{
+              position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+              background: 'rgba(255,255,255,0.9)', color: '#d32f2f', fontWeight: 700, padding: '4px 8px',
+              borderRadius: 4, fontSize: 12, border: '1px solid #d32f2f', whiteSpace: 'nowrap', zIndex: 1
+            }}>
+              SOLD OUT
+            </div>
+          )}
+          {product.isFeatured && (
+             <div style={{
+              position: 'absolute', top: 0, left: 0, background: 'var(--primary-color)', color: 'white',
+              fontSize: 10, fontWeight: 700, padding: '2px 8px', borderBottomRightRadius: 8, zIndex: 1
+            }}>
+              FEATURED
+            </div>
+          )}
         </div>
         
         <div style={{ padding: '0 12px 16px', flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -64,17 +81,23 @@ export default function ProductCard({ product }) {
             <div style={{ background: '#388e3c', color: 'white', fontSize: 11, fontWeight: 700, padding: '1px 5px', borderRadius: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
               {product.rating} <FiStar size={9} fill="white" />
             </div>
-            <span style={{ color: '#878787', fontSize: 11 }}>(2,431)</span>
-            <img src="https://static-assets-web.flixcart.com/fk-p-linchpin-web/fk-cp-zion/img/fa_62673a.png" alt="assured" style={{ height: 13, marginLeft: 4 }} />
+            <span style={{ color: '#878787', fontSize: 11 }}>({(product.reviewCount || 0).toLocaleString()})</span>
+            <img src="https://static-assets-web.flixcart.com/fk-p-linchpin-web/fk-cp-zion/img/fa_62673a.png" alt="assured" style={{ height: 18, marginLeft: 4 }} />
           </div>
           
           <div style={{ marginTop: 'auto' }}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
               <span style={{ fontSize: 16, fontWeight: 700 }}>₹{product.discountPrice?.toLocaleString()}</span>
-              <span style={{ fontSize: 12, color: '#878787', textDecoration: 'line-through' }}>₹{product.price?.toLocaleString()}</span>
-              <span style={{ fontSize: 12, color: '#388e3c', fontWeight: 600 }}>{discount}% off</span>
+              {product.price > product.discountPrice && (
+                <>
+                  <span style={{ fontSize: 12, color: '#878787', textDecoration: 'line-through' }}>₹{product.price?.toLocaleString()}</span>
+                  <span style={{ fontSize: 12, color: '#388e3c', fontWeight: 600 }}>{discount}% off</span>
+                </>
+              )}
             </div>
-            <div style={{ fontSize: 12, color: '#212121', marginTop: 4 }}>Free delivery</div>
+            <div style={{ fontSize: 12, color: product.stock === 0 ? '#d32f2f' : '#212121', marginTop: 4, fontWeight: product.stock === 0 ? 600 : 400 }}>
+              {product.stock === 0 ? 'Temporarily Unavailable' : 'Free delivery'}
+            </div>
           </div>
         </div>
       </Link>

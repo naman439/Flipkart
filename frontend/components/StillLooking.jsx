@@ -3,12 +3,12 @@ import Link from 'next/link';
 import { FiChevronRight } from 'react-icons/fi';
 
 const items = [
-  { name: 'Mosquito Killers', href: '/products?search=mosquito', img: 'https://rukminim2.flixcart.com/image/416/416/xif0q/mosquito-killer-repllent-mat/1/r/v/8-9-mosquito-killer-rechargeable-racket-bat-with-led-uv-light-original-imaghfz4zhzx2h6x.jpeg' },
-  { name: 'True Wireless', href: '/products?search=wireless', img: 'https://rukminim2.flixcart.com/image/416/416/xif0q/headphone/p/r/z/envy-shopy1x-original-imaghx8zyygygzuz.jpeg' },
-  { name: 'Mobiles', href: '/products?category=mobiles', img: 'https://rukminim2.flixcart.com/image/416/416/xif0q/mobile/k/l/l/-original-imagtc5fz9spysyk.jpeg' },
-  { name: 'Water Bottles & Flasks', href: '/products?search=bottle', img: 'https://rukminim2.flixcart.com/image/416/416/xif0q/water-bottle/w/4/5/750-stainless-steel-fridge-water-bottle-silver-pack-of-3-original-imah4ggtuhhh8g4q.jpeg' },
-  { name: "Men's Vests", href: '/products?search=vest', img: 'https://rukminim2.flixcart.com/image/416/416/xif0q/vest/2/y/x/s-8905206254707-jockey-original-imaghkfz2f8gqgxz.jpeg' },
-  { name: 'Laptops', href: '/products?category=electronics', img: 'https://rukminim2.flixcart.com/image/416/416/xif0q/computer/v/d/b/15-fc0028au-thin-and-light-laptop-hp-original-imagp8nzgfbbgg8q.jpeg' },
+  { name: 'Latest Mobiles', href: '/categories/mobiles', img: 'https://rukminim1.flixcart.com/image/200/200/xif0q/mobile/k/l/l/-original-imagtc5fz9spysyk.jpeg' },
+  { name: 'Smart Watches', href: '/products?search=smartwatch', img: 'https://rukminim1.flixcart.com/image/200/200/xif0q/smartwatch/q/v/z/-original-imagxhd5hgqyg8rz.jpeg' },
+  { name: 'Laptops', href: '/categories/electronics', img: 'https://rukminim1.flixcart.com/image/200/200/xif0q/computer/v/d/b/15-fc0028au-thin-and-light-laptop-hp-original-imagp8nzgfbbgg8q.jpeg' },
+  { name: 'Headphones', href: '/products?search=headphones', img: 'https://rukminim1.flixcart.com/image/200/200/xif0q/headphone/p/r/z/envy-shopy1x-original-imaghx8zyygygzuz.jpeg' },
+  { name: 'Appliances', href: '/categories/appliances', img: 'https://rukminim1.flixcart.com/image/200/200/xif0q/air-conditioner-new/v/f/t/-original-imahatnt7y2zkxfa.jpeg' },
+  { name: 'Fashion', href: '/categories/fashion', img: 'https://rukminim1.flixcart.com/image/200/200/xif0q/shirt/r/y/x/s-8905206254707-jockey-original-imaghkfz2f8gqgxz.jpeg' },
 ];
 
 export default function StillLooking() {

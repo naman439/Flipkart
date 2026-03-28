@@ -1,5 +1,8 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const { scrapeFlipkartImages } = require('../scripts/syncImages');
+
+const USE_REAL_IMAGES = true; // Toggle this to fetch real images from Flipkart during seed
 
 const categories = [
   { name: 'Mobiles', slug: 'mobiles', imageUrl: 'https://rukminim1.flixcart.com/flap/128/128/image/22fddf3c7da4c4f4.png' },
@@ -210,8 +213,19 @@ async function main() {
         const discountPct = getRandomInt(5, 60);
         const discountPrice = Math.floor(price * (1 - discountPct / 100));
 
+        const title = data.generateTitle(brand, colorOrDynamic || 'Standard');
+        let imagesList = [getRandomArr(data.images), getRandomArr(data.images)];
+
+        if (USE_REAL_IMAGES) {
+          console.log(`🔍 Scraping images for: ${brand} ${title}`);
+          const fetched = await scrapeFlipkartImages(`${brand} ${title}`);
+          if (fetched.length > 0) imagesList = fetched;
+          // Small delay to avoid rate limiting during seed
+          await new Promise(r => setTimeout(r, 500));
+        }
+
         productsToCreate.push({
-          title: data.generateTitle(brand, colorOrDynamic || 'Standard'),
+          title,
           description: `Experience the cutting edge quality with this premium product from ${brand}. Features include highly durable build and incredible value.`,
           price,
           discountPrice,
@@ -222,7 +236,7 @@ async function main() {
           brand: brand,
           categoryId,
           isFeatured: Math.random() > 0.8,
-          images: JSON.stringify([getRandomArr(data.images), getRandomArr(data.images)]),
+          images: JSON.stringify(imagesList),
           specifications: JSON.stringify(specMap)
         });
       }
@@ -246,8 +260,18 @@ async function main() {
       const discountPct = getRandomInt(5, 60);
       const discountPrice = Math.floor(price * (1 - discountPct / 100));
 
+      const title = data.generateTitle(brand, colorOrDynamic || 'Deluxe');
+      let imagesList = [getRandomArr(data.images)];
+
+      if (USE_REAL_IMAGES) {
+        console.log(`🔍 Scraping images for: ${brand} ${title}`);
+        const fetched = await scrapeFlipkartImages(`${brand} ${title}`);
+        if (fetched.length > 0) imagesList = fetched;
+        await new Promise(r => setTimeout(r, 500));
+      }
+
       productsToCreate.push({
-        title: data.generateTitle(brand, colorOrDynamic || 'Deluxe'),
+        title,
         description: `Experience the cutting edge quality with this premium product from ${brand}. Includes top-tier components.`,
         price,
         discountPrice,
@@ -258,7 +282,7 @@ async function main() {
         brand: brand,
         categoryId,
         isFeatured: Math.random() > 0.9,
-        images: JSON.stringify([getRandomArr(data.images)]),
+        images: JSON.stringify(imagesList),
         specifications: JSON.stringify(specMap)
       });
     }

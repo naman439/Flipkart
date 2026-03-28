@@ -38,14 +38,14 @@ export default function Navbar() {
             background: '#ffc200', borderRadius: 6, padding: '8px 12px',
             textDecoration: 'none'
           }}>
-            <svg width="18" height="18" viewBox="0 0 26 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15 2C15 2 20 2 20 7C20 10 17 11 15 11" stroke="#2874f0" strokeWidth="3" strokeLinecap="round" fill="none"/>
-              <line x1="15" y1="2" x2="15" y2="28" stroke="#2874f0" strokeWidth="3" strokeLinecap="round"/>
-              <line x1="9" y1="16" x2="21" y2="16" stroke="#2874f0" strokeWidth="3" strokeLinecap="round"/>
+            <svg width="24" height="24" viewBox="0 0 26 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 2C15 2 20 2 20 7C20 10 17 11 15 11" stroke="#2874f0" strokeWidth="3.5" strokeLinecap="round" fill="none"/>
+              <line x1="15" y1="2" x2="15" y2="28" stroke="#2874f0" strokeWidth="3.5" strokeLinecap="round"/>
+              <line x1="9" y1="16" x2="21" y2="16" stroke="#2874f0" strokeWidth="3.5" strokeLinecap="round"/>
             </svg>
             <span style={{
               fontFamily: 'Roboto, Arial, sans-serif',
-              fontWeight: 700, fontStyle: 'italic', fontSize: 14,
+              fontWeight: 700, fontStyle: 'italic', fontSize: 16,
               color: '#1a1a1a', letterSpacing: '-0.3px', lineHeight: 1
             }}>Flipkart</span>
           </Link>
@@ -107,7 +107,7 @@ export default function Navbar() {
         {/* Search */}
         <form onSubmit={handleSearch} style={{ flex: 1, position: 'relative' }}>
           <div style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: '#717478', pointerEvents: 'none', display: 'flex', alignItems: 'center' }}>
-            <FiSearch size={22} />
+            <FiSearch size={24} />
           </div>
           <input
             type="text"

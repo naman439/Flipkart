@@ -17,8 +17,10 @@ const banners = [
           <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 6 }}>From ₹599</h2>
           <p style={{ fontSize: 11, color: '#444' }}>Bold sound for bold celebrations</p>
         </div>
-        <img src="https://rukminim2.flixcart.com/image/416/416/xif0q/speaker/mobile-tablet-speaker/m/6/v/stone-350-boat-original-imagy4yxgzxj5cya.jpeg" style={{ position: 'absolute', right: -20, top: '5%', height: '110%', objectFit: 'contain', mixBlendMode: 'multiply' }} alt="boAt" />
-        <span style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(255,255,255,0.7)', padding: '2px 4px', fontSize: 10, fontWeight: 700, borderRadius: 2, color: '#666' }}>AD</span>
+        <img src="https://rukminim1.flixcart.com/image/800/800/xif0q/speaker/mobile-tablet-speaker/m/6/v/stone-350-boat-original-imagy4yxgzxj5cya.jpeg" style={{ position: 'absolute', right: -20, top: '5%', height: '110%', objectFit: 'contain', mixBlendMode: 'multiply' }} alt="boAt" onError={(e) => e.target.style.opacity = 0} />
+        <div style={{ position: 'absolute', top: 12, left: 12, background: 'rgba(0,0,0,0.5)', color: 'white', padding: '2px 8px', borderRadius: 4, fontSize: 13, fontWeight: 700, zIndex: 10 }}>
+          AD
+        </div>
       </div>
     ),
     href: '/products?search=boat'
@@ -36,7 +38,7 @@ const banners = [
           <h2 style={{ fontSize: 18, fontWeight: 800, marginBottom: 6 }}>From ₹63,990*</h2>
           <p style={{ fontSize: 11, color: '#444' }}>Brilliance in every frame</p>
         </div>
-        <img src="https://rukminim2.flixcart.com/image/416/416/xif0q/computer/v/d/b/15-fc0028au-thin-and-light-laptop-hp-original-imagp8nzgfbbgg8q.jpeg" style={{ position: 'absolute', right: -10, top: '20%', height: '70%', objectFit: 'contain', mixBlendMode: 'multiply' }} alt="Laptop" />
+        <img src="https://rukminim1.flixcart.com/image/800/800/xif0q/computer/v/d/b/15-fc0028au-thin-and-light-laptop-hp-original-imagp8nzgfbbgg8q.jpeg" style={{ position: 'absolute', right: -10, top: '20%', height: '70%', objectFit: 'contain', mixBlendMode: 'multiply' }} alt="Laptop" onError={(e) => e.target.style.opacity = 0} />
         <span style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(255,255,255,0.7)', padding: '2px 4px', fontSize: 10, fontWeight: 700, borderRadius: 2, color: '#666' }}>AD</span>
         
         {/* Mock pagination dots on the center banner to exactly match screenshot */}
@@ -47,7 +49,7 @@ const banners = [
         </div>
       </div>
     ),
-    href: '/products?category=electronics'
+    href: '/categories/electronics'
   },
   {
     id: 3,
@@ -64,7 +66,7 @@ const banners = [
         <span style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(255,255,255,0.7)', padding: '2px 4px', fontSize: 10, fontWeight: 700, borderRadius: 2, color: '#666' }}>AD</span>
       </div>
     ),
-    href: '/products'
+    href: '/products?search=protein'
   }
 ];
 
