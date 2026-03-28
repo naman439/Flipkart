@@ -3,12 +3,12 @@
  * Entry point for the Express.js application
  */
 
+require('dotenv').config();
 require('express-async-errors');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
-require('dotenv').config();
 
 // Routes
 const authRoutes = require('./routes/auth.routes');
@@ -21,7 +21,7 @@ const wishlistRoutes = require('./routes/wishlist.routes');
 const { errorHandler, notFound } = require('./middleware/error.middleware');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4050;
 
 // ─── Core Middleware ────────────────────────────────────────────────────────
 app.use(helmet()); // Security headers

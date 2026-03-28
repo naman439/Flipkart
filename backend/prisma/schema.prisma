@@ -1,13 +1,14 @@
 // Prisma Schema for Flipkart Clone
-// Database: MySQL
+// Database: PostgreSQL
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ─── Users ────────────────────────────────────────────────────────────────────
@@ -17,7 +18,7 @@ model User {
   email     String   @unique
   password  String
   phone     String?
-  address   String?  @db.Text
+  address   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -47,7 +48,7 @@ model Category {
 model Product {
   id            Int      @id @default(autoincrement())
   title         String
-  description   String   @db.Text
+  description   String
   price         Float
   discountPrice Float
   discountPct   Int      @default(0)
@@ -55,8 +56,8 @@ model Product {
   rating        Float    @default(0)
   reviewCount   Int      @default(0)
   brand         String?
-  images        String   @db.LongText  // JSON array of image URLs
-  specifications String? @db.LongText  // JSON object of key-value specs
+  images        String   // JSON array of image URLs
+  specifications String? // JSON object of key-value specs
   categoryId    Int
   isFeatured    Boolean  @default(false)
   createdAt     DateTime @default(now())
@@ -112,7 +113,7 @@ model Order {
   finalAmount     Float
   shippingName    String
   shippingPhone   String
-  shippingAddress String      @db.Text
+  shippingAddress String
   shippingCity    String
   shippingState   String
   shippingZip     String

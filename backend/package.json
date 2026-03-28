@@ -1,7 +1,7 @@
 {
   "name": "flipkart-clone-backend",
   "version": "1.0.0",
-  "description": "Flipkart Clone Backend - REST API with Node.js, Express, Prisma, and MySQL",
+  "description": "Flipkart Clone Backend - REST API with Node.js, Express, Prisma, and PostgreSQL",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -10,10 +10,12 @@
     "migrate:prod": "npx prisma migrate deploy",
     "generate": "npx prisma generate",
     "seed": "node prisma/seed.js",
+    "seed:enterprise": "node prisma/seed_enterprise.js",
+    "data:scrape": "node scripts/scrapeRealData.js",
     "studio": "npx prisma studio"
   },
   "prisma": {
-    "seed": "node prisma/seed.js"
+    "seed": "node prisma/seed_enterprise.js"
   },
   "dependencies": {
     "@prisma/client": "^5.10.2",
