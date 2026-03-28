@@ -38,9 +38,9 @@ const subCategoryData = {
     { name: 'Furnishings', img: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=200&q=80&fit=crop' },
   ],
   'beauty': [
-    { name: 'Skincare',   img: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=200&q=80&fit=crop' },
-    { name: 'Makeup',     img: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=200&q=80&fit=crop' },
-    { name: 'Fragrances', img: 'https://images.unsplash.com/photo-1588776814546-1ffbb3fef21b?w=200&q=80&fit=crop' },
+    { name: 'Skincare',    img: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=200&q=80&fit=crop' },
+    { name: 'Makeup',      img: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=200&q=80&fit=crop' },
+    { name: 'Fragrances',  img: 'https://images.unsplash.com/photo-1588776814546-1ffbb3fef21b?w=200&q=80&fit=crop' },
   ],
   'toys-baby': [
     { name: 'Learning Toys', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&q=80&fit=crop' },
@@ -60,8 +60,8 @@ const subCategoryData = {
     { name: 'Fitness',   img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=200&q=80&fit=crop' },
   ],
   'furniture': [
-    { name: 'Sofas',     img: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=200&q=80&fit=crop' },
-    { name: 'Beds',      img: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=200&q=80&fit=crop' },
+    { name: 'Sofas',      img: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=200&q=80&fit=crop' },
+    { name: 'Beds',       img: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=200&q=80&fit=crop' },
     { name: 'Home Decor', img: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=200&q=80&fit=crop' },
   ],
   'auto': [
@@ -80,7 +80,7 @@ const subCategoryData = {
 function SubIcon({ sub }) {
   const [failed, setFailed] = React.useState(false);
 
-  const container = {
+  const containerStyle = {
     width: 80,
     height: 80,
     borderRadius: '50%',
@@ -97,7 +97,7 @@ function SubIcon({ sub }) {
   if (failed) {
     // Branded initial pill — last resort, never a plain letter
     return (
-      <div style={{ ...container, background: 'linear-gradient(135deg,#2874f0,#047bd5)' }}>
+      <div style={{ ...containerStyle, background: 'linear-gradient(135deg,#2874f0,#047bd5)' }}>
         <span style={{ color: '#fff', fontWeight: 800, fontSize: 26, letterSpacing: -1 }}>
           {sub.name.charAt(0)}
         </span>
@@ -106,7 +106,7 @@ function SubIcon({ sub }) {
   }
 
   return (
-    <div style={container}>
+    <div style={containerStyle}>
       <img
         src={sub.img}
         alt={sub.name}
