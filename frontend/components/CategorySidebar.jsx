@@ -17,13 +17,36 @@ export default function CategorySidebar({
   onSpecToggle,
   minPrice, 
   maxPrice, 
+  absMinPrice = 0,
+  absMaxPrice = 100000,
   onPriceChange, 
   onClear 
 }) {
   const [brandSearch, setBrandSearch] = useState('');
   
   const RATING_OPTIONS = [4, 3, 2, 1];
-  const PRICE_OPTIONS = [1000, 2000, 5000, 10000, 20000, 30000, 50000];
+  
+  const generatePriceOptions = (min, max) => {
+    if (max - min <= 0) return [];
+    const diff = max - min;
+    let step = 500;
+    if (diff > 50000) step = 10000;
+    else if (diff > 10000) step = 5000;
+    else if (diff > 5000) step = 2000;
+    else if (diff > 1000) step = 500;
+    else if (diff > 500) step = 200;
+    else step = 100;
+    const options = [];
+    let current = Math.floor(min / step) * step;
+    if (current < min) current += step;
+    while (current < max) {
+      if (!options.includes(current)) options.push(current);
+      current += step;
+    }
+    return options;
+  };
+
+  const dynamicPriceOptions = generatePriceOptions(absMinPrice, absMaxPrice);
 
   // Derive the active category object for Breadcrumb
   const activeCatObj = categories.find(c => c.slug === currentCategory);
@@ -34,7 +57,7 @@ export default function CategorySidebar({
     .filter(([brandName]) => brandName.toLowerCase().includes(brandSearch.toLowerCase()));
 
   return (
-    <aside className="sidebar" style={{ padding: 0, overflow: 'hidden' }}>
+    <aside className="sidebar" style={{ padding: 0 }}>
       {/* ── Header ────────────────────────────────────────────────── */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', borderBottom: '1px solid #f0f0f0' }}>
         <p style={{ margin: 0, fontSize: '18px', fontWeight: 500, color: '#000' }}>
@@ -85,13 +108,39 @@ export default function CategorySidebar({
           <p className="sidebar-section-header">PRICE</p>
           <div className="sidebar-section-content">
             <div style={{ padding: '0 8px 16px 8px' }}>
-              <input 
-                type="range" 
-                min="0" max="100000" 
-                value={maxPrice || '100000'} 
-                onChange={(e) => onPriceChange(minPrice, e.target.value)}
-                style={{ width: '100%', accentColor: '#2874f0', cursor: 'pointer' }}
-              />
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#878787', marginBottom: '8px', fontWeight: 600 }}>
+                <span>₹{Number(minPrice || absMinPrice).toLocaleString()}</span>
+                <span>₹{Number(maxPrice || absMaxPrice).toLocaleString()}</span>
+              </div>
+              <div style={{ position: 'relative', height: '4px', background: '#e0e0e0', margin: '24px 0 12px 0', borderRadius: '2px' }}>
+                <div style={{ 
+                  position: 'absolute', 
+                  height: '100%', 
+                  background: '#2874f0', 
+                  left: `${absMaxPrice === absMinPrice ? 0 : ((Number(minPrice) || absMinPrice) - absMinPrice) / (absMaxPrice - absMinPrice) * 100}%`, 
+                  right: `${absMaxPrice === absMinPrice ? 0 : 100 - (((Number(maxPrice) || absMaxPrice) - absMinPrice) / (absMaxPrice - absMinPrice) * 100)}%` 
+                }} />
+                
+                <input 
+                  type="range" 
+                  min={absMinPrice} 
+                  max={absMaxPrice} 
+                  value={minPrice || absMinPrice} 
+                  onChange={(e) => onPriceChange(Math.min(Number(e.target.value), (Number(maxPrice) || absMaxPrice) - 1), maxPrice)}
+                  className="dual-slider"
+                  style={{ position: 'absolute', width: '100%', top: '-6px' }}
+                />
+                
+                <input 
+                  type="range" 
+                  min={absMinPrice} 
+                  max={absMaxPrice} 
+                  value={maxPrice || absMaxPrice} 
+                  onChange={(e) => onPriceChange(minPrice, Math.max(Number(e.target.value), (Number(minPrice) || absMinPrice) + 1))}
+                  className="dual-slider"
+                  style={{ position: 'absolute', width: '100%', top: '-6px' }}
+                />
+              </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <select 
@@ -100,7 +149,7 @@ export default function CategorySidebar({
                 style={{ width: '40%', padding: '4px', fontSize: '14px', color: '#212121', border: '1px solid #e0e0e0', outline: 'none', borderRadius: '2px', backgroundColor: '#fff' }}
               >
                 <option value="">Min</option>
-                {PRICE_OPTIONS.map(p => <option key={p} value={p}>₹{p}</option>)}
+                {dynamicPriceOptions.map(p => <option key={p} value={p}>₹{p}</option>)}
               </select>
               <span style={{ fontSize: '14px', color: '#878787' }}>to</span>
               <select 
@@ -109,8 +158,8 @@ export default function CategorySidebar({
                 style={{ width: '40%', padding: '4px', fontSize: '14px', color: '#212121', border: '1px solid #e0e0e0', outline: 'none', borderRadius: '2px', backgroundColor: '#fff' }}
               >
                 <option value="">Max</option>
-                {PRICE_OPTIONS.map(p => <option key={p} value={p}>₹{p}+</option>)}
-                <option value="100000">₹100000+</option>
+                {dynamicPriceOptions.map(p => <option key={p} value={p}>₹{p}</option>)}
+                <option value={absMaxPrice}>₹{absMaxPrice.toLocaleString()}</option>
               </select>
             </div>
           </div>

@@ -61,13 +61,7 @@ export default function CartPage() {
           
           {/* Left Column: Cart Items */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <div style={{ background: 'white', padding: '16px 24px', borderRadius: 2, boxShadow: 'var(--shadow-sm)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-               <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14 }}>
-                 Deliver to: <span style={{ fontWeight: 600 }}>Mumbai - 400001</span>
-               </div>
-               <button style={{ border: '1px solid #e0e0e0', padding: '8px 16px', background: 'white', color: 'var(--fk-blue)', fontWeight: 600, fontSize: 14, borderRadius: 2 }}>Change</button>
-            </div>
-
+            {/* Delivery bar removed as requested */}
             <div style={{ background: 'white', borderRadius: 2, boxShadow: 'var(--shadow-sm)', padding: '0 24px' }}>
               {cart.items.map((item) => (
                 <CartItem 

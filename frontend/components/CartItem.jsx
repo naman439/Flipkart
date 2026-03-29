@@ -19,7 +19,7 @@ export default function CartItem({ item, onUpdate, onRemove }) {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
           <div style={{ width: 112, height: 112, flexShrink: 0 }}>
             <img 
-              src={displayImage} 
+              src={displayImage.startsWith('/') ? `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:3050'}${displayImage}` : displayImage} 
               alt={item.product?.title} 
               style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
             />

@@ -307,7 +307,8 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
   padding: 16px;
-  height: fit-content;
+  height: calc(100vh - 80px);
+  overflow-y: auto;
   position: sticky;
   top: 70px;
 }
@@ -357,6 +358,30 @@ h1, h2, h3, h4, h5, h6 {
 .sidebar-option input[type="radio"] {
   accent-color: var(--fk-blue);
   cursor: pointer;
+}
+
+/* Dual Range Slider */
+.dual-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.dual-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  pointer-events: auto;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--fk-white);
+  border: 1px solid #c2c2c2;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  z-index: 3;
+  position: relative;
 }
 
 /* ── Product Grid ────────────────────────────────────────────────────────── */

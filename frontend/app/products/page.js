@@ -34,10 +34,12 @@ function ProductsContent() {
   const [minRating, setMinRating] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
-  const [brands, setBrands] = useState([]);
+  const [brands, setBrands] = useState({});
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [dynamicSpecs, setDynamicSpecs] = useState({});
   const [selectedSpecs, setSelectedSpecs] = useState({});
+  const [absMinPrice, setAbsMinPrice] = useState(0);
+  const [absMaxPrice, setAbsMaxPrice] = useState(100000);
 
   const debouncedSearch = useDebounce(search, 500);
 
@@ -49,8 +51,10 @@ function ProductsContent() {
   // Fetch dynamic filters whenever category or search changes
   useEffect(() => {
     getDynamicFilters({ category, search: debouncedSearch }).then((d) => {
-      setBrands(d.data?.brands || []);
+      setBrands(d.data?.brands || {});
       setDynamicSpecs(d.data?.specifications || {});
+      setAbsMinPrice(d.data?.minPrice ?? 0);
+      setAbsMaxPrice(d.data?.maxPrice ?? 100000);
     }).catch(console.error);
   }, [category, debouncedSearch]);
 
@@ -195,6 +199,8 @@ function ProductsContent() {
           }}
           minPrice={minPrice}
           maxPrice={maxPrice}
+          absMinPrice={absMinPrice}
+          absMaxPrice={absMaxPrice}
           onPriceChange={(min, max) => { setMinPrice(min); setMaxPrice(max); setPage(1); }}
           onClear={(category || minRating || debouncedSearch || minPrice || maxPrice || selectedBrands.length > 0 || Object.values(selectedSpecs).some(arr => arr.length > 0)) ? handleClear : null}
         />

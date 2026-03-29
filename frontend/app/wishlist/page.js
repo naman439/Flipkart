@@ -66,7 +66,7 @@ export default function WishlistPage() {
                 <div style={{ position: 'relative' }}>
                   <Link href={`/products/${p.id}`}>
                     <div style={{ background: '#f9f9f9', height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <img src={img} alt={p.title} style={{ maxHeight: 180, objectFit: 'contain', padding: 8 }} loading="lazy" />
+                      <img src={img.startsWith('/') ? `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:3050'}${img}` : img} alt={p.title} style={{ maxHeight: 180, objectFit: 'contain', padding: 8 }} loading="lazy" />
                     </div>
                   </Link>
                   <button

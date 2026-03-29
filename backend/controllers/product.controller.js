@@ -247,11 +247,13 @@ const getDynamicFilters = async (req, res) => {
 
   const products = await prisma.product.findMany({
     where,
-    select: { brand: true, specifications: true }
+    select: { brand: true, specifications: true, discountPrice: true }
   });
 
   const brandsMap = {};
   const specsMap = {};
+  let minPrice = Infinity;
+  let maxPrice = 0;
 
   products.forEach(p => {
     if (p.brand) {
@@ -264,13 +266,25 @@ const getDynamicFilters = async (req, res) => {
         specsMap[key][value] = (specsMap[key][value] || 0) + 1;
       }
     }
+    if (p.discountPrice != null) {
+      const dp = Number(p.discountPrice);
+      if (dp < minPrice) minPrice = dp;
+      if (dp > maxPrice) maxPrice = dp;
+    }
   });
+
+  if (minPrice === Infinity) {
+    minPrice = 0;
+    maxPrice = 100000;
+  }
 
   res.json({
     success: true,
     data: {
       brands: brandsMap,
-      specifications: specsMap
+      specifications: specsMap,
+      minPrice,
+      maxPrice
     }
   });
 };
