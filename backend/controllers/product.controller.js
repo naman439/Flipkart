@@ -126,6 +126,8 @@ const getProducts = async (req, res) => {
     simplified = shuffleArray(simplified);
   }
 
+  // No caching for filtered product lists (dynamic per user)
+  res.setHeader('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
   res.json({
     success: true,
     data: simplified,
@@ -194,6 +196,8 @@ const getFeaturedProducts = async (req, res) => {
     images: p.images.map(img => img.imageUrl),
   }));
 
+  // Cache featured products for 2 minutes
+  res.setHeader('Cache-Control', 'public, max-age=120, stale-while-revalidate=300');
   res.json({ success: true, data: simplified });
 };
 
@@ -207,6 +211,8 @@ const getCategories = async (req, res) => {
     include: { _count: { select: { products: true } } },
   });
 
+  // Cache categories for 5 minutes (rarely change)
+  res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=600');
   res.json({ success: true, data: categories });
 };
 
@@ -296,29 +302,32 @@ const getDynamicFilters = async (req, res) => {
  * Fetch 10 categories and top 8 products for each
  */
 const getHomeLayout = async (req, res) => {
+  // Single query: fetch categories with their top-rated products + images
   const categories = await prisma.category.findMany({
     orderBy: { name: 'asc' },
-    select: { id: true, name: true, slug: true }
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      products: {
+        take: 8,
+        orderBy: { rating: 'desc' },
+        include: { images: { orderBy: { displayOrder: 'asc' } } }
+      }
+    }
   });
 
-  const layout = await Promise.all(categories.map(async (cat) => {
-    const products = await prisma.product.findMany({
-      where: { categoryId: cat.id },
-      take: 8,
-      orderBy: { rating: 'desc' },
-      include: { images: { orderBy: { displayOrder: 'asc' } } }
-    });
-
-    return {
-      categoryName: cat.name,
-      slug: cat.slug,
-      products: products.map(p => ({
-        ...p,
-        images: p.images.map(img => img.imageUrl)
-      }))
-    };
+  const layout = categories.map(cat => ({
+    categoryName: cat.name,
+    slug: cat.slug,
+    products: cat.products.map(p => ({
+      ...p,
+      images: p.images.map(img => img.imageUrl)
+    }))
   }));
 
+  // Cache home layout for 60 seconds
+  res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=120');
   res.json({ success: true, data: layout });
 };
 
