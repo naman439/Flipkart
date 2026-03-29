@@ -73,10 +73,22 @@ app.use(notFound);
 app.use(errorHandler);
 
 // ─── Start Server ────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`\n🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📦 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/api/health\n`);
-});
+const startServer = async () => {
+  try {
+    await require('./config/db').$connect();
+    console.log('✅ Database connected successfully');
+    
+    app.listen(PORT, () => {
+      console.log(`\n🚀 Server running on http://localhost:${PORT}`);
+      console.log(`📦 Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`📊 Health check: http://localhost:${PORT}/api/health\n`);
+    });
+  } catch (error) {
+    console.error('❌ Database connection failed:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
 
 module.exports = app;
