@@ -3,8 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getProductById } from '@/services/api/products.api';
+import { getAddresses } from '@/services/api/address.api';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
+import { useAuth } from '@/context/AuthContext';
 import { Spinner } from '@/components/LoadingSkeleton';
 import { FiStar, FiShoppingCart, FiZap, FiMapPin, FiInfo, FiTag } from 'react-icons/fi';
 import ImageGrid from '@/components/ImageGrid';
@@ -14,11 +16,41 @@ import toast from 'react-hot-toast';
 export default function ProductDetailPage({ params }) {
   const { id } = React.use(params);
   const router = useRouter();
+  const { isAuthenticated } = useAuth();
   const { addItem } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [pincode, setPincode] = useState('');
+  const [deliveryDate, setDeliveryDate] = useState('');
+
+  const calculateDeliveryDate = (code, categoryName) => {
+    if (!code || code.length < 6) return null;
+    
+    // 1. Base days by category
+    let baseDays = 3;
+    const cat = categoryName?.toLowerCase() || '';
+    if (cat.includes('mobile') || cat.includes('tablet') || cat.includes('laptop') || cat.includes('electronic')) {
+      baseDays = 2;
+    } else if (cat.includes('home') || cat.includes('appliance') || cat.includes('furniture')) {
+      baseDays = 4;
+    } else if (cat.includes('grocery')) {
+      baseDays = 1;
+    }
+
+    // 2. Metro check (First 2 digits) - Delhi, Mumbai, Bangalore, Chennai
+    const metroCodes = ['11', '40', '56', '60'];
+    const isMetro = metroCodes.includes(code.substring(0, 2));
+    const finalDays = isMetro ? Math.max(1, baseDays - 1) : baseDays;
+
+    const date = new Date();
+    date.setDate(date.getDate() + finalDays);
+    
+    return {
+      formatted: date.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' }),
+      isExpress: finalDays <= 2
+    };
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -33,7 +65,33 @@ export default function ProductDetailPage({ params }) {
       }
     };
     fetchProduct();
-  }, [id, router]);
+
+    // Fetch default pincode
+    const fetchDefaultPin = async () => {
+      if (isAuthenticated && product) {
+        try {
+          const res = await getAddresses();
+          const def = res.data?.find(a => a.isDefault) || res.data?.[0];
+          if (def) {
+            setPincode(def.postalCode);
+            setDeliveryDate(calculateDeliveryDate(def.postalCode, product.category?.name));
+          }
+        } catch (err) {
+          console.error('Failed to fetch pincode:', err);
+        }
+      }
+    };
+    if (product) fetchDefaultPin();
+  }, [id, router, isAuthenticated, product]);
+
+  const handleCheckPincode = () => {
+    if (pincode.length === 6) {
+      setDeliveryDate(calculateDeliveryDate(pincode, product?.category?.name));
+      toast.success('Pincode updated');
+    } else {
+      toast.error('Please enter a valid 6-digit Pincode');
+    }
+  };
 
   if (loading) {
     return (
@@ -46,7 +104,13 @@ export default function ProductDetailPage({ params }) {
   if (!product) return null;
 
   const images = typeof product.images === 'string' ? JSON.parse(product.images) : (product.images || [product.image]);
-  const specs = typeof product.specifications === 'string' ? JSON.parse(product.specifications) : (product.specifications || {});
+  let specs = {};
+  try {
+    specs = typeof product.specifications === 'string' ? JSON.parse(product.specifications) : (product.specifications || {});
+  } catch (e) {
+    console.error("Specs parse error", e);
+    specs = { "Details": product.specifications }; // Fallback to raw string if parsing fails
+  }
 
   const handleBuyNow = async () => {
     const success = await addItem(product.id, 1);
@@ -128,9 +192,25 @@ export default function ProductDetailPage({ params }) {
                   onChange={(e) => setPincode(e.target.value)}
                   style={{ border: 'none', outline: 'none', fontSize: 14, width: 150 }}
                 />
-                <span style={{ color: '#2874f0', fontWeight: 600, cursor: 'pointer', fontSize: 14 }}>Check</span>
+                <span onClick={handleCheckPincode} style={{ color: '#2874f0', fontWeight: 700, cursor: 'pointer', fontSize: 14 }}>Check</span>
               </div>
-              <div style={{ marginTop: 10, fontSize: 14, fontWeight: 600 }}>Delivery by 11 PM, Tomorrow | <span style={{ color: '#388e3c' }}>Free</span> <span style={{ textDecoration: 'line-through', color: '#878787' }}>₹40</span></div>
+              <div style={{ marginTop: 10, fontSize: 14, fontWeight: 600 }}>
+                {deliveryDate ? (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                    <span>Delivery by {deliveryDate.formatted}</span>
+                    <span style={{ color: '#878787', fontWeight: 400 }}>|</span>
+                    <span style={{ color: '#388e3c' }}>Free</span>
+                    <span style={{ textDecoration: 'line-through', color: '#878787', fontSize: 12 }}>₹40</span>
+                    {deliveryDate.isExpress && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#f5faff', color: 'var(--fk-blue)', padding: '2px 8px', borderRadius: 4, fontSize: 11, border: '1px solid rgba(40,116,240,0.1)' }}>
+                         <FiTruck size={12} /> EXPRESS DELIVERY
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <span style={{ color: '#878787' }}>Enter pincode to check delivery date</span>
+                )}
+              </div>
             </div>
           </div>
 
@@ -147,16 +227,25 @@ export default function ProductDetailPage({ params }) {
           </div>
 
           {/* Specifications */}
-          <div style={{ border: '1px solid #f0f0f0', borderRadius: 2 }}>
+          <div style={{ border: '1px solid #f0f0f0', borderRadius: 2, position: 'relative' }}>
             <div style={{ padding: '16px 24px', fontSize: 24, fontWeight: 400, borderBottom: '1px solid #f0f0f0' }}>Specifications</div>
-            <div style={{ padding: '0 24px 24px' }}>
+            
+            <div style={{ position: 'relative' }}>
+              <div style={{ 
+                padding: '0 24px 24px', 
+                maxHeight: '350px', 
+                overflowY: 'auto',
+                scrollbarWidth: 'thin',
+                scrollbarColor: '#2874f0 #f0f0f0',
+                scrollBehavior: 'smooth'
+              }}>
               {Object.entries(specs).length > 0 ? (() => {
                 // Detect flat vs nested shape
                 const isFlat = Object.values(specs).every(v => typeof v !== 'object' || v === null);
                 if (isFlat) {
                   // Render as a single flat table (like Flipkart's General section)
                   return (
-                    <div>
+                    <div style={{ paddingBottom: 20 }}>
                       <div style={{ fontSize: 16, fontWeight: 600, color: '#212121', padding: '20px 0 8px' }}>General</div>
                       {Object.entries(specs).map(([name, value]) => (
                         <div key={name} style={{ display: 'grid', gridTemplateColumns: '200px 1fr', gap: 8, padding: '12px 0', borderBottom: '1px solid #f5f5f5', fontSize: 14 }}>
@@ -184,6 +273,7 @@ export default function ProductDetailPage({ params }) {
               })() : (
                 <div style={{ color: '#878787', fontStyle: 'italic', padding: '20px 0' }}>No detailed specifications available for this product.</div>
               )}
+              </div>
             </div>
           </div>
         </div>

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { FiSearch, FiShoppingCart, FiUser, FiChevronDown, FiMapPin } from 'react-icons/fi';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
+import { getAddresses } from '@/services/api/address.api';
 
 export default function Navbar() {
   const router = useRouter();
@@ -14,10 +15,33 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [addresses, setAddresses] = useState([]);
+  const [loadingAddress, setLoadingAddress] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      if (isAuthenticated) {
+        setLoadingAddress(true);
+        try {
+          const res = await getAddresses();
+          if (res.success) setAddresses(res.data);
+        } catch (err) {
+          console.error('Failed to fetch addresses', err);
+        } finally {
+          setLoadingAddress(false);
+        }
+      } else {
+        setAddresses([]);
+      }
+    };
+    fetchAddresses();
+  }, [isAuthenticated]);
+
+  const defaultAddress = addresses.find(a => a.isDefault) || addresses[0];
 
   const handleSearch = useCallback((e) => {
     e.preventDefault();
@@ -36,8 +60,7 @@ export default function Navbar() {
 
         {/* Left: logo + service pills */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-
-          {/* Flipkart logo pill */}
+          {/* ... (Existing Logo/Pills) ... */}
           <Link href="/" style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
             background: '#ffc200', borderRadius: 6, padding: '8px 12px',
@@ -55,7 +78,6 @@ export default function Navbar() {
             }}>Flipkart</span>
           </Link>
 
-          {/* Minutes */}
           <button style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#f0f0f0', border: 'none', borderRadius: 6, padding: '8px 12px', cursor: 'pointer', fontSize: 13, fontWeight: 700, color: '#212121' }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path d="M12 6h3l2 4v7h-2v2h-3v-2H9v2H6v-2H5v-7l2-4h5" fill="#fceaea"/>
@@ -67,7 +89,6 @@ export default function Navbar() {
             <span>Minutes</span>
           </button>
 
-          {/* Travel */}
           <button style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#f0f0f0', border: 'none', borderRadius: 6, padding: '8px 12px', cursor: 'pointer', fontSize: 13, fontWeight: 700, color: '#212121' }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path d="M22 16L12 9V3.5C12 2.67 11.33 2 10.5 2C9.67 2 9 2.67 9 3.5V9L-1 16v2l10-3v4l-3 2v2l4-1 4 1v-2l-3-2v-4l10 3v-2z" fill="#d32f2f" transform="translate(1, 0) scale(0.9)"/>
@@ -75,7 +96,6 @@ export default function Navbar() {
             <span>Travel</span>
           </button>
 
-          {/* Grocery */}
           <button style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#f0f0f0', border: 'none', borderRadius: 6, padding: '8px 12px', cursor: 'pointer', fontSize: 13, fontWeight: 700, color: '#212121' }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path d="M5 9l-1 11h16l-1-11H5z" fill="#e8f0fe" stroke="#1976d2" strokeWidth="1.5" strokeLinejoin="round"/>
@@ -88,13 +108,32 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* Right: address */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#212121', cursor: 'pointer' }}>
+        {/* Right: address (Dynamic) */}
+        <div 
+          onClick={() => isAuthenticated ? router.push('/profile?tab=addresses') : router.push('/auth/login')}
+          style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#212121', cursor: 'pointer' }}
+        >
           <FiMapPin size={16} color="#212121" />
-          <span style={{ fontWeight: 700 }}>HOME</span>
-          <span style={{ color: '#212121', maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            3, Guru Teg Bahadur Nagar, Khar...
-          </span>
+          {isAuthenticated ? (
+            defaultAddress ? (
+              <>
+                <span style={{ fontWeight: 700 }}>{defaultAddress.city || 'DELIVERY'}</span>
+                <span style={{ 
+                  color: '#212121', 
+                  maxWidth: 220, 
+                  overflow: 'hidden', 
+                  textOverflow: 'ellipsis', 
+                  whiteSpace: 'nowrap' 
+                }}>
+                  {defaultAddress.addressLine1}, {defaultAddress.postalCode}
+                </span>
+              </>
+            ) : (
+              <span style={{ fontWeight: 700 }}>{loadingAddress ? 'Loading...' : 'Add Address'}</span>
+            )
+          ) : (
+            <span style={{ fontWeight: 700 }}>Select Address</span>
+          )}
           <FiChevronDown size={14} color="#212121" />
           <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginLeft: 8, background: '#f5f5f5', padding: '4px 8px', borderRadius: 12 }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">

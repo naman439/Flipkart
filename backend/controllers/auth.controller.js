@@ -7,9 +7,10 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const prisma = require('../config/db');
+const supabase = require('../config/supabase');
 
 /**
- * Generate JWT token for a user
+ * Generate JWT token for a user (Legacy - keeping for compatibility)
  */
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -18,88 +19,135 @@ const generateToken = (id) => {
 };
 
 /**
+ * Regex patterns as per requirements
+ */
+const REGEX = {
+  NAME: /^[A-Za-z ]{2,50}$/,
+  EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+  PASSWORD: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,20}$/,
+  PHONE: /^[6-9]\d{9}$/
+};
+
+/**
  * POST /api/auth/register
- * Register a new user profile
+ * Register a new user with Supabase Auth
  */
 const register = async (req, res) => {
-  const { name, email, password, phone } = req.body;
+  let { name, email, password, phone } = req.body;
 
-  // Validate required fields
-  if (!name || !email || !password) {
-    const error = new Error('Name, email, and password are required');
-    error.statusCode = 400;
-    throw error;
+  // 1. Sanitize & Validate Email
+  if (!email) throw new Error('Email is required');
+  email = email.trim().toLowerCase();
+  
+  if (!REGEX.EMAIL.test(email)) {
+    return res.status(400).json({ success: false, message: "Please enter a valid email address" });
   }
 
-  if (password.length < 6) {
-    const error = new Error('Password must be at least 6 characters');
-    error.statusCode = 400;
-    throw error;
+  // 2. Validate Name
+  if (!name || !REGEX.NAME.test(name)) {
+    return res.status(400).json({ success: false, message: "Invalid name format (Alphabets only, 2-50 chars)" });
   }
 
-  // Check if profile already exists
-  const existingProfile = await prisma.profile.findUnique({ where: { email } });
-  if (existingProfile) {
-    const error = new Error('User with this email already exists');
-    error.statusCode = 409;
-    throw error;
+  // 3. Validate Password
+  if (!password || !REGEX.PASSWORD.test(password)) {
+    return res.status(400).json({ success: false, message: "Password must be 8-20 characters with uppercase, lowercase, number, and special character" });
   }
 
-  // Hash password
-  const hashedPassword = await bcrypt.hash(password, 12);
+  // 4. Validate Phone (Optional)
+  if (phone && !REGEX.PHONE.test(phone)) {
+    return res.status(400).json({ success: false, message: "Invalid Indian mobile number" });
+  }
 
-  // Create Profile
-  const profile = await prisma.profile.create({
-    data: { name, email, password: hashedPassword, phone },
-    select: { id: true, name: true, email: true, phone: true, createdAt: true },
+  // 5. Supabase Signup
+  const { data: authData, error: authError } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { display_name: name }
+    }
   });
 
-  const token = generateToken(profile.id);
+  if (authError) {
+    return res.status(400).json({ success: false, message: authError.message });
+  }
 
-  res.status(201).json({
-    success: true,
-    message: 'User registered successfully',
-    data: { user: profile, token },
-  });
+  if (!authData.user) {
+    return res.status(400).json({ success: false, message: "Registration failed. Please try again." });
+  }
+
+  // 6. Sync with Profiles table using Supabase UID
+  try {
+    const profile = await prisma.profile.create({
+      data: {
+        id: authData.user.id,
+        name,
+        email,
+        phone: phone || null,
+        // Password is NOT stored in profiles table for Supabase Auth users
+      },
+      select: { id: true, name: true, email: true, phone: true, createdAt: true },
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Please check your email to verify your account',
+      data: { user: profile }
+    });
+  } catch (dbErr) {
+    console.error("DB Sync Error:", dbErr);
+    // If profile creation fails but auth succeeded, we should ideally handle rollback or retry
+    res.status(500).json({ success: false, message: "Error syncing user profile" });
+  }
 };
 
 /**
  * POST /api/auth/login
- * Login an existing user
+ * Login with Supabase Auth (STRICT EMAIL ONLY)
  */
 const login = async (req, res) => {
-  const { email, password } = req.body;
+  let { email, password } = req.body;
 
-  if (!email || !password) {
-    const error = new Error('Email and password are required');
-    error.statusCode = 400;
-    throw error;
+  // 1. Sanitize & Validate Email
+  if (!email || !email.includes('@')) {
+    return res.status(400).json({ success: false, message: "Please enter a valid email address" });
+  }
+  email = email.trim().toLowerCase();
+
+  if (!REGEX.EMAIL.test(email)) {
+    return res.status(400).json({ success: false, message: "Please enter a valid email address" });
   }
 
-  // Find profile
-  const profile = await prisma.profile.findUnique({ where: { email } });
-  if (!profile) {
-    const error = new Error('Invalid email or password');
-    error.statusCode = 401;
-    throw error;
+  // 2. Validate Password
+  if (!password) {
+    return res.status(400).json({ success: false, message: "Invalid email or password" });
   }
 
-  // Compare password
-  const isMatch = await bcrypt.compare(password, profile.password);
-  if (!isMatch) {
-    const error = new Error('Invalid email or password');
-    error.statusCode = 401;
-    throw error;
+  // 3. Supabase Login
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    // SECURITY: Always return generic message
+    return res.status(401).json({ success: false, message: "Invalid email or password" });
   }
 
-  const token = generateToken(profile.id);
+  // 4. Check if session exists (Verification Check)
+  if (!data.session) {
+    return res.status(401).json({ success: false, message: "Please verify your email to log in" });
+  }
+
+  // 5. Get Profile from DB
+  const profile = await prisma.profile.findUnique({ where: { id: data.user.id } });
 
   res.json({
     success: true,
     message: 'Login successful',
     data: {
-      user: { id: profile.id, name: profile.name, email: profile.email, phone: profile.phone },
-      token,
+      user: profile,
+      token: data.session.access_token,
+      session: data.session
     },
   });
 };

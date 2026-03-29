@@ -11,31 +11,50 @@ import toast from 'react-hot-toast';
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login } = useAuth();
+  const { login, sendOTP, verifyOTP } = useAuth();
+  
   const [form, setForm] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   const handleChange = (e) => {
-    setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setForm((p) => ({ ...p, [name]: value }));
+    
+    if (name === 'email') {
+      if (!value) {
+        setError('');
+      } else if (!value.includes('@')) {
+        setError('Please enter a valid email address');
+      } else if (!EMAIL_REGEX.test(value)) {
+        setError('Invalid email format');
+      } else {
+        setError('');
+      }
+    }
   };
 
-  const handleSubmit = async (e) => {
+  const handleEmailLogin = async (e) => {
     e.preventDefault();
-    if (!form.email || !form.password) {
-      toast.error('Please enter all fields');
-      return;
-    }
+    if (error || !form.email || !form.password) return;
+
     setLoading(true);
     try {
-      await login(form.email, form.password);
+      const sanitizedEmail = form.email.trim().toLowerCase();
+      await login(sanitizedEmail, form.password);
       toast.success('Welcome back!');
       router.push(searchParams.get('redirect') || '/');
     } catch (err) {
+      // Security: backend already returns generic error
       toast.error(getErrorMessage(err));
     } finally {
       setLoading(false);
     }
   };
+
+  const isInvalid = !form.email || !form.password || !!error || !EMAIL_REGEX.test(form.email);
 
   return (
     <div className="auth-page">
@@ -54,19 +73,22 @@ function LoginContent() {
         </div>
 
         {/* Right Panel */}
-        <div className="auth-form">
-          <form onSubmit={handleSubmit} style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <div className="form-group-alt">
-              <label>Enter Email/Mobile number</label>
+        <div className="auth-form" style={{ padding: '30px 40px' }}>
+          <form onSubmit={handleEmailLogin} style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+            <div className="form-group-alt" style={{ marginBottom: error ? 10 : 25 }}>
+              <label>Enter Email ID</label>
               <input 
                 type="text" 
                 name="email" 
                 value={form.email} 
                 onChange={handleChange} 
                 autoComplete="off"
+                style={{ borderColor: error ? '#e91e63' : '#e0e0e0' }}
               />
+              {error && <span style={{ color: '#e91e63', fontSize: 11, marginTop: 4 }}>{error}</span>}
             </div>
-            <div className="form-group-alt">
+            
+            <div className="form-group-alt" style={{ marginBottom: 25 }}>
               <label>Enter Password</label>
               <input 
                 type="password" 
@@ -80,16 +102,16 @@ function LoginContent() {
               By continuing, you agree to Flipkart's <span style={{ color: '#2874f0' }}>Terms of Use</span> and <span style={{ color: '#2874f0' }}>Privacy Policy</span>.
             </p>
 
-            <button type="submit" className="btn btn-orange" disabled={loading}>
+            <button type="submit" className="btn btn-orange" disabled={loading || isInvalid}>
               {loading ? <Spinner size={20} color="white" /> : 'Login'}
             </button>
-
-            <p style={{ textAlign: 'center', marginTop: 'auto', fontSize: 14 }}>
-              <Link href="/auth/signup" style={{ color: '#2874f0', textDecoration: 'none', fontWeight: 500 }}>
-                New to Flipkart? Create an account
-              </Link>
-            </p>
           </form>
+
+          <p style={{ textAlign: 'center', marginTop: 'auto', fontSize: 14 }}>
+            <Link href="/auth/signup" style={{ color: '#2874f0', textDecoration: 'none', fontWeight: 500 }}>
+              New to Flipkart? Create an account
+            </Link>
+          </p>
         </div>
       </div>
     </div>

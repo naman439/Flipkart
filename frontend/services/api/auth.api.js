@@ -23,3 +23,15 @@ export const updateProfile = async (data) => {
   const res = await api.put('/auth/profile', data);
   return res.data;
 };
+
+/** Send OTP to mobile */
+export const sendOTP = async (phone) => {
+  const res = await api.post('/auth/send-otp', { phone });
+  return res.data;
+};
+
+/** Verify OTP and login/register */
+export const verifyOTP = async (phone, otp) => {
+  const res = await api.post('/auth/verify-otp', { phone, otp });
+  return res.data;
+};

@@ -13,7 +13,7 @@ const createTransporter = () => {
     secure: false, // TLS
     auth: {
       user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      pass: (process.env.EMAIL_PASS || '').replace(/\s+/g, ''),
     },
   });
 };
@@ -98,7 +98,7 @@ const sendOrderConfirmationEmail = async (to, name, order) => {
           <!-- Total -->
           <div style="text-align: right; margin-top: 16px; padding-top: 16px; border-top: 2px solid #2874f0;">
             <p style="font-size: 18px; font-weight: 700; color: #333;">
-              Total: ₹${order.finalAmount.toLocaleString('en-IN')}
+              Total: ₹${Number(order.finalAmount).toLocaleString('en-IN')}
             </p>
           </div>
           
@@ -118,14 +118,20 @@ const sendOrderConfirmationEmail = async (to, name, order) => {
     </html>
   `;
 
-  await transporter.sendMail({
-    from: process.env.EMAIL_FROM || `"Flipkart Clone" <${process.env.EMAIL_USER}>`,
-    to,
-    subject: `Order Confirmed! #${order.id} - Flipkart Clone`,
-    html,
-  });
-
-  console.log(`📧 Order confirmation email sent to ${to}`);
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL_FROM || `"Flipkart Clone" <${process.env.EMAIL_USER}>`,
+      to,
+      subject: `Order Confirmed! #${order.id.slice(0, 8).toUpperCase()} - Flipkart Clone`,
+      html,
+    });
+    console.log(`📧 Order confirmation email successfully sent to ${to} for Order #${order.id}`);
+  } catch (error) {
+    console.error(`❌ Failed to send order confirmation email to ${to}:`, error.message);
+    if (error.code === 'EAUTH') {
+      console.error('   👉 SMTP Authentication Error: Check EMAIL_USER and EMAIL_PASS in .env');
+    }
+  }
 };
 
 module.exports = { sendOrderConfirmationEmail };

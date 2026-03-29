@@ -111,6 +111,7 @@ const placeOrder = async (req, res) => {
               productId: item.productId,
               quantity: item.quantity,
               priceAtPurchase: item.product.discountPrice,
+              title: item.product.title,
             })),
           },
         },

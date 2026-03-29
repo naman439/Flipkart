@@ -15,12 +15,12 @@ import {
   FiMapPin, FiTag, FiEdit2, FiChevronRight
 } from 'react-icons/fi';
 
-const INDIA_STATES = [
-  'Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh','Goa','Gujarat',
-  'Haryana','Himachal Pradesh','Jharkhand','Karnataka','Kerala','Madhya Pradesh',
-  'Maharashtra','Manipur','Meghalaya','Mizoram','Nagaland','Odisha','Punjab',
-  'Rajasthan','Sikkim','Tamil Nadu','Telangana','Tripura','Uttar Pradesh',
-  'Uttarakhand','West Bengal','Delhi','Jammu & Kashmir','Ladakh'
+const INDIAN_STATES = [
+  "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chandigarh", "Chhattisgarh", 
+  "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", 
+  "Jammu and Kashmir", "Jharkhand", "Karnataka", "Kerala", "Ladakh", "Lakshadweep", "Madhya Pradesh", 
+  "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Puducherry", "Punjab", 
+  "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"
 ];
 
 const emptyForm = {
@@ -45,6 +45,7 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState('COD');
   const [orderLoading, setOrderLoading] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [fetchingPincode, setFetchingPincode] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) router.push('/auth/login?redirect=/checkout');
@@ -71,6 +72,33 @@ export default function CheckoutPage() {
   }, [isAuthenticated]);
 
   useEffect(() => { loadAddresses(); }, [loadAddresses]);
+
+  // Pincode Auto-fill Logic
+  useEffect(() => {
+    if (form.postalCode.length === 6 && !savingAddr) {
+      const fetchLocation = async () => {
+        setFetchingPincode(true);
+        try {
+          const res = await fetch(`https://api.postalpincode.in/pincode/${form.postalCode}`);
+          const data = await res.json();
+          if (data[0].Status === 'Success') {
+            const postOffice = data[0].PostOffice[0];
+            setForm(prev => ({
+              ...prev,
+              city: postOffice.District,
+              state: postOffice.State
+            }));
+            toast.success(`Auto-filled: ${postOffice.District}, ${postOffice.State}`);
+          }
+        } catch (err) {
+          console.error('Pincode fetch error:', err);
+        } finally {
+          setFetchingPincode(false);
+        }
+      };
+      fetchLocation();
+    }
+  }, [form.postalCode, savingAddr]);
 
   // Validate address form
   const validateForm = () => {
@@ -234,12 +262,12 @@ export default function CheckoutPage() {
                       <label style={labelStyle}>State *</label>
                       <select style={{ ...inputStyle(formErrors.state), background: 'white' }} value={form.state} onChange={e => setForm(f => ({ ...f, state: e.target.value }))}>
                         <option value="">Select State</option>
-                        {INDIA_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                        {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
                       </select>
                       {formErrors.state && <span style={errStyle}>{formErrors.state}</span>}
                     </div>
                     <div>
-                      <label style={labelStyle}>Pincode *</label>
+                      <label style={labelStyle}>Pincode * {fetchingPincode && <span style={{ color: 'var(--fk-blue)', fontSize: 10 }}> (Fetching...)</span>}</label>
                       <input style={inputStyle(formErrors.postalCode)} value={form.postalCode} onChange={e => setForm(f => ({ ...f, postalCode: e.target.value.replace(/\D/, '') }))} placeholder="6-digit PIN" maxLength={6} />
                       {formErrors.postalCode && <span style={errStyle}>{formErrors.postalCode}</span>}
                     </div>

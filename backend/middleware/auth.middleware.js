@@ -4,8 +4,8 @@
  * Sync'd with NEW Production UUID Schema
  */
 
-const jwt = require('jsonwebtoken');
 const prisma = require('../config/db');
+const supabase = require('../config/supabase');
 
 const protect = async (req, res, next) => {
   let token;
@@ -16,34 +16,33 @@ const protect = async (req, res, next) => {
   }
 
   if (!token) {
-    const error = new Error('Not authorized, no token provided');
-    error.statusCode = 401;
-    return next(error);
+    return res.status(401).json({ success: false, message: 'Not authorized, no token provided' });
   }
 
   try {
-    // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // 1. Verify token with Supabase
+    const { data: { user }, error } = await supabase.auth.getUser(token);
 
-    // Fetch PROFILE from database (User model was renamed to Profile)
+    if (error || !user) {
+      return res.status(401).json({ success: false, message: 'Authorization failed or session expired' });
+    }
+
+    // 2. Fetch PROFILE from database using the Supabase UUID
     const profile = await prisma.profile.findUnique({
-      where: { id: decoded.id }, // id is now a UUID String
+      where: { id: user.id },
       select: { id: true, name: true, email: true },
     });
 
     if (!profile) {
-      const error = new Error('User profile not found');
-      error.statusCode = 401;
-      return next(error);
+      return res.status(401).json({ success: false, message: 'User profile not found in database' });
     }
 
-    // Attach profile to request as user for backward compatibility
+    // 3. Attach profile to request
     req.user = profile;
     next();
   } catch (err) {
-    const error = new Error('Authorization failed');
-    error.statusCode = 401;
-    return next(error);
+    console.error("Auth Middleware Error:", err);
+    return res.status(401).json({ success: false, message: 'Authorization failed' });
   }
 };
 
