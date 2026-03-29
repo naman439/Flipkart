@@ -1,6 +1,7 @@
 /**
  * Auth Controller
  * Handles user registration and login with JWT
+ * Sync'd with NEW Production UUID Schema
  */
 
 const bcrypt = require('bcryptjs');
@@ -18,7 +19,7 @@ const generateToken = (id) => {
 
 /**
  * POST /api/auth/register
- * Register a new user
+ * Register a new user profile
  */
 const register = async (req, res) => {
   const { name, email, password, phone } = req.body;
@@ -36,9 +37,9 @@ const register = async (req, res) => {
     throw error;
   }
 
-  // Check if user already exists
-  const existingUser = await prisma.user.findUnique({ where: { email } });
-  if (existingUser) {
+  // Check if profile already exists
+  const existingProfile = await prisma.profile.findUnique({ where: { email } });
+  if (existingProfile) {
     const error = new Error('User with this email already exists');
     error.statusCode = 409;
     throw error;
@@ -47,18 +48,18 @@ const register = async (req, res) => {
   // Hash password
   const hashedPassword = await bcrypt.hash(password, 12);
 
-  // Create user
-  const user = await prisma.user.create({
+  // Create Profile
+  const profile = await prisma.profile.create({
     data: { name, email, password: hashedPassword, phone },
     select: { id: true, name: true, email: true, phone: true, createdAt: true },
   });
 
-  const token = generateToken(user.id);
+  const token = generateToken(profile.id);
 
   res.status(201).json({
     success: true,
     message: 'User registered successfully',
-    data: { user, token },
+    data: { user: profile, token },
   });
 };
 
@@ -75,29 +76,29 @@ const login = async (req, res) => {
     throw error;
   }
 
-  // Find user
-  const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) {
+  // Find profile
+  const profile = await prisma.profile.findUnique({ where: { email } });
+  if (!profile) {
     const error = new Error('Invalid email or password');
     error.statusCode = 401;
     throw error;
   }
 
   // Compare password
-  const isMatch = await bcrypt.compare(password, user.password);
+  const isMatch = await bcrypt.compare(password, profile.password);
   if (!isMatch) {
     const error = new Error('Invalid email or password');
     error.statusCode = 401;
     throw error;
   }
 
-  const token = generateToken(user.id);
+  const token = generateToken(profile.id);
 
   res.json({
     success: true,
     message: 'Login successful',
     data: {
-      user: { id: user.id, name: user.name, email: user.email, phone: user.phone },
+      user: { id: profile.id, name: profile.name, email: profile.email, phone: profile.phone },
       token,
     },
   });
@@ -108,12 +109,12 @@ const login = async (req, res) => {
  * Get current logged-in user profile
  */
 const getMe = async (req, res) => {
-  const user = await prisma.user.findUnique({
+  const profile = await prisma.profile.findUnique({
     where: { id: req.user.id },
     select: { id: true, name: true, email: true, phone: true, address: true, createdAt: true },
   });
 
-  res.json({ success: true, data: user });
+  res.json({ success: true, data: profile });
 };
 
 /**
@@ -123,13 +124,13 @@ const getMe = async (req, res) => {
 const updateProfile = async (req, res) => {
   const { name, phone, address } = req.body;
 
-  const user = await prisma.user.update({
+  const profile = await prisma.profile.update({
     where: { id: req.user.id },
     data: { name, phone, address },
     select: { id: true, name: true, email: true, phone: true, address: true },
   });
 
-  res.json({ success: true, message: 'Profile updated', data: user });
+  res.json({ success: true, message: 'Profile updated', data: profile });
 };
 
 module.exports = { register, login, getMe, updateProfile };

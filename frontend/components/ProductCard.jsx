@@ -49,7 +49,7 @@ export default function ProductCard({ product }) {
       <Link href={product.stock === 0 ? '#' : `/products/${product.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', height: '100%', opacity: product.stock === 0 ? 0.6 : 1, cursor: product.stock === 0 ? 'default' : 'pointer' }}>
         <div style={{ height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 12, position: 'relative' }}>
           <img 
-            src={displayImage} 
+            src={displayImage.startsWith('/') ? `${process.env.NEXT_PUBLIC_API_URL.replace('/api', '')}${displayImage}` : displayImage} 
             alt={product.title} 
             style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain', filter: product.stock === 0 ? 'grayscale(1)' : 'none' }} 
           />

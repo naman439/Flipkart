@@ -1,6 +1,7 @@
 /**
  * Wishlist Controller
  * Handles adding/removing products from wishlist
+ * Sync'd with NEW Production UUID Schema
  */
 
 const prisma = require('../config/db');
@@ -10,7 +11,7 @@ const prisma = require('../config/db');
  * Get current user's wishlist
  */
 const getWishlist = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user.id; // UUID String from Supabase
 
   const wishlist = await prisma.wishlist.findMany({
     where: { userId },
@@ -18,7 +19,8 @@ const getWishlist = async (req, res) => {
       product: {
         select: {
           id: true, title: true, price: true, discountPrice: true,
-          discountPct: true, rating: true, images: true, stock: true,
+          discountPct: true, rating: true, stock: true,
+          images: { orderBy: { displayOrder: 'asc' } },
           category: { select: { name: true, slug: true } },
         },
       },
@@ -30,7 +32,7 @@ const getWishlist = async (req, res) => {
     ...item,
     product: {
       ...item.product,
-      images: JSON.parse(item.product.images || '[]'),
+      images: item.product.images.map(img => img.imageUrl),
     },
   }));
 
@@ -52,7 +54,7 @@ const addToWishlist = async (req, res) => {
   }
 
   // Check product exists
-  const product = await prisma.product.findUnique({ where: { id: parseInt(productId) } });
+  const product = await prisma.product.findUnique({ where: { id: productId } });
   if (!product) {
     const error = new Error('Product not found');
     error.statusCode = 404;
@@ -61,7 +63,7 @@ const addToWishlist = async (req, res) => {
 
   // Check if already in wishlist
   const existing = await prisma.wishlist.findUnique({
-    where: { userId_productId: { userId, productId: parseInt(productId) } },
+    where: { userId_productId: { userId, productId } },
   });
 
   if (existing) {
@@ -72,7 +74,7 @@ const addToWishlist = async (req, res) => {
 
   // Add to wishlist
   const item = await prisma.wishlist.create({
-    data: { userId, productId: parseInt(productId) },
+    data: { userId, productId },
   });
 
   res.status(201).json({ success: true, message: 'Added to wishlist', inWishlist: true, data: item });
@@ -87,7 +89,7 @@ const removeFromWishlist = async (req, res) => {
   const { productId } = req.params;
 
   const item = await prisma.wishlist.findUnique({
-    where: { userId_productId: { userId, productId: parseInt(productId) } },
+    where: { userId_productId: { userId, productId } },
   });
 
   if (!item) {

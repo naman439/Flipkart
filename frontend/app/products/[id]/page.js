@@ -7,7 +7,7 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { Spinner } from '@/components/LoadingSkeleton';
 import { FiStar, FiShoppingCart, FiZap, FiMapPin, FiInfo, FiTag } from 'react-icons/fi';
-import ImageCarousel from '@/components/ImageCarousel';
+import ImageGrid from '@/components/ImageGrid';
 import StarRating from '@/components/StarRating';
 import toast from 'react-hot-toast';
 
@@ -39,9 +39,6 @@ export default function ProductDetailPage({ params }) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16, justifyContent: 'center', alignItems: 'center', height: '80vh', background: '#f1f3f6' }}>
         <Spinner size={40} />
-        <div style={{ color: '#878787', fontSize: 14, fontWeight: 500 }}>
-          Fetching real-time product details and specifications directly from Flipkart...
-        </div>
       </div>
     );
   }
@@ -60,30 +57,28 @@ export default function ProductDetailPage({ params }) {
     <div style={{ background: '#f1f3f6', minHeight: '100vh', padding: '16px 0' }}>
       <div className="main-container" style={{ background: 'white', display: 'grid', gridTemplateColumns: '43% 57%', minHeight: '100vh', boxShadow: '0 2px 4px 0 rgba(0,0,0,.08)' }}>
         
-        {/* ── Left Column (Fixed/Sticky) ───────────────────────────── */}
+        {/* ── Left Column (Scrollable Grid) ───────────────────────────── */}
         <div style={{ padding: '24px 12px 24px 24px', borderRight: '1px solid #f0f0f0' }}>
-          <div style={{ position: 'sticky', top: 120 }}>
-            <div style={{ border: '1px solid #f0f0f0', marginBottom: 16 }}>
-               <ImageCarousel images={images} />
-            </div>
-            <div style={{ display: 'flex', gap: 10 }}>
-              <button 
-                onClick={() => addItem(product.id, 1)}
-                style={{ flex: 1, background: '#ff9f00', color: 'white', border: 'none', height: 56, fontSize: 16, fontWeight: 600, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer', boxShadow: '0 1px 2px 0 rgba(0,0,0,.2)' }}
-              >
-                <FiShoppingCart size={18} /> ADD TO CART
-              </button>
-              <button 
-                onClick={handleBuyNow}
-                style={{ flex: 1, background: '#fb641b', color: 'white', border: 'none', height: 56, fontSize: 16, fontWeight: 600, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer', boxShadow: '0 1px 2px 0 rgba(0,0,0,.2)' }}
-              >
-                <FiZap size={18} /> BUY NOW
-              </button>
-            </div>
+          <div style={{ marginBottom: 16 }}>
+             <ImageGrid images={images} />
+          </div>
+          <div style={{ display: 'flex', gap: 10, position: 'sticky', bottom: 16, zIndex: 10 }}>
+            <button 
+              onClick={() => addItem(product.id, 1)}
+              style={{ flex: 1, background: '#ff9f00', color: 'white', border: 'none', height: 56, fontSize: 16, fontWeight: 600, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer', boxShadow: '0 2px 4px 0 rgba(0,0,0,.2)' }}
+            >
+              <FiShoppingCart size={18} /> ADD TO CART
+            </button>
+            <button 
+              onClick={handleBuyNow}
+              style={{ flex: 1, background: '#fb641b', color: 'white', border: 'none', height: 56, fontSize: 16, fontWeight: 600, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer', boxShadow: '0 2px 4px 0 rgba(0,0,0,.2)' }}
+            >
+              <FiZap size={18} /> BUY NOW
+            </button>
           </div>
         </div>
 
-        {/* ── Right Column (Scrollable) ────────────────────────────── */}
+        {/* ── Right Column (Scrollable Details) ────────────────────────────── */}
         <div style={{ padding: '24px' }}>
           <nav style={{ fontSize: 12, color: '#878787', marginBottom: 12, display: 'flex', gap: 8 }}>
             <span>Home</span> <span>&gt;</span> <span>{product.category?.name}</span> <span>&gt;</span> <span style={{ color: '#212121' }}>{product.title}</span>
@@ -191,7 +186,6 @@ export default function ProductDetailPage({ params }) {
               )}
             </div>
           </div>
-
         </div>
       </div>
     </div>

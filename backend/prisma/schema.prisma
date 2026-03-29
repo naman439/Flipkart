@@ -1,5 +1,6 @@
-// Prisma Schema for Flipkart Clone
-// Database: PostgreSQL
+// Prisma Schema for Production-Grade Flipkart Clone
+// Database: PostgreSQL + Supabase Auth
+// Key Features: UUIDs, JSONB, Financial Accuracy, RLS-ready
 
 generator client {
   provider = "prisma-client-js"
@@ -11,32 +12,56 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// ─── Users ────────────────────────────────────────────────────────────────────
-model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
+// ─── Profiles (Users) ─────────────────────────────────────────────────────────
+// Linked to auth.users in Supabase
+model Profile {
+  id        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name      String?
+  email     String    @unique
+  password  String?   // Nullable: Supabase Auth users won't have this
   phone     String?
-  address   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  address   String?   // Legacy single-line address field
+  avatarUrl String?
+  createdAt DateTime  @default(now()) @map("created_at")
 
   cart      Cart?
   orders    Order[]
   wishlist  Wishlist[]
+  addresses Address[]
+  reviews   Review[]
 
-  @@index([email])
-  @@map("users")
+  @@map("profiles")
+}
+
+// ─── Addresses (Multiple per user) ────────────────────────────────────────────
+model Address {
+  id           String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId       String   @db.Uuid @map("user_id")
+  fullName     String   @map("full_name")
+  phone        String
+  addressLine1 String   @map("address_line1")
+  addressLine2 String?  @map("address_line2")
+  city         String
+  state        String
+  postalCode   String   @map("postal_code")
+  country      String   @default("India")
+  isDefault    Boolean  @default(false) @map("is_default")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user   Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders Order[]
+
+  @@index([userId])
+  @@map("addresses")
 }
 
 // ─── Categories ───────────────────────────────────────────────────────────────
 model Category {
-  id        Int       @id @default(autoincrement())
+  id        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name      String    @unique
   slug      String    @unique
   imageUrl  String?
-  createdAt DateTime  @default(now())
+  createdAt DateTime  @default(now()) @map("created_at")
 
   products  Product[]
 
@@ -46,27 +71,29 @@ model Category {
 
 // ─── Products ─────────────────────────────────────────────────────────────────
 model Product {
-  id            Int      @id @default(autoincrement())
-  title         String
-  description   String
-  price         Float
-  discountPrice Float
-  discountPct   Int      @default(0)
-  stock         Int      @default(0)
-  rating        Float    @default(0)
-  reviewCount   Int      @default(0)
-  brand         String?
-  images        String   // JSON array of image URLs
-  specifications String? // JSON object of key-value specs
-  categoryId    Int
-  isFeatured    Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id             String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  categoryId     String         @db.Uuid @map("category_id")
+  title          String
+  description    String?
+  price          Decimal        @db.Decimal(10, 2)
+  discountPrice  Decimal?       @db.Decimal(10, 2)
+  discountPct    Int            @default(0)
+  stock          Int            @default(0)
+  rating         Float          @default(0)
+  reviewCount    Int            @default(0)
+  brand          String?
+  thumbnail      String?
+  specifications Json?          @default("{}") // Native JSONB
+  isFeatured     Boolean        @default(false)
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
 
-  category   Category    @relation(fields: [categoryId], references: [id])
-  cartItems  CartItem[]
-  orderItems OrderItem[]
-  wishlists  Wishlist[]
+  category       Category       @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  images         ProductImage[]
+  cartItems      CartItem[]
+  orderItems     OrderItem[]
+  wishlists      Wishlist[]
+  reviews        Review[]
 
   @@index([categoryId])
   @@index([title])
@@ -74,26 +101,38 @@ model Product {
   @@map("products")
 }
 
+// ─── Product Images (Carousel) ──────────────────────────────────────────────
+model ProductImage {
+  id           String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  productId    String   @db.Uuid @map("product_id")
+  imageUrl     String   @map("image_url")
+  displayOrder Int      @default(0) @map("display_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@map("product_images")
+}
+
 // ─── Cart ─────────────────────────────────────────────────────────────────────
 model Cart {
-  id        Int        @id @default(autoincrement())
-  userId    Int        @unique
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id        String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId    String     @unique @db.Uuid @map("user_id")
+  createdAt DateTime   @default(now()) @map("created_at")
 
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      Profile    @relation(fields: [userId], references: [id], onDelete: Cascade)
   items     CartItem[]
 
   @@map("carts")
 }
 
 model CartItem {
-  id        Int      @id @default(autoincrement())
-  cartId    Int
-  productId Int
+  id        String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  cartId    String   @db.Uuid @map("cart_id")
+  productId String   @db.Uuid @map("product_id")
   quantity  Int      @default(1)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
 
   cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
@@ -105,47 +144,48 @@ model CartItem {
 
 // ─── Orders ───────────────────────────────────────────────────────────────────
 model Order {
-  id              Int         @id @default(autoincrement())
-  userId          Int
-  status          OrderStatus @default(PENDING)
-  totalAmount     Float
-  discountAmount  Float       @default(0)
-  finalAmount     Float
-  shippingName    String
-  shippingPhone   String
-  shippingAddress String
-  shippingCity    String
-  shippingState   String
-  shippingZip     String
-  paymentMethod   String      @default("COD")
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  id              String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId          String      @db.Uuid @map("user_id")
+  addressId       String?     @db.Uuid @map("address_id") // FK to addresses (optional for legacy)
+  totalAmount     Decimal     @db.Decimal(10, 2) @map("total_amount")
+  discountAmount  Decimal     @db.Decimal(10, 2) @default(0) @map("discount_amount")
+  finalAmount     Decimal     @db.Decimal(10, 2) @map("final_amount")
+  // Shipping snapshot — copied from address at order time so history is preserved
+  shippingName    String      @map("shipping_name")
+  shippingPhone   String      @map("shipping_phone")
+  shippingAddress String      @map("shipping_address")
+  shippingCity    String      @map("shipping_city")
+  shippingState   String      @map("shipping_state")
+  shippingZip     String      @map("shipping_zip")
+  paymentMethod   String      @default("COD") @map("payment_method")
+  status          OrderStatus @default(PLACED)
+  createdAt       DateTime    @default(now()) @map("created_at")
 
-  user  User        @relation(fields: [userId], references: [id])
-  items OrderItem[]
+  user    Profile     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  address Address?    @relation(fields: [addressId], references: [id], onDelete: SetNull)
+  items   OrderItem[]
 
   @@index([userId])
   @@map("orders")
 }
 
 model OrderItem {
-  id        Int     @id @default(autoincrement())
-  orderId   Int
-  productId Int
-  quantity  Int
-  price     Float
-  title     String
+  id              String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  orderId         String  @db.Uuid @map("order_id")
+  productId       String? @db.Uuid @map("product_id")
+  title           String?
+  quantity        Int
+  priceAtPurchase Decimal @db.Decimal(10, 2) @map("price_at_purchase")
 
-  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id])
+  order   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
 
   @@index([orderId])
   @@map("order_items")
 }
 
 enum OrderStatus {
-  PENDING
-  CONFIRMED
+  PLACED
   SHIPPED
   DELIVERED
   CANCELLED
@@ -153,15 +193,33 @@ enum OrderStatus {
 
 // ─── Wishlist ─────────────────────────────────────────────────────────────────
 model Wishlist {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  productId Int
-  createdAt DateTime @default(now())
+  id        String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId    String   @db.Uuid @map("user_id")
+  productId String   @db.Uuid @map("product_id")
+  createdAt DateTime @default(now()) @map("created_at")
 
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
   @@index([userId])
   @@map("wishlists")
+}
+
+// ─── Reviews & Ratings ────────────────────────────────────────────────────────
+model Review {
+  id        String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  productId String   @db.Uuid @map("product_id")
+  userId    String   @db.Uuid @map("user_id")
+  rating    Int      // 1-5
+  comment   String?  @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId]) // One review per product per user
+  @@index([productId])
+  @@index([userId])
+  @@map("reviews")
 }

@@ -1,6 +1,7 @@
 /**
  * Auth Middleware
  * Verifies JWT token for protected routes
+ * Sync'd with NEW Production UUID Schema
  */
 
 const jwt = require('jsonwebtoken');
@@ -20,24 +21,30 @@ const protect = async (req, res, next) => {
     return next(error);
   }
 
-  // Verify token
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  try {
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-  // Fetch user from database
-  const user = await prisma.user.findUnique({
-    where: { id: decoded.id },
-    select: { id: true, name: true, email: true },
-  });
+    // Fetch PROFILE from database (User model was renamed to Profile)
+    const profile = await prisma.profile.findUnique({
+      where: { id: decoded.id }, // id is now a UUID String
+      select: { id: true, name: true, email: true },
+    });
 
-  if (!user) {
-    const error = new Error('User not found');
+    if (!profile) {
+      const error = new Error('User profile not found');
+      error.statusCode = 401;
+      return next(error);
+    }
+
+    // Attach profile to request as user for backward compatibility
+    req.user = profile;
+    next();
+  } catch (err) {
+    const error = new Error('Authorization failed');
     error.statusCode = 401;
     return next(error);
   }
-
-  // Attach user to request
-  req.user = user;
-  next();
 };
 
 module.exports = { protect };

@@ -33,16 +33,25 @@ const sendOrderConfirmationEmail = async (to, name, order) => {
 
   const transporter = createTransporter();
 
-  const itemsHtml = order.items
+  const itemsHtml = (order.items || [])
     .map(
       (item) => `
       <tr>
-        <td style="padding: 10px; border-bottom: 1px solid #eee;">${item.title}</td>
+        <td style="padding: 10px; border-bottom: 1px solid #eee;">${item.title || 'Product'}</td>
         <td style="padding: 10px; border-bottom: 1px solid #eee; text-align:center;">${item.quantity}</td>
-        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align:right;">₹${item.price.toLocaleString('en-IN')}</td>
+        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align:right;">₹${Number(item.priceAtPurchase * item.quantity).toLocaleString('en-IN')}</td>
       </tr>`
     )
     .join('');
+
+  const addressHtml = `
+    <div style="background:#f8f9fa;border-radius:8px;padding:16px;margin:20px 0;">
+      <p style="margin:0 0 4px;font-size:13px;color:#666;">Delivery Address</p>
+      <p style="margin:0;font-size:14px;font-weight:600;">${order.shippingName}</p>
+      <p style="margin:4px 0 0;font-size:13px;color:#555;">${order.shippingAddress}, ${order.shippingCity}, ${order.shippingState} - ${order.shippingZip}</p>
+      <p style="margin:4px 0 0;font-size:13px;color:#555;">📞 ${order.shippingPhone}</p>
+    </div>`;
+
 
   const html = `
     <!DOCTYPE html>
@@ -69,6 +78,9 @@ const sendOrderConfirmationEmail = async (to, name, order) => {
             <p style="margin: 0 0 8px; font-size: 14px; color: #666;">Order ID</p>
             <p style="margin: 0; font-size: 18px; font-weight: 700; color: #2874f0;">#${order.id}</p>
           </div>
+
+          <!-- Shipping Address -->
+          ${addressHtml}
           
           <!-- Order Items -->
           <h3 style="color: #333; margin: 24px 0 12px;">Order Summary</h3>

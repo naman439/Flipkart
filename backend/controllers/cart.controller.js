@@ -1,6 +1,7 @@
 /**
  * Cart Controller
  * Handles shopping cart operations (add, get, update quantity, remove)
+ * Sync'd with NEW Production UUID Schema
  */
 
 const prisma = require('../config/db');
@@ -10,7 +11,7 @@ const prisma = require('../config/db');
  * Get current user's cart with all items
  */
 const getCart = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user.id; // This is now a UUID String from Supabase
 
   // Find or create cart for user
   let cart = await prisma.cart.findUnique({
@@ -21,7 +22,8 @@ const getCart = async (req, res) => {
           product: {
             select: {
               id: true, title: true, price: true, discountPrice: true,
-              discountPct: true, stock: true, images: true, brand: true,
+              discountPct: true, stock: true, brand: true,
+              images: { orderBy: { displayOrder: 'asc' } } // New relation
             },
           },
         },
@@ -32,19 +34,23 @@ const getCart = async (req, res) => {
   if (!cart) {
     cart = await prisma.cart.create({
       data: { userId },
-      include: { items: { include: { product: true } } },
+      include: { items: { include: { product: { include: { images: true } } } } },
     });
   }
 
-  // Parse product images
+  // Simplify product images for frontend compatibility
   const items = cart.items.map((item) => ({
     ...item,
-    product: { ...item.product, images: JSON.parse(item.product.images || '[]') },
+    product: { 
+        ...item.product, 
+        images: item.product.images.map(img => img.imageUrl) 
+    },
   }));
 
-  // Calculate price breakdown
-  const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-  const total = items.reduce((sum, item) => sum + item.product.discountPrice * item.quantity, 0);
+  // Calculate price breakdown (Prisma Decimals convert to numbers automatically in JSON.stringify, 
+  // but for calculation we use Number() cast)
+  const subtotal = items.reduce((sum, item) => sum + Number(item.product.price) * item.quantity, 0);
+  const total = items.reduce((sum, item) => sum + Number(item.product.discountPrice) * item.quantity, 0);
   const discount = subtotal - total;
 
   res.json({
@@ -77,7 +83,7 @@ const addToCart = async (req, res) => {
   }
 
   // Check product exists and has stock
-  const product = await prisma.product.findUnique({ where: { id: parseInt(productId) } });
+  const product = await prisma.product.findUnique({ where: { id: productId } });
   if (!product) {
     const error = new Error('Product not found');
     error.statusCode = 404;
@@ -97,7 +103,7 @@ const addToCart = async (req, res) => {
 
   // Upsert cart item (create or increment quantity)
   const existingItem = await prisma.cartItem.findUnique({
-    where: { cartId_productId: { cartId: cart.id, productId: parseInt(productId) } },
+    where: { cartId_productId: { cartId: cart.id, productId: productId } },
   });
 
   let cartItem;
@@ -113,13 +119,14 @@ const addToCart = async (req, res) => {
       data: { quantity: newQuantity },
     });
   } else {
-    if (parseInt(quantity) > product.stock) {
+    const qtyNum = parseInt(quantity);
+    if (qtyNum > product.stock) {
       const error = new Error(`Cannot add more. Only ${product.stock} items available in stock.`);
       error.statusCode = 400;
       throw error;
     }
     cartItem = await prisma.cartItem.create({
-      data: { cartId: cart.id, productId: parseInt(productId), quantity: parseInt(quantity) },
+      data: { cartId: cart.id, productId: productId, quantity: qtyNum },
     });
   }
 
@@ -140,7 +147,8 @@ const updateCart = async (req, res) => {
     throw error;
   }
 
-  if (quantity < 1) {
+  const qtyNum = parseInt(quantity);
+  if (qtyNum < 1) {
     const error = new Error('Quantity must be at least 1');
     error.statusCode = 400;
     throw error;
@@ -155,7 +163,7 @@ const updateCart = async (req, res) => {
   }
 
   const cartItem = await prisma.cartItem.findFirst({
-    where: { id: parseInt(cartItemId), cartId: cart.id },
+    where: { id: cartItemId, cartId: cart.id },
     include: { product: { select: { stock: true } } },
   });
 
@@ -165,15 +173,15 @@ const updateCart = async (req, res) => {
     throw error;
   }
 
-  if (parseInt(quantity) > cartItem.product.stock) {
+  if (qtyNum > cartItem.product.stock) {
     const error = new Error(`Cannot update quantity. Only ${cartItem.product.stock} items available in stock.`);
     error.statusCode = 400;
     throw error;
   }
 
   const updated = await prisma.cartItem.update({
-    where: { id: parseInt(cartItemId) },
-    data: { quantity: parseInt(quantity) },
+    where: { id: cartItemId },
+    data: { quantity: qtyNum },
   });
 
   res.json({ success: true, message: 'Cart updated', data: updated });
@@ -202,7 +210,7 @@ const removeFromCart = async (req, res) => {
   }
 
   const cartItem = await prisma.cartItem.findFirst({
-    where: { id: parseInt(cartItemId), cartId: cart.id },
+    where: { id: cartItemId, cartId: cart.id },
   });
 
   if (!cartItem) {
@@ -211,7 +219,7 @@ const removeFromCart = async (req, res) => {
     throw error;
   }
 
-  await prisma.cartItem.delete({ where: { id: parseInt(cartItemId) } });
+  await prisma.cartItem.delete({ where: { id: cartItemId } });
 
   res.json({ success: true, message: 'Item removed from cart' });
 };

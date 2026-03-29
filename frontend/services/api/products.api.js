@@ -35,3 +35,9 @@ export const getDynamicFilters = async (params = {}) => {
   const res = await api.get('/products/filters', { params });
   return res.data;
 };
+
+/** Fetch the Home page layout with categorized products */
+export const getHomeLayout = async () => {
+  const res = await api.get('/products/home-layout');
+  return res.data;
+};

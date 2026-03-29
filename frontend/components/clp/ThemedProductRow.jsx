@@ -46,7 +46,7 @@ export default function ThemedProductRow({ title, products, bgColor, bgImage }) 
               boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
             }}>
               <div style={{ width: '100%', height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
-                <img src={imgUrl} alt={product.title} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} onError={(e) => { e.target.src = 'https://dummyimage.com/140x140/f0f0f0/666.png&text=Error'; }} />
+                <img src={imgUrl.startsWith('/') ? `${process.env.NEXT_PUBLIC_API_URL.replace('/api', '')}${imgUrl}` : imgUrl} alt={product.title} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} onError={(e) => { e.target.src = 'https://dummyimage.com/140x140/f0f0f0/666.png&text=Error'; }} />
               </div>
               <h3 style={{ fontSize: 14, fontWeight: 500, color: '#212121', margin: '0 0 6px 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {product.title}

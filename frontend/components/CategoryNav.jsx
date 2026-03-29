@@ -100,7 +100,7 @@ const categories = [
   { name: 'Electronics',   slug: 'electronics',      iconKey: 'electronics' },
   { name: 'Home',          slug: 'home-kitchen',     iconKey: 'home' },
   { name: 'Appliances',    slug: 'appliances',       iconKey: 'appliances' },
-  { name: 'Toys',          slug: 'toys-baby',        iconKey: 'toys' },
+  { name: 'Toys',          slug: 'toys',             iconKey: 'toys' },
   { name: 'Groceries',     slug: 'groceries',        iconKey: 'food' },
   { name: 'Sports',        slug: 'sports-fitness',   iconKey: 'sports' },
   { name: 'Books',         slug: 'books',            iconKey: 'books' },

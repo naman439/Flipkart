@@ -1,0 +1,152 @@
+[
+  {
+    "category": "Mobiles",
+    "products": [
+      { "title": "Ai+ Pulse 1 (Blue, 64 GB)", "price": "₹7,499", "rating": "4.3", "url": "https://www.flipkart.com/ai-pulse-1-blue-64-gb/p/itm039eaa37b8fdb" },
+      { "title": "vivo T5x 5G (Star Silver, 128 GB)", "price": "₹20,999", "rating": "4.6", "url": "https://www.flipkart.com/vivo-t5x-5g-star-silver-128-gb/p/itm7da8aa253e72b" },
+      { "title": "REDMI A5 (Just Black, 128 GB)", "price": "₹8,999", "rating": "4.2", "url": "https://www.flipkart.com/redmi-a5-just-black-128-gb/p/itm2b4357effaa74" },
+      { "title": "Ai+ Pulse 1 (Purple, 128 GB)", "price": "₹10,999", "rating": "4.3", "url": "https://www.flipkart.com/ai-pulse-1-purple-128-gb/p/itmd043cf1815f9b" },
+      { "title": "Ai+ Nova 5G (Pink, 128 GB)", "price": "₹10,999", "rating": "3.9", "url": "https://www.flipkart.com/ai-nova-5g-pink-128-gb/p/itm155fdabb5a027" },
+      { "title": "MOTOROLA g06 power (Pantone tapestry, 64 GB)", "price": "₹8,999", "rating": "4.3", "url": "https://www.flipkart.com/motorola-g06-power-pantone-tapestry-64-gb/p/itmf590d83ca72c5" },
+      { "title": "Samsung Galaxy F06 5G (Bahama Blue, 128 GB)", "price": "₹10,999", "rating": "4.2", "url": "https://www.flipkart.com/samsung-galaxy-f06-5g-bahama-blue-128-gb/p/itm58189fada62cb" },
+      { "title": "Samsung Galaxy F06 5G (Lit Violet, 128 GB)", "price": "₹12,499", "rating": "4.2", "url": "https://www.flipkart.com/samsung-galaxy-f06-5g-lit-violet-128-gb/p/itm10bd1668b9bf2" },
+      { "title": "MOTOROLA g67 power 5G (Pantone Parachute, 128 GB)", "price": "₹16,999", "rating": "4.4", "url": "https://www.flipkart.com/motorola-g67-power-5g-pantone-parachute-128-gb/p/itm983b978f3066a" },
+      { "title": "MOTOROLA g57 power 5G (Marshmallow Blue, 128 GB)", "price": "₹15,999", "rating": "4.4", "url": "https://www.flipkart.com/motorola-g57-power-5g-marshmallow-blue-128-gb/p/itm039eaa37b8fdb" }
+    ]
+  },
+  {
+    "category": "Electronics",
+    "products": [
+      { "title": "texla 1 gm TO 10 kg electronic kitchen scale(white)", "price": "₹251", "rating": "3.9", "url": "https://www.flipkart.com/texla-1-gm-10-kg-electronic-kitchen-scale-white-weighing-scale/p/itmfcnfygjvgzruq" },
+      { "title": "heoluix Water Proof & shock proof 2000watt electric", "price": "₹280", "rating": "4.0", "url": "https://www.flipkart.com/heoluix-water-proof-shock-2000watt-electric-heater-immersion-rod-2000-w-rod/p/itm3fe9bb35468fd" },
+      { "title": "Pigeon 1800 W Induction Cooktop Push Button", "price": "₹2,099", "rating": "4.0", "url": "https://www.flipkart.com/pigeon-1800-w-induction-cooktop-push-button/p/itm3893130ae5422" },
+      { "title": "VGR V-071 Professional Trimmer", "price": "₹929", "rating": "4.3", "url": "https://www.flipkart.com/vgr-v-071-professional-trimmer-120-min-runtime-4-length-settings/p/itm219d2f78dfcdd" },
+      { "title": "NOVA NHT 1052 Trimmer", "price": "₹707", "rating": "4.1", "url": "https://www.flipkart.com/nova-nht-1052-trimmer-90-min-runtime-40-length-settings/p/itmd164bdfeecb32" },
+      { "title": "Totthar Hair Trimmer XY169", "price": "₹297", "rating": "4.1", "url": "https://www.flipkart.com/totthar-hair-trimmer-xy169-60-min-runtime-4-length-settings/p/itmc3e84e2310453" },
+      { "title": "Hillgrove 5in1 Soldering Iron", "price": "₹449", "rating": "4.0", "url": "https://www.flipkart.com/hillgrove-5in1-professional-mobile-soldering-iron-equipment-tool-machine-combo-kit-set-flux-paste-wire-60-w-temperature-controlled/p/itm3e215e4c988cc" },
+      { "title": "PHILIPS BT1233/18 Trimmer", "price": "₹909", "rating": "4.0", "url": "https://www.flipkart.com/philips-bt1233-18-dura-power-tech-skin-safe-trim-trimmer-30-min-runtime-4-length-settings/p/itma681efd0781c3" },
+      { "title": "NUCLETRIC Kitchen Scale", "price": "₹341", "rating": "4.1", "url": "https://www.flipkart.com/nucletric-electronic-digital-kitchen-scale-10kg-home-baking-fitness-balanced-diet-weighing/p/itm2ea9250d9e312" },
+      { "title": "NOVA NHT 1053 Trimmer", "price": "₹751", "rating": "4.1", "url": "https://www.flipkart.com/nova-nht-1053-trimmer-160-min-runtime-40-length-settings/p/itmebaed9024f410" }
+    ]
+  },
+  {
+    "category": "Fashion",
+    "products": [
+      { "title": "Bhuwal Fashion Printed Saree", "price": "₹447", "rating": "N/A", "url": "https://www.flipkart.com/bhuwal-fashion-printed-bollywood-art-silk-saree/p/itm042dd3f18485e" },
+      { "title": "JEVKA FASHION Chiffon Saree", "price": "₹498", "rating": "N/A", "url": "https://www.flipkart.com/jevka-fashion-self-design-bollywood-chiffon-saree/p/itmcb4aeb85e118b" },
+      { "title": "RIDDHIMAN FASHION Khadi Saree", "price": "₹425", "rating": "N/A", "url": "https://www.flipkart.com/riddhiman-fashion-self-design-daily-wear-khadi-saree/p/itmc902572f00921" },
+      { "title": "RIDDHIMAN FASHION Tissue Saree", "price": "₹567", "rating": "N/A", "url": "https://www.flipkart.com/riddhiman-fashion-woven-daily-wear-tissue-saree/p/itm2d9cd41b96bd2" },
+      { "title": "Arpita Fashion Silk Blend Saree", "price": "₹325", "rating": "N/A", "url": "https://www.flipkart.com/arpita-fashion-solid-plain-bollywood-silk-blend-saree/p/itm41b4f48f59831" },
+      { "title": "Arpita Fashion Satin Saree", "price": "₹399", "rating": "N/A", "url": "https://www.flipkart.com/arpita-fashion-solid-plain-daily-wear-satin-saree/p/itm9228f290b1617" },
+      { "title": "Disha Fashion Georgette Saree", "price": "₹845", "rating": "N/A", "url": "https://www.flipkart.com/disha-fashion-embroidered-banarasi-georgette-saree/p/itm5803dad0cb018" },
+      { "title": "Lyrox Fashion Silk Blend Saree", "price": "₹740", "rating": "N/A", "url": "https://www.flipkart.com/lyrox-fashion-striped-woven-self-design-daily-wear-silk-blend-saree/p/itmacf8755945c51" },
+      { "title": "Krishna R fashion Organza Saree", "price": "₹782", "rating": "N/A", "url": "https://www.flipkart.com/krishna-r-fashion-embroidered-baluchari-organza-saree/p/itm23e8c6067fa37" },
+      { "title": "RIDDHIMAN FASHION Khadi Saree", "price": "₹425", "rating": "N/A", "url": "https://www.flipkart.com/riddhiman-fashion-self-design-daily-wear-khadi-saree/p/itmc45fd50f99723" }
+    ]
+  },
+  {
+    "category": "Home & Kitchen",
+    "products": [
+      { "title": "DDecora 900 ML vegetable chopper", "price": "₹156", "rating": "4.1", "url": "https://www.flipkart.com/ddecora-new-big-size-hand-push-900-ml-5-stainless-steel-blades-vegetable-fruit-chopper/p/itm28f488812f687" },
+      { "title": "DDecora Heavy Duty 1000ml Cutter", "price": "₹1,299", "rating": "4.1", "url": "https://www.flipkart.com/ddecora-heavy-duty-1000ml-unbrekable-cutter-vegetable-fruit-chopper/p/itm3be4b88170443" },
+      { "title": "DDecora 450 ml chopper", "price": "₹128", "rating": "4.1", "url": "https://www.flipkart.com/ddecora-3-stainless-steel-blade-powerful-mini-handy-quick-450-ml-gray-vegetable-fruit-chopper/p/itma7c9210ebbd8e" },
+      { "title": "4 SACRED Plastic Container - 510 ml", "price": "₹351", "rating": "4.5", "url": "https://www.flipkart.com/4-sacred-plastic-grocery-container-510-ml/p/itmee7e9fadb97e8" },
+      { "title": "Flipkart SmartBuy 1000 ml Chopper", "price": "₹128", "rating": "3.8", "url": "https://www.flipkart.com/flipkart-smartbuy-big-size-1000-ml-summer-cool-dori-vegetable-fruit-chopper/p/itm1b52304816b38" },
+      { "title": "Flipkart SmartBuy Container - 1100 ml", "price": "₹438", "rating": "4.3", "url": "https://www.flipkart.com/flipkart-smartbuy-plastic-grocery-container-1100-ml/p/itmfce977f52c47d" },
+      { "title": "RV Ramaya Cotton Kitchen Mat", "price": "₹223", "rating": "3.7", "url": "https://www.flipkart.com/rv-ramaya-cotton-kitchen-mat/p/itm99b7b90746d9c" },
+      { "title": "Flipkart SmartBuy Water Bottle", "price": "₹351", "rating": "4.2", "url": "https://www.flipkart.com/search?q=Home+%26+Kitchen" },
+      { "title": "XX Fashion Cotton Kitchen Mat", "price": "₹133", "rating": "N/A", "url": "https://www.flipkart.com/xx-fashion-cotton-kitchen-mat/p/itm33975a3f2b2fc" },
+      { "title": "XX Fashion Cotton Kitchen Mat", "price": "₹133", "rating": "N/A", "url": "https://www.flipkart.com/xx-fashion-cotton-kitchen-mat/p/itmf3824597a7cff" }
+    ]
+  },
+  {
+    "category": "Books",
+    "products": [
+      { "title": "Shobhit Nirwan Unbarbaad", "price": "₹160", "rating": "4.6", "url": "https://www.flipkart.com/shobhit-nirwan-unbarbaad-english-paperback-shobhit/p/itm1272a7ba69115" },
+      { "title": "Army Agniveer Exam Book 2026", "price": "₹149", "rating": "4.4", "url": "https://www.flipkart.com/army-agniveer-exam-book-2026-indian-navy-general-knowledge/p/itm248b62a834ccc" },
+      { "title": "Khan Sir Pocket GK", "price": "₹77", "rating": "4.3", "url": "https://www.flipkart.com/khan-sir-pocket-gk-general-knowledge-samanya-gyan-2nd-revised-september-2024-useful-all-competitive-exams/p/itm60064d74cf6ed" },
+      { "title": "John Elia Bool", "price": "₹116", "rating": "4.2", "url": "https://www.flipkart.com/john-elia-bool/p/itm5bac18a54be5d" },
+      { "title": "Think and Grow Rich Combo", "price": "₹167", "rating": "4.4", "url": "https://www.flipkart.com/think-grow-rich-power-your-subconscious-mind-set-2-original-english-best-motivational-psychology-books/p/itm11ea19e8ab209" },
+      { "title": "THE SOUL RECOVERY", "price": "₹126", "rating": "4.3", "url": "https://www.flipkart.com/the-soul-recovery/p/itm8d6cce608e1bc" },
+      { "title": "Gunaho Ka Devta Combo", "price": "₹157", "rating": "4.4", "url": "https://www.flipkart.com/gunaho-ka-devta-shayari-combo-f-assured/p/itmb218258f255af" },
+      { "title": "Mass Spoken English Book", "price": "₹168", "rating": "4.4", "url": "https://www.flipkart.com/mass-spoken-english-book/p/itm7b76b06c4b87b" },
+      { "title": "Pharmacology 6e", "price": "₹1,061", "rating": "4.5", "url": "https://www.flipkart.com/pharmacology-medical-graduates-6e/p/itmbbd5ce7d0d4a6" },
+      { "title": "Amma Diarylo Telugu", "price": "₹199", "rating": "4.6", "url": "https://www.flipkart.com/ravi-mantri-amma-diarylo-konni-pageelu-telugu/p/itm419c1feea2ab5" }
+    ]
+  },
+  {
+    "category": "Sports & Fitness",
+    "products": [
+      { "title": "Leosportz Push Up Bar", "price": "₹192", "rating": "3.8", "url": "https://www.flipkart.com/leosportz-push-up-bar-home-gym-exercise-fitness-equipment-push-up/p/itm1ea86d3b97328" },
+      { "title": "ADONYX Hand Strengthener", "price": "₹239", "rating": "3.9", "url": "https://www.flipkart.com/adonyx-hand-strengthener-flexion-extension-training-exerciser-grip-fitness-grip/p/itm31ca35218130d" },
+      { "title": "Samayra Hand Grips", "price": "₹130", "rating": "4.2", "url": "https://www.flipkart.com/samayra-hand-grips-grip-fitness-grip/p/itm5f7c6aa144442" },
+      { "title": "BORCELLE Resistance tube", "price": "₹230", "rating": "3.9", "url": "https://www.flipkart.com/borcelle-11-one-resistance-bands-tube/p/itmca05a274a50ce" },
+      { "title": "Fitmeasy Hand Grip", "price": "₹137", "rating": "4.0", "url": "https://www.flipkart.com/fitmeasy-adjustable-hand-grip-strengthener-counter-forearm-finger-exerciser-grip-fitness/p/itm0a2a4f3a137b1" },
+      { "title": "luzzo Toning Tube Kit", "price": "₹229", "rating": "3.5", "url": "https://www.flipkart.com/luzzo-stretching-workout-toning-tube-kit-foam-handles-resistance-band/p/itm42af4e8e96119" },
+      { "title": "Manogyam Toning Tube", "price": "₹181", "rating": "4.0", "url": "https://www.flipkart.com/manogyam-toning-tube-foam-handle-ideal-physical-therapy-muscle-resistance/p/itm92ce26dd6bc19" },
+      { "title": "GJSHOP Adjustable Hand Grips", "price": "₹130", "rating": "4.1", "url": "https://www.flipkart.com/gjshop-adjustable-hand-grips-10kg-40kg-strong-wrist-forearms-exercise-home-gym-grip-fitness-grip/p/itmb04f735ffcd92" },
+      { "title": "Manogyam Adjustable Hand Grip", "price": "₹137", "rating": "4.1", "url": "https://www.flipkart.com/manogyam-best-exerciser-adjustable-10kg-hand-grip-fitness-grip/p/itm46795ed479c36" },
+      { "title": "Samayra Finger Exerciser", "price": "₹137", "rating": "4.1", "url": "https://www.flipkart.com/samayra-adjustable-spring-hand-finger-exerciser-strengthener-grip-fitness-grip/p/itmadef175b4732d" }
+    ]
+  },
+  {
+    "category": "Beauty",
+    "products": [
+      { "title": "Minimalist Retinol Serum", "price": "₹212", "rating": "4.2", "url": "https://www.flipkart.com/minimalist-retinol-serum-0-3-anti-aging-q10-reduce-fine-lines-wrinkles/p/itm515e5c554cca5" },
+      { "title": "The Derma Co Face Serum", "price": "₹317", "rating": "4.1", "url": "https://www.flipkart.com/derma-co-sali-cinamide-anti-acne-face-serum-2-salicylic-acid-5-niacinamide/p/itm53f23170e1615" },
+      { "title": "deconstruct Clearing Serum", "price": "₹245", "rating": "4.0", "url": "https://www.flipkart.com/deconstruct-5-niacinamide-2-alpha-arbutin-clearing-serum-4-in-1-clinically-tested/p/itm41bacffa075bc" },
+      { "title": "Minimalist Hyaluronic Acid Serum", "price": "₹512", "rating": "4.3", "url": "https://www.flipkart.com/minimalist-2-hyaluronic-acid-serum-face-glowing-skin-intense-hydration/p/itmcab139acff3ce" },
+      { "title": "The Derma Co Salicylic Acid", "price": "₹261", "rating": "4.1", "url": "https://www.flipkart.com/search?q=Beauty+Products" },
+      { "title": "Minimalist Vitamin C Serum", "price": "₹594", "rating": "4.3", "url": "https://www.flipkart.com/minimalist-10-vitamin-c-face-serum-glowing-skin-stable-ethyl-ascorbic-acid/p/itmd164bdfeecb32" },
+      { "title": "Dr. Sheth's Kesar Serum", "price": "₹351", "rating": "4.1", "url": "https://www.flipkart.com/search?q=Beauty+Products" },
+      { "title": "Aqualogica Dewy Sunscreen", "price": "₹351", "rating": "4.2", "url": "https://www.flipkart.com/search?q=Beauty+Products" },
+      { "title": "Dot & Key Bright Serum", "price": "₹512", "rating": "4.3", "url": "https://www.flipkart.com/search?q=Beauty+Products" },
+      { "title": "Plum Vitamin C Serum", "price": "₹451", "rating": "4.2", "url": "https://www.flipkart.com/search?q=Beauty+Products" }
+    ]
+  },
+  {
+    "category": "Appliances",
+    "products": [
+      { "title": "Pigeon Healthifry Air Fryer", "price": "₹2,899", "rating": "3.9", "url": "https://www.flipkart.com/pigeon-healthifry-digital-360-high-speed-air-circulation-technology-4-2-l-air-fryer/p/itm23e8c6067fa37" },
+      { "title": "Longway Juicer Mixer Grinder", "price": "₹1,499", "rating": "4.1", "url": "https://www.flipkart.com/longway-super-dlx-750-w-juicer-mixer-grinder/p/itm53f23170e1615" },
+      { "title": "IMPEX Electric Pan", "price": "₹1,449", "rating": "3.8", "url": "https://www.flipkart.com/impex-multi-functional-electric-pan-magic-pan-ws18-1-8-l/p/itm1ea86d3b97328" },
+      { "title": "Longway Mixer Grinder 700W", "price": "₹1,599", "rating": "4.3", "url": "https://www.flipkart.com/longway-super-dlx-700-w-juicer-mixer-grinder/p/itm2ea9250d9e312" },
+      { "title": "Longway 750 W Mixer Grinder", "price": "₹1,499", "rating": "4.1", "url": "https://www.flipkart.com/longway-super-dlx-750-w-juicer-mixer-grinder/p/itmbb1d872b675ae" },
+      { "title": "KOBBEY Deep Fryer", "price": "₹6,693", "rating": "3.6", "url": "https://www.flipkart.com/kobbey-electric-deep-fryer-copper-heater-5-year-warranty-5-98-l/p/itmf83793c5f5e0e" },
+      { "title": "MAZORIA DEEP FRYER", "price": "₹6,792", "rating": "3.9", "url": "https://www.flipkart.com/mazoria-deep-fryer-6-litre-commercial-l-electric/p/itm7d02ca8fcafbe" },
+      { "title": "HAVELLS Pop Up Toaster", "price": "₹1,799", "rating": "4.4", "url": "https://www.flipkart.com/havells-ghcptsik075-750-w-pop-up-toaster/p/itm1561ad5a970f1" },
+      { "title": "Pigeon Healthifry+ Air Fryer", "price": "₹2,899", "rating": "3.9", "url": "https://www.flipkart.com/pigeon-healthifry-360-high-speed-air-circulation-technology-1200-w-non-stick-basket-blue-fryer/p/itm7295e20480928" },
+      { "title": "HAVELLS Air Fryer", "price": "₹4,999", "rating": "4.4", "url": "https://www.flipkart.com/havells-polife-neo-air-fryer/p/itm59ec49bf68bfd" }
+    ]
+  },
+  {
+    "category": "Toys",
+    "products": [
+      { "title": "Bestway Inflatable Pool", "price": "₹3,240", "rating": "3.8", "url": "https://www.flipkart.com/bestway-bath-tubs-electric-pump-adults-blue-10-feet-inflatable-swimming-pool/p/itma728b746ae99a" },
+      { "title": "Speoma Kids Inflatable Pool", "price": "₹499", "rating": "4.1", "url": "https://www.flipkart.com/speoma-3-ft-bath-tub-kids-inflatable-swimming-pool/p/itme7f9d015eef79" },
+      { "title": "PISCINA Inflatable SPA Pool", "price": "₹2,876", "rating": "4", "url": "https://www.flipkart.com/piscina-pool-inflatable-bath-tubs-kids-adults-spa-8-5-feet-swimming/p/itm78b0634dd5f13" },
+      { "title": "SABIRAT Animal Toy Set", "price": "₹264", "rating": "4", "url": "https://www.flipkart.com/sabirat-animal-set-no-music-toy-kids/p/itm914ca17a219ed" },
+      { "title": "CANWELL Racing Car Set", "price": "₹998", "rating": "N/A", "url": "https://www.flipkart.com/canwell-racing-48-pcs-pull-back-car-set-kids-mini-container-toy-cw766/p/itm196b34db1977c" },
+      { "title": "YOUNG STAR JUMBO POOL", "price": "₹2,149", "rating": "4.2", "url": "https://www.flipkart.com/young-star-adults-kids-jumbo-big-swimming-water-pool-bath-tub-6-7-feets-inflatable/p/itm7749c133d9036" },
+      { "title": "Neel Mini Monster Trucks", "price": "₹159", "rating": "4.2", "url": "https://www.flipkart.com/neel-mini-monster-trucks-friction-powered-cars-kids-big-rubber-tires-baby-boys-super-blaze-truck-children-gift-toys-rock-crawler/p/itm008dff025e357" },
+      { "title": "LooknlveSports Crawling Toy", "price": "₹265", "rating": "4.1", "url": "https://www.flipkart.com/looknlvesports-runing-weeping-naughty-baby-crawling-toy-music-3d-lights/p/itm90b6cb4a49f34" },
+      { "title": "learn & fun Unbreakable Car", "price": "₹264", "rating": "4.1", "url": "https://www.flipkart.com/learn-fun-unbreakable-pull-back-texi-car-truck-bus-plane-toy-boys-girls-kids/p/itmc7fd3f3337176" },
+      { "title": "ASHA CHO SPA BATHTUB", "price": "₹2,399", "rating": "4.2", "url": "https://www.flipkart.com/asha-cho-spa-giant-bathtub-10-ft-3-ring-inflatable-swimming-pool-pump-kids-adults-blue/p/itm5d94cf0ab33ca" }
+    ]
+  },
+  {
+    "category": "Groceries",
+    "products": [
+      { "title": "GRANIC FARMS California Almonds", "price": "₹1,388", "rating": "3.9", "url": "https://www.flipkart.com/granic-farms-premium-california-almonds-badam-giri-whole-raw-natural/p/itm7d3e4786ec1d4" },
+      { "title": "Get Fresh F1 Afghani Anjeer", "price": "₹414", "rating": "3.9", "url": "https://www.flipkart.com/get-fresh-f1-dry-fruits-afghani-anjeer-dried-figs-1-kg/p/itma1c89aa5fbd92" },
+      { "title": "Get Fresh F3 Dried Figs", "price": "₹436", "rating": "3.7", "url": "https://www.flipkart.com/get-fresh-f3-dry-fruits-afghani-anjeer-dried-figs-1-kg/p/itmeec98a8a72d34" },
+      { "title": "vedic Wellness Mixnut 1Kg", "price": "₹450", "rating": "3.6", "url": "https://www.flipkart.com/vedic-wellness-healthy-mixnut-dry-fruits-1kg-nutmix-almonds-cashews-raisins-pistachios-walnuts-kiwi/p/itm0761ef3f486ac" },
+      { "title": "PROTIUM Afghani Anjeer", "price": "₹270", "rating": "N/A", "url": "https://www.flipkart.com/protium-afghani-anjeer-dried-figs-naturally-sweet-soft-nutrient-rich-dry-fruit-figs/p/itm58ea0d4825a11" },
+      { "title": "Get Fresh Anjeer Dry Fruits", "price": "₹161", "rating": "3.7", "url": "https://www.flipkart.com/get-fresh-anjeer-dry-fruits-dried-figs-250-gm-jar-packing-figs/p/itm5b2e8f72eeb75" },
+      { "title": "Farmley Whole Raw Kaju", "price": "₹699", "rating": "4.2", "url": "https://www.flipkart.com/farmley-whole-raw-kaju-cashews/p/itm54504777bcf9f" },
+      { "title": "Farmley California Almonds", "price": "₹1,199", "rating": "4.2", "url": "https://www.flipkart.com/farmley-popular-california-almonds/p/itmad17a0f8c1581" },
+      { "title": "Eatoriyumm Anjeer (Medium Size)", "price": "₹482", "rating": "3.8", "url": "https://www.flipkart.com/eatoriyumm-anjeer-anjir-medium-size-dry-figs/p/itmb2f5d983a0a63" },
+      { "title": "True Elements Goan Cashews", "price": "₹1,800", "rating": "4.2", "url": "https://www.flipkart.com/true-elements-goan-cashews-premium-dryfruits-kaju-cashews/p/itm1467a7a17adc4" }
+    ]
+  }
+]

@@ -42,7 +42,7 @@ const subCategoryData = {
     { name: 'Makeup',      img: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=200&q=80&fit=crop' },
     { name: 'Fragrances',  img: 'https://images.unsplash.com/photo-1588776814546-1ffbb3fef21b?w=200&q=80&fit=crop' },
   ],
-  'toys-baby': [
+  'toys': [
     { name: 'Learning Toys', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&q=80&fit=crop' },
     { name: 'Baby Care',     img: 'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=200&q=80&fit=crop' },
   ],

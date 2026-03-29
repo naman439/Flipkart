@@ -1,10 +1,10 @@
 /**
  * Product Controller
  * Handles product listing, filtering, search, sorting, and detail
+ * Sync'd with NEW Production UUID Schema
  */
 
 const prisma = require('../config/db');
-const { fetchLiveProductDetails } = require('../services/flipkartScraper');
 
 // Helper to shuffle an array
 const shuffleArray = (array) => {
@@ -19,7 +19,7 @@ const shuffleArray = (array) => {
 /**
  * GET /api/products
  * Fetch products with optional filtering, search, sorting, pagination
- * Query params: search, category, sort, page, limit, minPrice, maxPrice
+ * Query params: search, category, sort, order, page, limit, minPrice, maxPrice
  */
 const getProducts = async (req, res) => {
   const {
@@ -47,7 +47,7 @@ const getProducts = async (req, res) => {
     where.OR = [
       { title: { contains: search, mode: 'insensitive' } },
       { description: { contains: search, mode: 'insensitive' } },
-      { category: { is: { name: { contains: search, mode: 'insensitive' } } } }
+      { category: { name: { contains: search, mode: 'insensitive' } } }
     ];
   }
 
@@ -74,22 +74,22 @@ const getProducts = async (req, res) => {
     where.rating = { gte: parseFloat(minRating) };
   }
 
-  // Handle dynamic specification filters (anything not standard)
+  // Handle dynamic specification filters (Native JSONB path)
   const standardParams = ['search', 'category', 'sort', 'order', 'page', 'limit', 'minPrice', 'maxPrice', 'brand', 'minRating', 'isFeatured'];
   for (const [key, value] of Object.entries(req.query)) {
     if (!standardParams.includes(key)) {
       // It's a dynamic spec like ?Color=Red or ?RAM=8GB
-      // Since specs are stored as JSON string, we match substring. 
-      // e.g., "Color":"Red"
+      // Using Prisma's JSON path filtering for JSONB
+      const values = value.split(',');
       
-      const specArr = [];
-      const values = value.split(','); // handle comma separated values
-      for (const val of values) {
-        specArr.push({ specifications: { contains: `"${key}":"${val}"` } });
-      }
+      const specFilter = {
+        OR: values.map(val => ({
+          specifications: { path: [key], equals: val }
+        }))
+      };
       
       if (!where.AND) where.AND = [];
-      where.AND.push({ OR: specArr });
+      where.AND.push(specFilter);
     }
   }
 
@@ -109,25 +109,26 @@ const getProducts = async (req, res) => {
       take: limitNum,
       include: {
         category: { select: { id: true, name: true, slug: true } },
+        images: { orderBy: { displayOrder: 'asc' } },
       },
     }),
     prisma.product.count({ where }),
   ]);
 
-  // Parse JSON fields and shuffle if no specific sort is applied
-  let parsed = products.map((p) => ({
+  // Map images to simple array for frontend backwards compatibility
+  let simplified = products.map((p) => ({
     ...p,
-    images: JSON.parse(p.images || '[]'),
-    specifications: p.specifications ? JSON.parse(p.specifications) : {},
+    images: p.images.map(img => img.imageUrl),
+    // specifications is already an object now (JSONB)
   }));
 
   if (!req.query.sort) {
-    parsed = shuffleArray(parsed);
+    simplified = shuffleArray(simplified);
   }
 
   res.json({
     success: true,
-    data: parsed,
+    data: simplified,
     pagination: {
       total,
       page: pageNum,
@@ -140,15 +141,21 @@ const getProducts = async (req, res) => {
 
 /**
  * GET /api/products/:id
- * Fetch a single product by ID
+ * Fetch a single product by ID (UUID)
  */
 const getProductById = async (req, res) => {
   const { id } = req.params;
 
   const product = await prisma.product.findUnique({
-    where: { id: parseInt(id) },
+    where: { id }, // No more parseInt, it's a UUID string
     include: {
       category: { select: { id: true, name: true, slug: true } },
+      images: { orderBy: { displayOrder: 'asc' } },
+      reviews: {
+        take: 10,
+        orderBy: { createdAt: 'desc' },
+        include: { user: { select: { name: true, avatarUrl: true } } }
+      }
     },
   });
 
@@ -158,48 +165,11 @@ const getProductById = async (req, res) => {
     throw error;
   }
 
-  let parsedImages = JSON.parse(product.images || '[]');
-  let parsedSpecs = product.specifications ? JSON.parse(product.specifications) : {};
-
-  // Check if we need to fetch live details
-  // Condition: Dummy specs or very few images
-  const isDummyData = 
-    parsedImages.length <= 1 || 
-    Object.keys(parsedSpecs).length <= 2 || 
-    (parsedSpecs.Authenticity === 'Verified');
-
-  if (isDummyData) {
-    try {
-      const liveData = await fetchLiveProductDetails(product.brand ? `${product.brand} ${product.title}` : product.title);
-      
-      if (liveData.success) {
-        // Update DB
-        product = await prisma.product.update({
-          where: { id: parseInt(id) },
-          data: {
-            images: JSON.stringify(liveData.data.images.length > 0 ? liveData.data.images : parsedImages),
-            specifications: JSON.stringify(liveData.data.specifications),
-            description: liveData.data.description || product.description
-          },
-          include: {
-            category: { select: { id: true, name: true, slug: true } },
-          },
-        });
-        
-        parsedImages = JSON.parse(product.images || '[]');
-        parsedSpecs = product.specifications ? JSON.parse(product.specifications) : {};
-      }
-    } catch (err) {
-      console.error('Error fetching live data:', err.message);
-    }
-  }
-
   res.json({
     success: true,
     data: {
       ...product,
-      images: parsedImages,
-      specifications: parsedSpecs,
+      images: product.images.map(img => img.imageUrl), // Map to simple array
     },
   });
 };
@@ -212,17 +182,19 @@ const getFeaturedProducts = async (req, res) => {
   const products = await prisma.product.findMany({
     where: { isFeatured: true },
     take: 8,
-    include: { category: { select: { name: true, slug: true } } },
+    include: { 
+        category: { select: { name: true, slug: true } },
+        images: { orderBy: { displayOrder: 'asc' } }
+    },
     orderBy: { rating: 'desc' },
   });
 
-  const parsed = products.map((p) => ({
+  const simplified = products.map((p) => ({
     ...p,
-    images: JSON.parse(p.images || '[]'),
-    specifications: p.specifications ? JSON.parse(p.specifications) : {},
+    images: p.images.map(img => img.imageUrl),
   }));
 
-  res.json({ success: true, data: parsed });
+  res.json({ success: true, data: simplified });
 };
 
 /**
@@ -269,11 +241,10 @@ const getDynamicFilters = async (req, res) => {
     where.OR = [
       { title: { contains: search, mode: 'insensitive' } },
       { description: { contains: search, mode: 'insensitive' } },
-      { category: { is: { name: { contains: search, mode: 'insensitive' } } } }
+      { category: { name: { contains: search, mode: 'insensitive' } } }
     ];
   }
 
-  // Only grab what we need to build filters
   const products = await prisma.product.findMany({
     where,
     select: { brand: true, specifications: true }
@@ -287,13 +258,11 @@ const getDynamicFilters = async (req, res) => {
       brandsMap[p.brand] = (brandsMap[p.brand] || 0) + 1;
     }
     if (p.specifications) {
-      try {
-        const specs = JSON.parse(p.specifications);
-        for (const [key, value] of Object.entries(specs)) {
-          if (!specsMap[key]) specsMap[key] = {};
-          specsMap[key][value] = (specsMap[key][value] || 0) + 1;
-        }
-      } catch (e) {}
+      // Specifications is already an object now (JSONB)
+      for (const [key, value] of Object.entries(p.specifications)) {
+        if (!specsMap[key]) specsMap[key] = {};
+        specsMap[key][value] = (specsMap[key][value] || 0) + 1;
+      }
     }
   });
 
@@ -306,4 +275,43 @@ const getDynamicFilters = async (req, res) => {
   });
 };
 
-module.exports = { getProducts, getProductById, getFeaturedProducts, getCategories, getBrands, getDynamicFilters };
+/**
+ * GET /api/products/home-layout
+ * Fetch 10 categories and top 8 products for each
+ */
+const getHomeLayout = async (req, res) => {
+  const categories = await prisma.category.findMany({
+    orderBy: { name: 'asc' },
+    select: { id: true, name: true, slug: true }
+  });
+
+  const layout = await Promise.all(categories.map(async (cat) => {
+    const products = await prisma.product.findMany({
+      where: { categoryId: cat.id },
+      take: 8,
+      orderBy: { rating: 'desc' },
+      include: { images: { orderBy: { displayOrder: 'asc' } } }
+    });
+
+    return {
+      categoryName: cat.name,
+      slug: cat.slug,
+      products: products.map(p => ({
+        ...p,
+        images: p.images.map(img => img.imageUrl)
+      }))
+    };
+  }));
+
+  res.json({ success: true, data: layout });
+};
+
+module.exports = {
+  getProducts,
+  getProductById,
+  getFeaturedProducts,
+  getHomeLayout,
+  getCategories,
+  getBrands,
+  getDynamicFilters
+};

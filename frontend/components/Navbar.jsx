@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FiSearch, FiShoppingCart, FiUser, FiChevronDown, FiMapPin } from 'react-icons/fi';
@@ -13,6 +13,11 @@ export default function Navbar() {
   const { cart } = useCart();
   const [searchQuery, setSearchQuery] = useState('');
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSearch = useCallback((e) => {
     e.preventDefault();
@@ -132,16 +137,20 @@ export default function Navbar() {
           onMouseLeave={() => setShowUserMenu(false)}
           onClick={() => !isAuthenticated && router.push('/auth/login')}
         >
-          <FiUser size={24} color="#212121" />
-          <span>{isAuthenticated ? (user?.name?.split(' ')[0] || 'Account') : 'Login'}</span>
-          <FiChevronDown size={16} color="#717478" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, height: '100%' }}>
+            <FiUser size={24} color="#212121" />
+            <span>{mounted && isAuthenticated ? (user?.name?.split(' ')[0] || 'Account') : 'Login'}</span>
+            <FiChevronDown size={16} color="#717478" />
+          </div>
 
-          {showUserMenu && isAuthenticated && (
-            <div style={{ position: 'absolute', top: 'calc(100% + 8px)', right: 0, background: 'white', boxShadow: '0 4px 16px rgba(0,0,0,.15)', borderRadius: 4, minWidth: 200, zIndex: 1100, border: '1px solid #f0f0f0' }}>
-              <Link href="/profile" style={{ display: 'block', padding: '12px 16px', textDecoration: 'none', color: '#212121', fontSize: 14 }}>My Profile</Link>
-              <Link href="/orders"  style={{ display: 'block', padding: '12px 16px', textDecoration: 'none', color: '#212121', fontSize: 14 }}>My Orders</Link>
-              <Link href="/wishlist" style={{ display: 'block', padding: '12px 16px', textDecoration: 'none', color: '#212121', fontSize: 14 }}>Wishlist</Link>
-              <div onClick={logout} style={{ padding: '12px 16px', color: '#d32f2f', cursor: 'pointer', borderTop: '1px solid #f0f0f0', fontSize: 14 }}>Logout</div>
+          {mounted && showUserMenu && isAuthenticated && (
+            <div style={{ position: 'absolute', top: '100%', right: 0, background: 'white', boxShadow: '0 4px 16px rgba(0,0,0,.15)', borderRadius: 4, minWidth: 200, zIndex: 1100, border: '1px solid #f0f0f0', paddingTop: 8 }}>
+              <div style={{ background: 'white', padding: '4px 0', borderRadius: 4 }}>
+                <Link href="/profile" style={{ display: 'block', padding: '12px 16px', textDecoration: 'none', color: '#212121', fontSize: 14 }}>My Profile</Link>
+                <Link href="/orders"  style={{ display: 'block', padding: '12px 16px', textDecoration: 'none', color: '#212121', fontSize: 14 }}>My Orders</Link>
+                <Link href="/wishlist" style={{ display: 'block', padding: '12px 16px', textDecoration: 'none', color: '#212121', fontSize: 14 }}>Wishlist</Link>
+                <div onClick={logout} style={{ padding: '12px 16px', color: '#d32f2f', cursor: 'pointer', borderTop: '1px solid #f0f0f0', fontSize: 14 }}>Logout</div>
+              </div>
             </div>
           )}
         </div>

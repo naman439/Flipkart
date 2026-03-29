@@ -1,6 +1,7 @@
 /**
  * Order Controller
  * Handles order placement, retrieval, and email notifications
+ * Sync'd with NEW Production UUID Schema
  */
 
 const prisma = require('../config/db');
@@ -12,22 +13,33 @@ const { sendOrderConfirmationEmail } = require('../services/email.service');
  */
 const placeOrder = async (req, res) => {
   const userId = req.user.id;
-  const {
-    shippingName,
-    shippingPhone,
-    shippingAddress,
-    shippingCity,
-    shippingState,
-    shippingZip,
-    paymentMethod = 'COD',
-  } = req.body;
+  const { addressId, paymentMethod = 'COD' } = req.body;
 
-  // Validate shipping fields
-  if (!shippingName || !shippingPhone || !shippingAddress || !shippingCity || !shippingState || !shippingZip) {
-    const error = new Error('All shipping fields are required');
+  // Validate address
+  if (!addressId) {
+    const error = new Error('Please select a delivery address');
     error.statusCode = 400;
     throw error;
   }
+
+  // Fetch and validate address ownership
+  const address = await prisma.address.findFirst({
+    where: { id: addressId, userId },
+  });
+
+  if (!address) {
+    const error = new Error('Address not found or does not belong to you');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // Snapshot shipping info from address (preserves history even if address is later changed/deleted)
+  const shippingName    = address.fullName;
+  const shippingPhone   = address.phone;
+  const shippingAddress = address.addressLine1 + (address.addressLine2 ? ', ' + address.addressLine2 : '');
+  const shippingCity    = address.city;
+  const shippingState   = address.state;
+  const shippingZip     = address.postalCode;
 
   // Fetch user's cart
   const cart = await prisma.cart.findUnique({
@@ -56,27 +68,26 @@ const placeOrder = async (req, res) => {
     }
   }
 
-  // Calculate totals
-  const totalAmount = cart.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-  const finalAmount = cart.items.reduce((sum, item) => sum + item.product.discountPrice * item.quantity, 0);
+  // Calculate totals (Decimal math handled by prisma as Decimal.js, using Number for intermediate sums)
+  const totalAmount = cart.items.reduce((sum, item) => sum + Number(item.product.price) * item.quantity, 0);
+  const finalAmount = cart.items.reduce((sum, item) => sum + Number(item.product.discountPrice) * item.quantity, 0);
   const discountAmount = totalAmount - finalAmount;
 
   try {
     // Create order with items in a transaction
     const order = await prisma.$transaction(async (tx) => {
-      // 1. Decrement stock atomically, blocking creation if stock is insufficient
+      // 1. Decrement stock atomically
       for (const item of cart.items) {
         const updateResult = await tx.product.updateMany({
           where: { 
             id: item.productId,
-            stock: { gte: item.quantity } // strictly enforce stock availability
+            stock: { gte: item.quantity } 
           },
           data: { stock: { decrement: item.quantity } },
         });
 
-        // If count is 0, the stock was either insufficient or product was missing
         if (updateResult.count === 0) {
-          throw new Error(`Insufficient stock for "${item.product.title}". It might have just sold out.`);
+          throw new Error(`Insufficient stock for "${item.product.title}".`);
         }
       }
 
@@ -84,9 +95,9 @@ const placeOrder = async (req, res) => {
       const newOrder = await tx.order.create({
         data: {
           userId,
-          totalAmount: Math.round(totalAmount),
-          discountAmount: Math.round(discountAmount),
-          finalAmount: Math.round(finalAmount),
+          totalAmount: totalAmount,
+          discountAmount: discountAmount,
+          finalAmount: finalAmount,
           shippingName,
           shippingPhone,
           shippingAddress,
@@ -94,13 +105,12 @@ const placeOrder = async (req, res) => {
           shippingState,
           shippingZip,
           paymentMethod,
-          status: 'CONFIRMED',
+          status: 'PLACED',
           items: {
             create: cart.items.map((item) => ({
               productId: item.productId,
               quantity: item.quantity,
-              price: item.product.discountPrice,
-              title: item.product.title,
+              priceAtPurchase: item.product.discountPrice,
             })),
           },
         },
@@ -113,9 +123,11 @@ const placeOrder = async (req, res) => {
       return newOrder;
     });
 
-    // Send email notification (fire-and-forget, don't block response)
-    const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true, name: true } });
-    sendOrderConfirmationEmail(user.email, user.name, order).catch(console.error);
+    // Send email notification (Profile holds the user name now)
+    const profile = await prisma.profile.findUnique({ where: { id: userId }, select: { email: true, name: true } });
+    if (profile && profile.email) {
+      sendOrderConfirmationEmail(profile.email, profile.name, order).catch(console.error);
+    }
 
     res.status(201).json({
       success: true,
@@ -156,7 +168,12 @@ const getOrders = async (req, res) => {
       include: {
         items: {
           include: {
-            product: { select: { id: true, images: true } },
+            product: { 
+                select: { 
+                    id: true, 
+                    images: { orderBy: { displayOrder: 'asc' }, take: 1 } 
+                } 
+            },
           },
         },
       },
@@ -164,13 +181,16 @@ const getOrders = async (req, res) => {
     prisma.order.count({ where: { userId } }),
   ]);
 
-  // Parse product images
+  // Simplify product images
   const parsed = orders.map((order) => ({
     ...order,
     items: order.items.map((item) => ({
       ...item,
       product: item.product
-        ? { ...item.product, images: JSON.parse(item.product.images || '[]') }
+        ? { 
+            ...item.product, 
+            thumbnail: item.product.images[0]?.imageUrl || null 
+          }
         : null,
     })),
   }));
@@ -196,11 +216,17 @@ const getOrderById = async (req, res) => {
   const { id } = req.params;
 
   const order = await prisma.order.findFirst({
-    where: { id: parseInt(id), userId },
+    where: { id, userId }, // UUID string
     include: {
       items: {
         include: {
-          product: { select: { id: true, images: true, brand: true } },
+          product: { 
+              select: { 
+                  id: true, 
+                  brand: true,
+                  images: { orderBy: { displayOrder: 'asc' } } 
+              } 
+          },
         },
       },
     },
@@ -217,7 +243,10 @@ const getOrderById = async (req, res) => {
     items: order.items.map((item) => ({
       ...item,
       product: item.product
-        ? { ...item.product, images: JSON.parse(item.product.images || '[]') }
+        ? { 
+            ...item.product, 
+            images: item.product.images.map(img => img.imageUrl) 
+          }
         : null,
     })),
   };

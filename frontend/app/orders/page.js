@@ -63,7 +63,8 @@ export default function OrdersPage() {
         <>
           {orders.map((order) => {
             const statusStyle = STATUS_COLORS[order.status] || {};
-            const firstImage = order.items?.[0]?.product?.images?.[0];
+            const firstItemImage = order.items?.[0]?.product?.images?.[0];
+            const firstImage = typeof firstItemImage === 'string' ? firstItemImage : firstItemImage?.imageUrl;
             return (
               <div key={order.id} style={{ background: 'white', borderRadius: 4, marginBottom: 12, boxShadow: 'var(--shadow-sm)', overflow: 'hidden' }}>
                 {/* Order header */}
@@ -85,7 +86,11 @@ export default function OrdersPage() {
                 {/* Order items preview */}
                 <div style={{ padding: '14px 20px', display: 'flex', gap: 16, alignItems: 'center' }}>
                   {firstImage && (
-                    <img src={firstImage} alt="product" style={{ width: 64, height: 64, objectFit: 'contain', border: '1px solid var(--border-color)', padding: 4 }} />
+                    <img 
+                      src={firstImage.startsWith('/') ? `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '')}${firstImage}` : firstImage} 
+                      alt="product" 
+                      style={{ width: 64, height: 64, objectFit: 'contain', border: '1px solid var(--border-color)', padding: 4, borderRadius: 2 }} 
+                    />
                   )}
                   <div style={{ flex: 1 }}>
                     <p style={{ fontSize: 14, fontWeight: 500 }}>

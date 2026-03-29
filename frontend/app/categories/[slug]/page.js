@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { notFound, useParams } from 'next/navigation';
 import { getProducts } from '@/services/api/products.api';
 import CategorySubNav from '@/components/clp/CategorySubNav';
-import AdBannerSlider from '@/components/clp/AdBannerSlider';
 import ThemedProductRow from '@/components/clp/ThemedProductRow';
 import ProductCard from '@/components/ProductCard';
 import { Spinner } from '@/components/LoadingSkeleton';
@@ -88,15 +87,8 @@ export default function CategoryLandingPage() {
         {/* 1. Subcategory Circular Nav */}
         <CategorySubNav categorySlug={slug} />
 
-        {/* 2. CLP specific Bank/Sponsor Banners */}
-        <AdBannerSlider categorySlug={slug} />
-
         {/* 3. Themed Rows Segmented by Discount/Rating */}
         <ThemedProductRow title={row1Title} products={topDeals} bgColor={row1Bg} />
-        
-        <div style={{ margin: '12px 16px' }}>
-          <AdBannerSlider categorySlug="default" /> {/* Mid-page sponsor inject */}
-        </div>
 
         <ThemedProductRow title={row2Title} products={topRated} bgColor={row2Bg} />
 
