@@ -17,16 +17,17 @@ export default function HomePage() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
+      setError(null); // Reset error on new fetch
       try {
         const response = await getHomeLayout();
         if (response.success) {
           setLayout(response.data || []);
         } else {
-          setError('Failed to load products');
+          setError(response.message || 'Failed to load products');
         }
       } catch (err) {
         console.error('Home Page Error:', err);
-        setError('Something went wrong. Please try again later.');
+        setError('Our servers are taking a moment to wake up. Please try again or refresh.');
       } finally {
         setLoading(false);
       }
@@ -36,8 +37,14 @@ export default function HomePage() {
 
   if (error) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh', color: '#666' }}>
-        <p>{error}</p>
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '60vh', color: '#666', gap: 20 }}>
+        <p style={{ fontSize: 18 }}>{error}</p>
+        <button 
+          onClick={() => window.location.reload()}
+          style={{ padding: '10px 24px', background: 'var(--fk-blue)', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: 600 }}
+        >
+          Retry Now
+        </button>
       </div>
     );
   }

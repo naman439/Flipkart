@@ -57,7 +57,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // ─── Health Check ───────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Flipkart Clone API is running', timestamp: new Date() });
+  res.json({ status: 'OK', message: 'Server is running' });
 });
 
 // ─── API Routes ─────────────────────────────────────────────────────────────
