@@ -5,6 +5,7 @@
   /* 2025 Flipkart Palette - High Fidelity */
   --fk-blue: #2874f0;
   --fk-blue-dark: #1a5cbf;
+  --fk-blue-hover: #1b64da;
   --fk-blue-light: #f0f5ff;
   --fk-white: #ffffff;
   --fk-gray-bg: #f1f3f6;
@@ -1053,7 +1054,7 @@ img {
   color: white;
 }
 
-.btn-primary:hover { background: var(--fk-blue-hover); }
+.btn-primary:hover { background: var(--fk-blue-hover); color: white; }
 
 .btn-outline {
   background: transparent;

@@ -38,7 +38,7 @@ export default function CartPage() {
           />
           <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>Your cart is empty!</h2>
           <p style={{ color: '#666', marginBottom: 24 }}>Add items to it now.</p>
-          <Link href="/products" className="btn btn-primary" style={{ padding: '12px 64px', fontWeight: 600 }}>
+          <Link href="/" className="btn btn-primary" style={{ padding: '12px 64px', fontWeight: 600 }}>
             Shop Now
           </Link>
         </div>

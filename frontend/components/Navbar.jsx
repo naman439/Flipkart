@@ -244,6 +244,7 @@ export default function Navbar() {
                  <div style={{ background: 'white', padding: '4px 0', borderRadius: 4 }}>
                    <Link href="/profile" style={{ display: 'block', padding: '12px 16px', textDecoration: 'none', color: '#212121', fontSize: 14 }}>My Profile</Link>
                    <Link href="/orders"  style={{ display: 'block', padding: '12px 16px', textDecoration: 'none', color: '#212121', fontSize: 14 }}>My Orders</Link>
+                   <Link href="/wishlist" style={{ display: 'block', padding: '12px 16px', textDecoration: 'none', color: '#212121', fontSize: 14 }}>Wishlist</Link>
                    <div onClick={logout} style={{ padding: '12px 16px', color: '#d32f2f', cursor: 'pointer', borderTop: '1px solid #f0f0f0', fontSize: 14 }}>Logout</div>
                  </div>
               </div>

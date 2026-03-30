@@ -8,7 +8,7 @@ import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useAuth } from '@/context/AuthContext';
 import { Spinner } from '@/components/LoadingSkeleton';
-import { FiStar, FiShoppingCart, FiZap, FiMapPin, FiInfo, FiTag } from 'react-icons/fi';
+import { FiStar, FiShoppingCart, FiZap, FiMapPin, FiInfo, FiTag, FiHeart } from 'react-icons/fi';
 import ImageGrid from '@/components/ImageGrid';
 import StarRating from '@/components/StarRating';
 import toast from 'react-hot-toast';
@@ -123,8 +123,29 @@ export default function ProductDetailPage({ params }) {
         
         {/* ── Left Column (Scrollable Grid) ───────────────────────────── */}
         <div style={{ padding: '24px 12px 24px 24px' }}>
-          <div style={{ marginBottom: 16 }}>
+          <div style={{ marginBottom: 16, position: 'relative' }}>
              <ImageGrid images={images} />
+             <button 
+               onClick={(e) => {
+                 e.preventDefault();
+                 e.stopPropagation();
+                 toggleWishlist(product.id);
+               }}
+               style={{
+                 position: 'absolute', top: 12, right: 24, border: 'none', background: 'rgba(255,255,255,0.9)',
+                 borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center',
+                 justifyContent: 'center', zIndex: 5, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+                 transition: 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+               }}
+               className="wishlist-btn-detail"
+             >
+               <FiHeart 
+                 fill={isInWishlist(product.id) ? '#ff4343' : 'none'} 
+                 stroke={isInWishlist(product.id) ? '#ff4343' : '#999'} 
+                 size={24} 
+                 style={{ transition: 'all 0.2s' }}
+               />
+             </button>
           </div>
           <div className="product-action-buttons mobile-stack" style={{ display: 'flex', gap: 10, position: 'sticky', bottom: 16, zIndex: 10 }}>
             <button 

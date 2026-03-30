@@ -41,7 +41,7 @@ export default function WishlistPage() {
           <div className="empty-state-icon">💔</div>
           <h3>Your wishlist is empty</h3>
           <p>Save items you like to your wishlist</p>
-          <Link href="/products" className="btn btn-primary" style={{ marginTop: 16, display: 'inline-flex' }}>
+          <Link href="/" className="btn btn-primary" style={{ marginTop: 16, display: 'inline-flex' }}>
             Explore Products
           </Link>
         </div>
