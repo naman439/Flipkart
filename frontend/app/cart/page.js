@@ -50,14 +50,14 @@ export default function CartPage() {
     <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', paddingBottom: 60 }}>
       {/* Sub Header for Cart */}
       <div style={{ background: 'white', marginBottom: 12, boxShadow: 'var(--shadow-sm)' }}>
-        <div className="main-container" style={{ display: 'flex', gap: 40, padding: '12px 0' }}>
+        <div className="main-container mobile-scroll-x" style={{ display: 'flex', gap: 40, padding: '12px 0' }}>
           <div style={{ fontWeight: 600, color: 'var(--fk-blue)', borderBottom: '3px solid var(--fk-blue)', paddingBottom: 8 }}>Flipkart (1)</div>
           <div style={{ fontWeight: 500, color: '#878787' }}>Grocery</div>
         </div>
       </div>
 
       <div className="main-container">
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: 16, alignItems: 'start' }}>
+        <div className="page-layout-grid">
           
           {/* Left Column: Cart Items */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>

@@ -231,7 +231,7 @@ export default function CheckoutPage() {
               ) : (
                 <form onSubmit={handleSaveAddress} style={{ marginTop: 16, padding: '20px', border: '1px solid #e0e0e0', borderRadius: 4 }}>
                   <h4 style={{ fontSize: 15, fontWeight: 600, marginBottom: 20, color: '#212121' }}>New Delivery Address</h4>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+                  <div className="page-layout-grid" style={{ gridTemplateColumns: '1fr 1fr', marginBottom: 16 }}>
                     <div>
                       <label style={labelStyle}>Full Name *</label>
                       <input style={inputStyle(formErrors.fullName)} value={form.fullName} onChange={e => setForm(f => ({ ...f, fullName: e.target.value }))} placeholder="Full Name" />
@@ -252,7 +252,7 @@ export default function CheckoutPage() {
                     <label style={labelStyle}>Address Line 2 (Optional)</label>
                     <input style={inputStyle()} value={form.addressLine2} onChange={e => setForm(f => ({ ...f, addressLine2: e.target.value }))} placeholder="Area, Colony, Sector" />
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16, marginBottom: 20 }}>
+                  <div className="page-layout-grid" style={{ gridTemplateColumns: '1fr 1fr 1fr', marginBottom: 20 }}>
                     <div>
                       <label style={labelStyle}>City *</label>
                       <input style={inputStyle(formErrors.city)} value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="City" />
@@ -355,7 +355,7 @@ export default function CheckoutPage() {
 
   // ─── STEP 4: PAYMENT ───────────────────────────────────────────────────────
   const RenderPayment = () => (
-    <div style={{ background: 'white', borderRadius: 4, boxShadow: 'var(--shadow-md)', minHeight: 450, display: 'grid', gridTemplateColumns: '300px 1fr' }}>
+    <div className="page-layout-grid" style={{ background: 'white', borderRadius: 4, boxShadow: 'var(--shadow-md)', minHeight: 450, gridTemplateColumns: '300px 1fr', gap: 0 }}>
       {/* Payment Method List */}
       <div style={{ background: '#f9f9f9', borderRight: '1px solid #f0f0f0' }}>
         <div style={{ padding: '20px', fontSize: 15, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 10, borderBottom: '1px solid #f0f0f0' }}>
@@ -456,7 +456,7 @@ export default function CheckoutPage() {
     <div style={{ background: '#f1f3f6', minHeight: '100vh', padding: '16px 0' }}>
       {/* Progress Bar */}
       <div style={{ background: 'var(--fk-blue)', height: 64, display: 'flex', alignItems: 'center', padding: '0 24px', marginBottom: 16 }}>
-        <div className="main-container" style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+        <div className="main-container mobile-scroll-x" style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
           <span style={{ color: 'white', fontSize: 22, fontWeight: 800, fontStyle: 'italic', marginRight: 32 }}>Flipkart</span>
           {[['2', 'Address', 2], ['3', 'Order Summary', 3], ['4', 'Payment', 4]].map(([num, label, step]) => (
             <div key={num} style={{ display: 'flex', alignItems: 'center', marginRight: 8 }}>
@@ -474,7 +474,7 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      <div className="main-container" style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 16 }}>
+      <div className="main-container page-layout-grid checkout-grid">
         {activeStep === 2 ? RenderAddressStep() : RenderOrderSummary()}
         <PriceBreakdown
           summary={cart.summary}

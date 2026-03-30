@@ -63,7 +63,7 @@ export default function OrderSuccessPage({ params }) {
         {/* Order Tracking */}
         <div style={{ background: 'white', borderRadius: 4, padding: '24px', marginBottom: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
           <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 24 }}>Order Status</h3>
-          <div style={{ display: 'flex', justifyContent: 'space-between', position: 'relative' }}>
+          <div className="mobile-scroll-x" style={{ display: 'flex', justifyContent: 'space-between', position: 'relative', paddingBottom: 10 }}>
             {/* Progress Line */}
             <div style={{ position: 'absolute', top: 20, left: '10%', right: '10%', height: 3, background: '#e0e0e0', zIndex: 0 }}>
               <div style={{ height: '100%', background: '#388e3c', width: `${(currentStep / (STATUS_STEPS.length - 1)) * 100}%`, transition: 'width 0.5s ease' }} />

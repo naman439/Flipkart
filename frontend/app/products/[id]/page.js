@@ -119,14 +119,14 @@ export default function ProductDetailPage({ params }) {
 
   return (
     <div style={{ background: '#f1f3f6', minHeight: '100vh', padding: '16px 0' }}>
-      <div className="main-container" style={{ background: 'white', display: 'grid', gridTemplateColumns: '43% 57%', minHeight: '100vh', boxShadow: '0 2px 4px 0 rgba(0,0,0,.08)' }}>
+      <div className="main-container page-layout-grid product-grid" style={{ background: 'white', minHeight: '100vh', boxShadow: '0 2px 4px 0 rgba(0,0,0,.08)' }}>
         
         {/* ── Left Column (Scrollable Grid) ───────────────────────────── */}
-        <div style={{ padding: '24px 12px 24px 24px', borderRight: '1px solid #f0f0f0' }}>
+        <div style={{ padding: '24px 12px 24px 24px' }}>
           <div style={{ marginBottom: 16 }}>
              <ImageGrid images={images} />
           </div>
-          <div style={{ display: 'flex', gap: 10, position: 'sticky', bottom: 16, zIndex: 10 }}>
+          <div className="product-action-buttons mobile-stack" style={{ display: 'flex', gap: 10, position: 'sticky', bottom: 16, zIndex: 10 }}>
             <button 
               onClick={() => addItem(product.id, 1)}
               style={{ flex: 1, background: '#ff9f00', color: 'white', border: 'none', height: 56, fontSize: 16, fontWeight: 600, borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer', boxShadow: '0 2px 4px 0 rgba(0,0,0,.2)' }}

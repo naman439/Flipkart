@@ -108,7 +108,12 @@ const categories = [
 
 export default function CategoryNav() {
   const pathname = usePathname();
-  if (pathname.includes('/checkout')) return null;
+  
+  // Hide on Product Detail, Cart, and Checkout flows
+  const isProductPage = /^\/products\/[^/]+$/.test(pathname) && pathname !== '/products';
+  const isCheckoutFlow = pathname === '/cart' || pathname === '/checkout' || pathname.startsWith('/order-success');
+  
+  if (isProductPage || isCheckoutFlow) return null;
 
   return (
     <div style={{ background: 'white', borderBottom: '1px solid #e0e0e0', marginBottom: 8, padding: '0 8px' }}>
