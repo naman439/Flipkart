@@ -132,17 +132,17 @@ export default function ProductDetailPage({ params }) {
                  toggleWishlist(product.id);
                }}
                style={{
-                 position: 'absolute', top: 12, right: 24, border: 'none', background: 'rgba(255,255,255,0.9)',
-                 borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center',
-                 justifyContent: 'center', zIndex: 5, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-                 transition: 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                 position: 'absolute', top: 12, right: 12, border: 'none', background: 'white',
+                 borderRadius: '50%', width: 36, height: 36, display: 'flex', alignItems: 'center',
+                 justifyContent: 'center', zIndex: 10, cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+                 transition: 'all 0.2s'
                }}
                className="wishlist-btn-detail"
              >
                <FiHeart 
                  fill={isInWishlist(product.id) ? '#ff4343' : 'none'} 
                  stroke={isInWishlist(product.id) ? '#ff4343' : '#999'} 
-                 size={24} 
+                 size={20} 
                  style={{ transition: 'all 0.2s' }}
                />
              </button>

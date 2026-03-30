@@ -142,9 +142,27 @@ img {
     height: auto !important;
   }
 
-  button, .btn {
+  /* Global button rule - apply selectively or allow overrides */
+  button:not(.wishlist-btn-detail):not(.wishlist-btn), .btn {
     width: 100% !important;
     max-width: 100% !important;
+  }
+
+  .wishlist-btn-detail {
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .wishlist-btn {
+    width: 32px !important;
+    height: 32px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
   }
 
   [style*="width: 380px"], [style*="width:380px"],

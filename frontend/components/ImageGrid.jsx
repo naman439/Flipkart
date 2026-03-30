@@ -63,22 +63,31 @@ export default function ImageGrid({ images = [] }) {
           }} 
         />
         
-        {/* Navigation Arrows for the Main Image (Optional but helpful) */}
+        {/* Navigation Arrows for the Main Image (Subtle) */}
         {images.length > 1 && (
-          <>
+          <div className="main-image-nav-arrows">
             <button 
               onClick={handlePrev}
-              style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.8)', border: '1px solid #ddd', borderRadius: '50%', width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 5 }}
+              style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', background: 'white', border: '1px solid #eee', borderRadius: '50%', width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 5, boxShadow: '0 1px 3px rgba(0,0,0,0.1)', color: '#666' }}
             >
-              <FiChevronLeft />
+              <FiChevronLeft size={16} />
             </button>
             <button 
               onClick={handleNext}
-              style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.8)', border: '1px solid #ddd', borderRadius: '50%', width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 5 }}
+              style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'white', border: '1px solid #eee', borderRadius: '50%', width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 5, boxShadow: '0 1px 3px rgba(0,0,0,0.1)', color: '#666' }}
             >
-              <FiChevronRight />
+              <FiChevronRight size={16} />
             </button>
-          </>
+            <style jsx>{`
+              @media (max-width: 768px) {
+                .main-image-nav-arrows { display: none !important; }
+              }
+              @media (min-width: 769px) {
+                .main-image-nav-arrows { opacity: 0; transition: opacity 0.2s; }
+                div:hover > .main-image-nav-arrows { opacity: 1; }
+              }
+            `}</style>
+          </div>
         )}
       </div>
 
