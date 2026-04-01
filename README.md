@@ -265,42 +265,6 @@ npm install
 npm run dev                # http://localhost:3000
 ```
 
-### 2. Backend Environment Variables (`backend/.env`)
-
-```env
-# Database
-DATABASE_URL="postgresql://user:password@host:6543/postgres?pgbouncer=true"
-DIRECT_URL="postgresql://user:password@host:5432/postgres"
-
-# Auth
-JWT_SECRET="your_strong_secret_key"
-JWT_EXPIRES_IN="7d"
-
-# Server
-PORT=3050
-NODE_ENV=development
-
-# Email (Gmail SMTP)
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USER=your@gmail.com
-EMAIL_PASS=your_16_char_app_password
-EMAIL_FROM="Flipkart Clone <your@gmail.com>"
-
-# CORS
-FRONTEND_URL=http://localhost:3000
-
-# Supabase (optional - for Auth)
-SUPABASE_URL="https://your-project.supabase.co"
-SUPABASE_ANON_KEY="your_anon_key"
-```
-
-### 3. Frontend Environment Variables (`frontend/.env.local`)
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:3050/api
-```
-
 ---
 
 ## 🚀 Production Deployment
